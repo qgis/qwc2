@@ -1,0 +1,653 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "$id": "https://github.com/qgis/qwc2/raw/master/schemas/theme.json",
+    "title": "Theme",
+    "description": "Theme definition, as listed in the items of themes and theme groups. A theme corresponds to a QGIS project published as WMS by QGIS Server.",
+    "definitions": {
+        "bbox": {
+            "type": "array",
+            "items": {
+                "type": "number"
+            },
+            "minItems": 4,
+            "maxItems": 4,
+            "description": "Extent as [xmin, ymin, xmax, ymax]."
+        },
+        "labelProfiles": {
+            "type": "object",
+            "description": "Labelling profiles of the Redlining plugin, keyed by layer name.",
+            "additionalProperties": {
+                "type": "array",
+                "description": "Profiles of the layer.",
+                "items": {
+                    "type": "object",
+                    "properties": {
+                        "name": {
+                            "type": "string",
+                            "description": "Profile name."
+                        },
+                        "title": {
+                            "type": "string",
+                            "description": "Profile title, defaults to the name."
+                        },
+                        "expression": {
+                            "type": "string",
+                            "description": "Label expression, in QGIS expression syntax."
+                        },
+                        "size": {
+                            "type": "number",
+                            "description": "Label size.",
+                            "default": 1
+                        }
+                    },
+                    "required": [
+                        "name"
+                    ]
+                }
+            }
+        },
+        "printGrid": {
+            "type": "array",
+            "description": "Scale dependent grid intervals for printing, in descending order by scale denominator: an entry applies to the scales between its own and the next entry's scale denominator.",
+            "items": {
+                "type": "object",
+                "properties": {
+                    "s": {
+                        "type": "number",
+                        "description": "Scale denominator."
+                    },
+                    "x": {
+                        "type": "number",
+                        "description": "Grid interval in x direction."
+                    },
+                    "y": {
+                        "type": "number",
+                        "description": "Grid interval in y direction."
+                    }
+                },
+                "required": [
+                    "s",
+                    "x",
+                    "y"
+                ]
+            }
+        }
+    },
+    "type": "object",
+    "properties": {
+        "id": {
+            "type": "string",
+            "description": "Theme identifier, used in the t URL parameter of the viewer. Generated if not specified."
+        },
+        "url": {
+            "type": "string",
+            "description": "URL of the WMS served by QGIS Server. With qwc-docker, /ows/<path> where <path> is the path of the QGIS project below qgs-resources, without extension."
+        },
+        "title": {
+            "type": "string",
+            "description": "Theme title, overrides the WMS title."
+        },
+        "description": {
+            "type": "string",
+            "description": "Additional description, shown below the theme title."
+        },
+        "thumbnail": {
+            "type": "string",
+            "description": "Image file in assets/img/mapthumbs. If omitted, <project_basename>.png is used if it exists, otherwise the thumbnail is generated with a WMS GetMap."
+        },
+        "default": {
+            "type": "boolean",
+            "description": "Use this theme as default theme."
+        },
+        "disabled": {
+            "type": "boolean",
+            "description": "Skip this theme when generating the themes configuration.",
+            "default": false
+        },
+        "wmsOnly": {
+            "type": "boolean",
+            "description": "Only configure the entry as a WMS, not as a theme.",
+            "default": false
+        },
+        "hidden_in_ows_landing_page": {
+            "type": "boolean",
+            "description": "Hide the service from the OGC service landing page.",
+            "default": false
+        },
+        "wmsBasicAuth": {
+            "type": "object",
+            "description": "HTTP basic authentication credentials for QGIS Server, only used when generating the themes configuration with the qwc2 scripts and not stored in themes.json.",
+            "properties": {
+                "username": {
+                    "type": "string",
+                    "description": "User name."
+                },
+                "password": {
+                    "type": "string",
+                    "description": "Password."
+                }
+            }
+        },
+        "version": {
+            "type": "string",
+            "description": "WMS version, overrides defaultWMSVersion."
+        },
+        "mapCrs": {
+            "type": "string",
+            "description": "Map projection as EPSG code, defaults to the project projection. The projection must be defined in config.json."
+        },
+        "defaultDisplayCrs": {
+            "type": "string",
+            "description": "Default CRS for the coordinates in the bottom bar and in measurements, defaults to mapCrs."
+        },
+        "additionalMouseCrs": {
+            "type": "array",
+            "description": "Additional projections for displaying the mouse position, as EPSG codes. WGS84 and mapCrs are available by default, other projections must be defined in config.json.",
+            "items": {
+                "type": "string"
+            }
+        },
+        "extent": {
+            "description": "Initial extent as [xmin, ymin, xmax, ymax] in mapCrs, overrides the extent advertised by the WMS.",
+            "allOf": [
+                {
+                    "$ref": "#/definitions/bbox"
+                }
+            ]
+        },
+        "mapExtent": {
+            "description": "Full allowed extent of the map as [xmin, ymin, xmax, ymax] in mapCrs.",
+            "allOf": [
+                {
+                    "$ref": "#/definitions/bbox"
+                }
+            ]
+        },
+        "scales": {
+            "type": "array",
+            "description": "Allowed map scale denominators, defaults to defaultScales.",
+            "items": {
+                "type": "number"
+            }
+        },
+        "format": {
+            "type": "string",
+            "description": "Image format of the WMS GetMap requests.",
+            "default": "image/png"
+        },
+        "tiled": {
+            "type": "boolean",
+            "description": "Use tiled WMS requests.",
+            "default": false
+        },
+        "tileSize": {
+            "type": "array",
+            "items": {
+                "type": "integer"
+            },
+            "minItems": 2,
+            "maxItems": 2,
+            "description": "WMS tile width and height."
+        },
+        "attribution": {
+            "type": "string",
+            "description": "Attribution shown in the bottom right corner of the map."
+        },
+        "attributionUrl": {
+            "type": "string",
+            "description": "Link of the attribution."
+        },
+        "backgroundLayers": {
+            "type": "array",
+            "description": "Available background layers, defaults to defaultBackgroundLayers.",
+            "items": {
+                "$ref": "themeBackgroundLayer.json"
+            }
+        },
+        "externalLayers": {
+            "type": "array",
+            "description": "External layers replacing internal layers of the project.",
+            "items": {
+                "type": "object",
+                "properties": {
+                    "internalLayer": {
+                        "type": "string",
+                        "description": "Name of the project layer to replace."
+                    },
+                    "name": {
+                        "type": "string",
+                        "description": "Name of the matching external layer definition in themes.externalLayers."
+                    }
+                },
+                "required": [
+                    "internalLayer",
+                    "name"
+                ]
+            }
+        },
+        "searchProviders": {
+            "type": "array",
+            "description": "Search providers, defaults to defaultSearchProviders.",
+            "items": {
+                "$ref": "searchProvider.json"
+            }
+        },
+        "minSearchScaleDenom": {
+            "type": "number",
+            "description": "Minimum scale denominator when zooming to search results, overrides the value of config.json."
+        },
+        "predefinedFilters": {
+            "type": "array",
+            "description": "Predefined filters of the MapFilter plugin.",
+            "items": {
+                "$ref": "predefinedFilter.json"
+            }
+        },
+        "filter": {
+            "type": "object",
+            "description": "Fixed filter applied to the theme.",
+            "properties": {
+                "layerfilter": {
+                    "type": "object",
+                    "description": "Filter expression per layer name, in the format of the MapFilter plugin."
+                }
+            }
+        },
+        "mapTips": {
+            "type": [
+                "boolean",
+                "null"
+            ],
+            "description": "Whether map tips are enabled by default. If null or not set, defaultMapTips applies."
+        },
+        "skipEmptyFeatureAttributes": {
+            "type": "boolean",
+            "description": "Skip empty attributes in the identify results.",
+            "default": false
+        },
+        "collapseLayerGroupsBelowLevel": {
+            "type": "integer",
+            "description": "Layer tree level below which groups are initially collapsed. By default the tree is completely expanded."
+        },
+        "layerTreeHiddenSublayers": {
+            "type": "array",
+            "description": "Sublayers omitted from the layer tree, but still displayed in the map.",
+            "items": {
+                "type": "string"
+            }
+        },
+        "lockedVisibilityPreset": {
+            "type": "string",
+            "description": "Visibility preset (QGIS map theme) whose layer styles are locked."
+        },
+        "visibilityPresetsBlacklist": {
+            "type": "array",
+            "description": "Visibility presets (QGIS map themes) to exclude, * matching any characters.",
+            "items": {
+                "type": "string"
+            }
+        },
+        "flags": {
+            "type": "array",
+            "description": "Arbitrary flags, used to show or hide menu items, toolbar items and map buttons.",
+            "items": {
+                "type": "string"
+            }
+        },
+        "startupView": {
+            "type": "string",
+            "description": "View mode in which the theme is initially displayed.",
+            "enum": [
+                "2d",
+                "3d",
+                "3d2d",
+                "oblique"
+            ],
+            "default": "2d"
+        },
+        "map3d": {
+            "$ref": "map3d.json"
+        },
+        "obliqueDatasets": {
+            "type": "array",
+            "description": "Oblique aerial imagery datasets.",
+            "items": {
+                "type": "object",
+                "properties": {
+                    "dataset": {
+                        "type": "string",
+                        "description": "Dataset configured in the obliqueImagery service."
+                    },
+                    "default": {
+                        "type": "boolean",
+                        "description": "Display this dataset by default, otherwise the first one is used."
+                    },
+                    "backgroundLayer": {
+                        "type": "string",
+                        "description": "Name of the background layer displayed with the dataset."
+                    },
+                    "backgroundOpacity": {
+                        "type": "integer",
+                        "description": "Opacity of the background layer, from 0 (transparent) to 255 (opaque).",
+                        "minimum": 0,
+                        "maximum": 255,
+                        "default": 127
+                    },
+                    "title": {
+                        "type": "string",
+                        "description": "Title in the dataset switcher, defaults to the dataset."
+                    },
+                    "titleMsgId": {
+                        "type": "string",
+                        "description": "Translation message ID of the title, alternative to title."
+                    }
+                },
+                "required": [
+                    "dataset"
+                ]
+            }
+        },
+        "printScales": {
+            "type": "array",
+            "description": "Allowed print scale denominators, defaults to defaultPrintScales.",
+            "items": {
+                "type": "number"
+            }
+        },
+        "printResolutions": {
+            "type": "array",
+            "description": "Available print resolutions in DPI, defaults to defaultPrintResolutions. If empty, the resolution can be freely chosen.",
+            "items": {
+                "type": "number"
+            }
+        },
+        "printGrid": {
+            "$ref": "#/definitions/printGrid"
+        },
+        "defaultPrintLayout": {
+            "type": "string",
+            "description": "Name of the print layout selected by default."
+        },
+        "extraPrintTemplates": {
+            "type": "array",
+            "description": "Paths of additional print templates added to the theme, relative to the print layouts directory.",
+            "items": {
+                "type": "string"
+            }
+        },
+        "printTemplateBlacklist": {
+            "type": "array",
+            "description": "Print templates to ignore.",
+            "items": {
+                "type": "string"
+            }
+        },
+        "printLabelBlacklist": {
+            "type": "array",
+            "description": "IDs of the print layout labels not exposed in the print dialog.",
+            "items": {
+                "type": "string"
+            }
+        },
+        "printLabelConfig": {
+            "type": "object",
+            "description": "Input configuration of the print layout labels, keyed by label ID.",
+            "additionalProperties": {
+                "type": "object",
+                "description": "Label input configuration, with any additional textarea property, e.g. maxLength, rows or placeholder.",
+                "properties": {
+                    "defaultValue": {
+                        "type": "string",
+                        "description": "Default value."
+                    },
+                    "options": {
+                        "type": "array",
+                        "description": "Options of a combo box, displayed instead of a text field.",
+                        "items": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "printLabelForAttribution": {
+            "type": "string",
+            "description": "ID of the print layout label receiving the current attribution when printing."
+        },
+        "printLabelForSearchResult": {
+            "type": "string",
+            "description": "ID of the print layout label receiving the current search result when printing."
+        },
+        "extraPrintLayers": {
+            "type": "array",
+            "description": "Additional layers marked as internal print layers, omitted from the layer tree.",
+            "items": {
+                "type": "string"
+            }
+        },
+        "extraPrintParameters": {
+            "type": "string",
+            "description": "Additional query parameters of the GetPrint requests, as KEY=VALUE&KEY2=VALUE2 (QGIS Server 3.32 or later)."
+        },
+        "extraLegendParameters": {
+            "type": "string",
+            "description": "Additional query parameters of the GetLegendGraphic requests, as KEY=VALUE&KEY2=VALUE2."
+        },
+        "printUrl": {
+            "type": "string",
+            "description": "Base URL of the GetPrint requests, only used by the qwc2 scripts."
+        },
+        "legendUrl": {
+            "type": "string",
+            "description": "Base URL of the GetLegendGraphic requests, only used by the qwc2 scripts."
+        },
+        "featureInfoUrl": {
+            "type": "string",
+            "description": "Base URL of the GetFeatureInfo requests, only used by the qwc2 scripts."
+        },
+        "watermark": {
+            "type": "object",
+            "description": "Watermark added to raster export images, each entry being passed as WATERMARK_<KEY> parameter of the export request.",
+            "properties": {
+                "text": {
+                    "type": "string",
+                    "description": "Text."
+                },
+                "texpadding": {
+                    "description": "Padding between the text and the frame, in points.",
+                    "oneOf": [
+                        {
+                            "type": "number",
+                            "title": "Number"
+                        },
+                        {
+                            "type": "string",
+                            "title": "Text"
+                        }
+                    ]
+                },
+                "fontsize": {
+                    "description": "Font size.",
+                    "oneOf": [
+                        {
+                            "type": "number",
+                            "title": "Number"
+                        },
+                        {
+                            "type": "string",
+                            "title": "Text"
+                        }
+                    ]
+                },
+                "fontfamily": {
+                    "type": "string",
+                    "description": "Font family."
+                },
+                "fontcolor": {
+                    "type": "string",
+                    "description": "Font color, as #RRGGBB."
+                },
+                "backgroundcolor": {
+                    "type": "string",
+                    "description": "Frame background color, as #RRGGBB."
+                },
+                "framecolor": {
+                    "type": "string",
+                    "description": "Frame color, as #RRGGBB."
+                },
+                "framewidth": {
+                    "description": "Frame width.",
+                    "oneOf": [
+                        {
+                            "type": "number",
+                            "title": "Number"
+                        },
+                        {
+                            "type": "string",
+                            "title": "Text"
+                        }
+                    ]
+                }
+            }
+        },
+        "labelProfiles": {
+            "$ref": "#/definitions/labelProfiles"
+        },
+        "snapping": {
+            "type": "object",
+            "description": "Snapping configuration.",
+            "properties": {
+                "snaplayers": {
+                    "type": "array",
+                    "description": "Layers to snap to.",
+                    "items": {
+                        "type": "object",
+                        "properties": {
+                            "name": {
+                                "type": "string",
+                                "description": "Name of the sublayer providing the snapping geometries."
+                            },
+                            "min": {
+                                "type": "number",
+                                "description": "Minimum scale denominator at which snapping is active."
+                            },
+                            "max": {
+                                "type": "number",
+                                "description": "Maximum scale denominator at which snapping is active."
+                            }
+                        },
+                        "required": [
+                            "name"
+                        ]
+                    }
+                },
+                "featureCount": {
+                    "type": "integer",
+                    "description": "Maximum number of snapping geometries retrieved for the current map extent.",
+                    "default": 500
+                },
+                "wfsMaxScale": {
+                    "type": "number",
+                    "description": "Scale denominator below which loaded WFS layers are used for snapping."
+                }
+            },
+            "required": [
+                "snaplayers"
+            ]
+        },
+        "featureReport": {
+            "type": "object",
+            "description": "Feature report templates of the document service, keyed by sublayer name.",
+            "additionalProperties": {
+                "oneOf": [
+                    {
+                        "type": "string",
+                        "title": "Template name"
+                    },
+                    {
+                        "type": "array",
+                        "title": "Reports",
+                        "items": {
+                            "type": "object",
+                            "properties": {
+                                "title": {
+                                    "type": "string",
+                                    "description": "Report title."
+                                },
+                                "template": {
+                                    "type": "string",
+                                    "description": "Report template name."
+                                },
+                                "single_report": {
+                                    "type": "boolean",
+                                    "description": "Compile one report for all features instead of one report per feature.",
+                                    "default": false
+                                },
+                                "format": {
+                                    "type": "string",
+                                    "description": "Report format, e.g. pdf, html, csv, docx, ods, odt, pptx, rtf, xlsx or xml.",
+                                    "default": "pdf"
+                                }
+                            },
+                            "required": [
+                                "template"
+                            ]
+                        }
+                    }
+                ]
+            }
+        },
+        "themeInfoLinks": {
+            "type": "object",
+            "description": "Links shown as a menu next to the theme in the theme switcher.",
+            "properties": {
+                "title": {
+                    "type": "string",
+                    "description": "Menu title."
+                },
+                "titleMsgId": {
+                    "type": "string",
+                    "description": "Translation message ID of the menu title, alternative to title."
+                },
+                "entries": {
+                    "type": "array",
+                    "description": "Names of the matching link definitions in themes.themeInfoLinks.",
+                    "items": {
+                        "type": "string"
+                    }
+                }
+            }
+        },
+        "pluginData": {
+            "type": "object",
+            "description": "Data passed to custom plugins: names of the matching plugin data resources in themes.pluginData, keyed by plugin name.",
+            "additionalProperties": {
+                "type": "array",
+                "description": "Plugin data resource names.",
+                "items": {
+                    "type": "string"
+                }
+            }
+        },
+        "editConfig": {
+            "description": "Editing configuration, keyed by layer name, or the path of a file containing it. Usually generated by the config generator.",
+            "oneOf": [
+                {
+                    "type": "object",
+                    "title": "Configuration"
+                },
+                {
+                    "type": "string",
+                    "title": "File path"
+                }
+            ]
+        },
+        "config": {
+            "type": "object",
+            "description": "Viewer configuration overriding the global entries of config.json for this theme, including desktop, mobile and plugins entries."
+        }
+    },
+    "required": [
+        "url"
+    ]
+}
