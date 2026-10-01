@@ -2,7 +2,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
 
-import axios from 'axios';
 import PropTypes from 'prop-types';
 
 import { addLayer, addLayerFeatures, LayerRole, removeLayer } from '../actions/layers';
@@ -14,6 +13,7 @@ import targetSvg from '../resources/target.svg';
 import CoordinatesUtils from '../utils/CoordinatesUtils';
 import LocaleUtils from '../utils/LocaleUtils';
 import MapUtils from '../utils/MapUtils';
+import Request from '../utils/Request';
 import ResourceRegistry from '../utils/ResourceRegistry';
 
 import '@panoramax/web-viewer';
@@ -261,7 +261,7 @@ class Panoramax extends React.Component {
         const [centerX, centerY] = CoordinatesUtils.reproject(props.coordinates, this.props.theme.mapCrs, 'EPSG:4326');
         const offset = 0.001;
         const bbox = `${centerX - offset},${centerY - offset},${centerX + offset},${centerY + offset}`;
-        axios.get(`https://${this.props.panoramaxInstance}/api/search?bbox=${bbox}`)
+        Request.get(`https://${this.props.panoramaxInstance}/api/search?bbox=${bbox}`)
             .then(response => {
                 this.setState({
                     queryData: {

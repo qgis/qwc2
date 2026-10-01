@@ -7,9 +7,10 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import axios from 'axios';
 import isMobile from 'ismobilejs';
 import url from 'url';
+
+import Request from './Request';
 
 const defaultConfig = () => ({
     assetsPath: "assets",
@@ -45,7 +46,7 @@ export default {
     },
     loadConfiguration(configParams = {}, configPath = null) {
         const configFile = configPath || ((url.parse(window.location.href, true).query.localConfig || 'config') + '.json');
-        return axios.get(configFile, {params: configParams}).then(response => {
+        return Request.get(configFile, {params: configParams}).then(response => {
             if (typeof response.data === 'object') {
                 config = {...config, ...response.data};
             } else {

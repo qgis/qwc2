@@ -9,7 +9,6 @@
 import React from 'react';
 import {connect} from 'react-redux';
 
-import axios from 'axios';
 import FileSaver from 'file-saver';
 import isEmpty from 'lodash.isempty';
 import PropTypes from 'prop-types';
@@ -27,6 +26,7 @@ import CoordinatesUtils from '../../utils/CoordinatesUtils';
 import LocaleUtils from '../../utils/LocaleUtils';
 import MapUtils from '../../utils/MapUtils';
 import {UrlParams} from '../../utils/PermaLinkUtils';
+import Request from '../../utils/Request';
 import VectorLayerUtils from '../../utils/VectorLayerUtils';
 
 import './style/PlotInfoTool.css';
@@ -334,14 +334,14 @@ class PlotInfoTool extends React.Component {
             x: point[0],
             y: point[1]
         };
-        axios.get(serviceUrl, {params}).then(response => {
+        Request.get(serviceUrl, {params}).then(response => {
             const plotInfo = !isEmpty(response.data.plots) ? response.data.plots : null;
             this.setState({plotInfo: plotInfo, currentPlot: 0, expandedInfo: null, expandedInfoData: null});
         }).catch(() => {});
     };
     queryInfoByEgrid = (query, egrid) => {
         const serviceUrl = ConfigUtils.getConfigProp("plotInfoService").replace(/\/$/, '');
-        axios.get(serviceUrl + '/query/' + egrid).then(response => {
+        Request.get(serviceUrl + '/query/' + egrid).then(response => {
             const plotInfo = !isEmpty(response.data.plots) ? response.data.plots : null;
             this.setState({plotInfo: plotInfo, currentPlot: 0, expandedInfo: null, expandedInfoData: null});
             if (plotInfo) {
@@ -365,7 +365,7 @@ class PlotInfoTool extends React.Component {
         this.props.logAction("PLOTINFO_PDF_QUERY", {info: infoEntry.key});
         ev.stopPropagation();
         this.setState((state) => ({pendingPdfs: [...state.pendingPdfs, queryUrl]}));
-        axios.get(queryUrl, {responseType: 'blob', validateStatus: status => status >= 200 && status < 300 && status !== 204}).then(response => {
+        Request.get(queryUrl, {responseType: 'blob', validateStatus: status => status >= 200 && status < 300 && status !== 204}).then(response => {
             const contentType = response.headers["content-type"];
             let filename = infoEntry.key + '.pdf';
             try {
@@ -389,7 +389,7 @@ class PlotInfoTool extends React.Component {
         } else {
             this.props.logAction("PLOTINFO_QUERY", {info: infoEntry.key});
             this.setState({expandedInfo: infoEntry.key, expandedInfoData: null});
-            axios.get(queryUrl).then(response => {
+            Request.get(queryUrl).then(response => {
                 this.setState({expandedInfoData: response.data || {failed: infoEntry.failMsgId || true}});
             }).catch(() => {
                 this.setState({expandedInfoData: {failed: infoEntry.failMsgId || true}});

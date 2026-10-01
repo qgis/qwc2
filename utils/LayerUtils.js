@@ -6,7 +6,6 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import axios from 'axios';
 import deepmerge from 'deepmerge';
 import isEmpty from 'lodash.isempty';
 import isEqual from 'lodash.isequal';
@@ -19,6 +18,7 @@ import CoordinatesUtils from './CoordinatesUtils';
 import DataServiceExprUtils from './DataServiceExprUtils';
 import LocaleUtils from './LocaleUtils';
 import MapUtils from './MapUtils';
+import Request from './Request';
 import VectorLayerUtils from './VectorLayerUtils';
 
 const LayerUtils = {
@@ -1238,7 +1238,7 @@ const LayerUtils = {
         const metadataRequests = [];
         if (layer.editConfigUrl) {
             metadataRequests.push(new Promise((resolve) => {
-                axios.get(layer.editConfigUrl).then(response => {
+                Request.get(layer.editConfigUrl).then(response => {
                     metadata.editConfig = response.data;
                     resolve();
                 }).catch(() => {
@@ -1249,7 +1249,7 @@ const LayerUtils = {
         }
         if (layer.translationsUrl) {
             metadataRequests.push(new Promise((resolve) => {
-                axios.get(layer.translationsUrl.replace('{lang}', LocaleUtils.lang())).then(response => {
+                Request.get(layer.translationsUrl.replace('{lang}', LocaleUtils.lang())).then(response => {
                     metadata.translations = deepmerge(LocaleUtils.commonTranslations(), response.data);
                     resolve();
                 }).catch(() => {

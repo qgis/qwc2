@@ -9,7 +9,6 @@
 import React from 'react';
 import {connect} from 'react-redux';
 
-import axios from 'axios';
 import {remove as removeDiacritics} from 'diacritics';
 import PropTypes from 'prop-types';
 
@@ -18,6 +17,7 @@ import ResizeableWindow from '../components/ResizeableWindow';
 import LayerCatalogWidget from '../components/widgets/LayerCatalogWidget';
 import LocaleUtils from '../utils/LocaleUtils';
 import MiscUtils from '../utils/MiscUtils';
+import Request from '../utils/Request';
 import {registerSearchProvider, SearchResultType, unregisterSearchProvider} from '../utils/SearchProviders';
 
 import './style/LayerCatalog.css';
@@ -122,7 +122,7 @@ class LayerCatalog extends React.Component {
     };
     componentDidMount() {
         if (this.props.catalogUrl) {
-            axios.get(MiscUtils.resolveAssetsPath(this.props.catalogUrl)).then(response => {
+            Request.get(MiscUtils.resolveAssetsPath(this.props.catalogUrl)).then(response => {
                 this.setState({
                     catalog: response.data.catalog || []
                 });

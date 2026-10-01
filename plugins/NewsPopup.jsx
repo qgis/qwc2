@@ -9,7 +9,6 @@
 import React from 'react';
 import {connect} from 'react-redux';
 
-import axios from 'axios';
 import PropTypes from 'prop-types';
 
 import {setCurrentTask} from '../actions/task';
@@ -17,6 +16,7 @@ import Icon from '../components/Icon';
 import SideBar from '../components/SideBar';
 import ConfigUtils from '../utils/ConfigUtils';
 import LocaleUtils from '../utils/LocaleUtils';
+import Request from '../utils/Request';
 
 import './style/NewsPopup.css';
 
@@ -69,7 +69,7 @@ class NewsPopup extends React.Component {
     }
     componentDidUpdate(prevProps) {
         if (this.props.newsDocument && this.props.newsDocument !== prevProps.newsDocument) {
-            axios.get(this.props.newsDocument.replace('{lang}', LocaleUtils.lang())).then(response => {
+            Request.get(this.props.newsDocument.replace('{lang}', LocaleUtils.lang())).then(response => {
                 this.setState({body: response.data});
             }).catch(() => {});
         }

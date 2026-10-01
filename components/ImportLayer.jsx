@@ -9,7 +9,6 @@
 import React from 'react';
 import {connect} from 'react-redux';
 
-import axios from 'axios';
 import PropTypes from 'prop-types';
 
 import {addLayer, addLayerFeatures} from '../actions/layers';
@@ -19,6 +18,7 @@ import CoordinatesUtils from '../utils/CoordinatesUtils';
 import FileImportUtils from '../utils/FileImportUtils';
 import LocaleUtils from '../utils/LocaleUtils';
 import MiscUtils from '../utils/MiscUtils';
+import Request from '../utils/Request';
 import ServiceLayerUtils from '../utils/ServiceLayerUtils';
 import ComboBox from './widgets/ComboBox';
 import FileSelector from './widgets/FileSelector';
@@ -150,7 +150,7 @@ class ImportLayer extends React.Component {
             } else if (reqUrl.toLowerCase().endsWith(".xml")) {
                 type = "xml";
             }
-            axios.get(reqUrl).then(response => {
+            Request.get(reqUrl).then(response => {
                 if (type === "xml") {
                     let catalogPendingRequests = 0;
 

@@ -9,7 +9,6 @@
 import React from 'react';
 import {connect} from 'react-redux';
 
-import axios from 'axios';
 import classnames from 'classnames';
 import isEmpty from 'lodash.isempty';
 import pointInPolygon from 'point-in-polygon';
@@ -34,6 +33,7 @@ import LocaleUtils from '../utils/LocaleUtils';
 import MapUtils from '../utils/MapUtils';
 import MiscUtils from '../utils/MiscUtils';
 import {UrlParams} from '../utils/PermaLinkUtils';
+import Request from '../utils/Request';
 import {FulltextSearch, SearchResultType} from '../utils/SearchProviders';
 import ServiceLayerUtils from '../utils/ServiceLayerUtils';
 import VectorLayerUtils from '../utils/VectorLayerUtils';
@@ -144,7 +144,7 @@ class SearchBox extends React.Component {
         if (Array.isArray(searchRegions)) {
             this.setState({searchFilterRegions: searchRegions});
         } else if (typeof searchRegions === 'string') {
-            axios.get(searchRegions).then(response => {
+            Request.get(searchRegions).then(response => {
                 this.setState({searchFilterRegions: response.data});
             }).catch(() => {
                 this.setState({searchFilterRegions: null});
@@ -451,7 +451,7 @@ class SearchBox extends React.Component {
         if (result.geometry) {
             this.showResultGeometry(result, {feature: {type: "Feature", geometry: result.geometry}, crs: result.crs});
         } else if (this.props.searchProviders[provider].getResultGeometry) {
-            this.props.searchProviders[provider].getResultGeometry(result, response => this.showResultGeometry(result, response), axios);
+            this.props.searchProviders[provider].getResultGeometry(result, response => this.showResultGeometry(result, response), Request);
         } else {
             // Display marker
             this.showResultGeometry(result, {feature: {type: "Feature", geometry: {type: "Point", coordinates: [result.x, result.y]}}, crs: result.crs});
@@ -503,7 +503,7 @@ class SearchBox extends React.Component {
                     // Show layer tree to notify user that something has happened
                     this.props.setCurrentTask('LayerTree');
                 }
-            }, axios);
+            }, Request);
         }
     };
     addExternalLayer = (entry, asGroup = false) => {
@@ -605,7 +605,7 @@ class SearchBox extends React.Component {
                 return {activeLayerInfo: null};
             } else {
                 if (!result.layer && this.props.searchProviders[provider].getLayerDefinition) {
-                    this.props.searchProviders[provider].getLayerDefinition(result, setResultLayerAndActiveInfo, axios);
+                    this.props.searchProviders[provider].getLayerDefinition(result, setResultLayerAndActiveInfo, Request);
                     return {};
                 } else {
                     return {activeLayerInfo: key};
@@ -779,7 +779,7 @@ class SearchBox extends React.Component {
                     };
                 });
 
-            }, axios);
+            }, Request);
         });
     };
     filterProviderResults = (results) => {

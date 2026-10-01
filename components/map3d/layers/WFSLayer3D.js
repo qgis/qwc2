@@ -11,13 +11,13 @@ import Extent from '@giro3d/giro3d/core/geographic/Extent';
 import ColorLayer from '@giro3d/giro3d/core/layer/ColorLayer';
 import StreamableFeatureSource, {wfsBuilder, tiledLoadingStrategy} from '@giro3d/giro3d/sources/StreamableFeatureSource';
 import VectorSource from "@giro3d/giro3d/sources/VectorSource.js";
-import axios from 'axios';
 import {tile} from "ol/loadingstrategy.js";
 import {createXYZ} from "ol/tilegrid.js";
 import url from 'url';
 
 import CoordinatesUtils from '../../../utils/CoordinatesUtils';
 import FeatureStyles from '../../../utils/FeatureStyles';
+import Request from '../../../utils/Request';
 import {wfsToOpenlayersOptions} from '../../map/layers/WFSLayer';
 import {Layer3D} from './Layer3D';
 
@@ -83,7 +83,7 @@ export default {
                 REQUEST: 'DescribeFeatureType',
                 [typeName]: options.name
             };
-            axios.get(url.format(urlParts)).then(response => {
+            Request.get(url.format(urlParts)).then(response => {
                 const parser = new DOMParser();
                 const doc = parser.parseFromString(response.data, "text/xml");
                 const elements = [].slice.call(doc.getElementsByTagName("element"));

@@ -217,7 +217,7 @@ I.e. `setCurrentTask` is available via `window.qwc2.setCurrentTask`.
 
 The following core libraries are accessible via `window.qwc2.libs`:
 
-- `axios`
+- `axios` (the viewer's own client instance, see `utils/Request.js`)
 - `React`
 - `ReactDOM`
 - `PropTypes`

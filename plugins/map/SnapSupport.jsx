@@ -9,7 +9,6 @@
 import React from 'react';
 import {connect} from 'react-redux';
 
-import axios from 'axios';
 import ol from 'openlayers';
 import PropTypes from 'prop-types';
 import {v4 as uuidv4} from 'uuid';
@@ -18,6 +17,7 @@ import {LayerRole} from '../../actions/layers';
 import FeatureStyles from "../../utils/FeatureStyles";
 import IdentifyUtils from '../../utils/IdentifyUtils';
 import MapUtils from '../../utils/MapUtils';
+import Request from '../../utils/Request';
 
 class SnapSupport extends React.Component {
     static propTypes = {
@@ -105,7 +105,7 @@ class SnapSupport extends React.Component {
         };
 
         const request = IdentifyUtils.buildRequest(layer, queryLayers, this.state.mousePos.coordinate, this.props.mapObj, options);
-        axios.get(request.url, {params: request.params}).then(response => {
+        Request.get(request.url, {params: request.params}).then(response => {
             const results = IdentifyUtils.parseXmlResponse(response.data, this.props.mapObj.projection, layer);
             const features = [];
             results.forEach(result => {

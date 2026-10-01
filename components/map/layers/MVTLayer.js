@@ -6,9 +6,10 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import axios from 'axios';
 import { applyStyle } from 'ol-mapbox-style';
 import ol from 'openlayers';
+
+import Request from '../../../utils/Request';
 
 function createLayer(url, options) {
     return new ol.layer.VectorTile({
@@ -28,7 +29,7 @@ function createLayer(url, options) {
 
 
 export function createFromStyle(style, options, callback) {
-    axios.get(style).then(response => {
+    Request.get(style).then(response => {
         const glStyle = response.data;
         glStyle.sprite?.startsWith(".") && (glStyle.sprite = new URL(glStyle.sprite, options.style).href);
         glStyle.glyphs?.startsWith(".") && (glStyle.glyphs = new URL(glStyle.glyphs, options.style).href);
@@ -52,7 +53,7 @@ export function createFromStyle(style, options, callback) {
                     console.warn("Unable to apply style " + sourceName + ": " + String(e));
                 });
             } else if (source.url) {
-                axios.get(source.url).then(response2 => {
+                Request.get(source.url).then(response2 => {
                     if (response2.data?.tiles?.length) {
                         const layer = createLayer(response2.data.tiles[0], options, callback);
                         applyStyle(layer, style, sourceName, options.styleOptions).then(() => {

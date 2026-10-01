@@ -10,7 +10,6 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import {connect} from 'react-redux';
 
-import axios from 'axios';
 import ol from 'openlayers';
 import PropTypes from 'prop-types';
 import url from 'url';
@@ -93,6 +92,7 @@ import LocaleUtils from '../utils/LocaleUtils';
 import MapUtils from '../utils/MapUtils';
 import * as PermaLinkUtils from '../utils/PermaLinkUtils';
 import PluginStore from '../utils/PluginStore';
+import Request from '../utils/Request';
 import {SearchResultType} from '../utils/SearchProviders';
 import ServiceLayerUtils from '../utils/ServiceLayerUtils';
 import VectorLayerUtils from '../utils/VectorLayerUtils';
@@ -243,7 +243,7 @@ const actionFunctions = {
  *
  * The following core libraries are accessible via `window.qwc2.libs`:
  *
- * - `axios`
+ * - `axios` (the viewer's own client instance, see `utils/Request.js`)
  * - `React`
  * - `ReactDOM`
  * - `PropTypes`
@@ -297,7 +297,7 @@ class API extends React.Component {
         window.qwc2.VectorLayerUtils = VectorLayerUtils;
 
         window.qwc2.libs = {};
-        window.qwc2.libs.axios = axios;
+        window.qwc2.libs.axios = Request;
         window.qwc2.libs.React = React;
         window.qwc2.libs.ReactDOM = ReactDOM;
         window.qwc2.libs.PropTypes = PropTypes;

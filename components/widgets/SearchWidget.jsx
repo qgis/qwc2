@@ -9,12 +9,12 @@
 
 import React from 'react';
 
-import axios from 'axios';
 import isEmpty from 'lodash.isempty';
 import PropTypes from 'prop-types';
 import {v4 as uuidv4} from 'uuid';
 
 import LocaleUtils from '../../utils/LocaleUtils';
+import Request from '../../utils/Request';
 import {SearchResultType} from '../../utils/SearchProviders';
 import VectorLayerUtils from '../../utils/VectorLayerUtils';
 import Icon from '../Icon';
@@ -162,7 +162,7 @@ export default class SearchWidget extends React.Component {
                         resultsVisible: true
                     };
                 });
-            }, axios);
+            }, Request);
         });
     };
     resultSelected = (group, item) => {
