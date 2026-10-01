@@ -286,7 +286,7 @@ class FeatureSearch extends React.Component {
     };
     clearField = (ev, fieldname) => {
         ev.target.previousElementSibling.value = "";
-        this.setState(state => ({formValues: {...state.formValues, [fieldname]: ev.target.value}}));
+        this.setState(state => ({formValues: {...state.formValues, [fieldname]: ""}}));
     };
     reloadSelectOptions = () => {
         Object.entries(this.state.searchProviders[this.state.selectedProvider]?.params?.fields ?? {}).forEach(([name, fieldcfg]) => {
