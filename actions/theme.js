@@ -109,7 +109,7 @@ export function finishThemeSetup(dispatch, theme, themes, layerConfigs, preserve
     UrlParams.updateParams({bl: actuallyVisibleBgLayer ?? ""});
 
     for (const layer of layers.reverse()) {
-        dispatch(addLayer(layer));
+        dispatch(addLayer(layer, 0));
     }
 
     // Restore external layers
