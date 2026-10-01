@@ -109,7 +109,7 @@ class AppMenu extends React.Component {
         }
         this.props.onMenuToggled(!this.state.menuVisible);
         if (this.props.menuDisplayMode !== "normal") {
-            this.props.setMenuMargin(!this.state.menuVisible ? MiscUtils.convertEmToPx(3.5) : 0, 0);
+            this.props.setMenuMargin(!this.state.menuVisible ? MiscUtils.convertEmToPx(3) : 0, 0);
         }
         this.setState((state) => ({menuVisible: !state.menuVisible, submenusVisible: [], filter: ""}));
     };

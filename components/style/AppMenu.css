@@ -8,7 +8,7 @@ div.AppMenu {
     align-items: center;
     justify-content: right;
     height: 100%;
-    flex: 0 1 20em;
+    flex: 0 1 20rem;
 }
 
 div.AppMenu.appmenu-nolabel {
@@ -37,7 +37,7 @@ div.AppMenu.appmenu-visible .appmenu-label {
 }
 
 div.AppMenu .appmenu-icon {
-    width: 3.5em;
+    width: 3rem;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -96,13 +96,13 @@ div.AppMenu div.appmenu-menu {
     background-color: var(--app-menu-bg-color);
     box-shadow: 0px 2px 4px rgba(136, 136, 136, 0.5);
     text-align: left;
-    width: 22.22em;
+    width: 20rem;
     font-size: 90%;
     border-radius: 0px 0px 0px var(--border-radius);
 }
 
 div.AppMenu.appmenu-compact div.appmenu-menu {
-    right: -18.33em;
+    right: -17rem;
     transition: right 0.5s;
 }
 
@@ -112,7 +112,7 @@ div.AppMenu.appmenu-compact div.appmenu-menu:focus-within {
 }
 
 div.AppMenu.appmenu-icononly div.appmenu-menu {
-    width: 3.89em;
+    width: 3rem;
     right: 0;
     min-height: 100%;
 }
