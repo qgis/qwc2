@@ -267,7 +267,8 @@
     },
     "featuresearch": {
       "query": "Begriff",
-      "title": "Objektsuche"
+      "title": "Objektsuche",
+      "typetofilter": "Tippen zum Filtern..."
     },
     "fileselector": {
       "files": "Dateien",

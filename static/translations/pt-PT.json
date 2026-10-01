@@ -267,7 +267,8 @@
     },
     "featuresearch": {
       "query": "Consulta",
-      "title": "Pesquisa de Recurso"
+      "title": "Pesquisa de Recurso",
+      "typetofilter": ""
     },
     "fileselector": {
       "files": "Ficheiros",

@@ -19,6 +19,7 @@ import {zoomToExtent} from '../actions/map';
 import Icon from '../components/Icon';
 import IdentifyViewer from '../components/IdentifyViewer';
 import SideBar from '../components/SideBar';
+import ComboBox from '../components/widgets/ComboBox';
 import InputContainer from '../components/widgets/InputContainer';
 import Spinner from '../components/widgets/Spinner';
 import IdentifyUtils from '../utils/IdentifyUtils';
@@ -179,14 +180,27 @@ class FeatureSearch extends React.Component {
         const onChange = ev => this.setState(state => ({formValues: {...state.formValues, [fieldname]: ev.target.value}}));
         if (fieldcfg.type === "select") {
             const options = this.state.providerSelectOptions[fieldname]?.options ?? fieldcfg.options ?? [];
+            const optionLabel = entry => entry.label ?? (entry.labelmsgid ? LocaleUtils.tr(entry.labelmsgid) : entry);
+            const input = fieldcfg.filterable ? (
+                <ComboBox filterable name={fieldname}
+                    onChange={value => this.setState(state => ({formValues: {...state.formValues, [fieldname]: value}}))}
+                    placeholder={LocaleUtils.tr("featuresearch.typetofilter")} role="input" value={this.state.formValues[fieldname] ?? ""}
+                >
+                    {options.map(entry => (
+                        <div key={entry.value ?? entry} title={optionLabel(entry)} value={entry.value ?? entry}>{optionLabel(entry)}</div>
+                    ))}
+                </ComboBox>
+            ) : (
+                <select defaultValue="" name={fieldname} onChange={onChange} role="input">
+                    <option disabled value="">{LocaleUtils.tr("common.select")}</option>
+                    {options.map(entry => (
+                        <option key={entry.value ?? entry} value={entry.value ?? entry}>{optionLabel(entry)}</option>
+                    ))}
+                </select>
+            );
             return (
                 <InputContainer>
-                    <select defaultValue="" name={fieldname} onChange={onChange} role="input">
-                        <option disabled value="">{LocaleUtils.tr("common.select")}</option>
-                        {options.map(entry => (
-                            <option key={entry.value ?? entry} value={entry.value ?? entry}>{entry.label ?? (entry.labelmsgid ? LocaleUtils.tr(entry.labelmsgid) : entry)}</option>
-                        ))}
-                    </select>
+                    {input}
                     <Icon icon="clear" onClick={(ev) => this.clearField(ev, fieldname)} role="suffix" />
                 </InputContainer>
             );
