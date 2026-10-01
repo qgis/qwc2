@@ -267,7 +267,8 @@
     },
     "featuresearch": {
       "query": "検索",
-      "title": "地物検索"
+      "title": "地物検索",
+      "typetofilter": ""
     },
     "fileselector": {
       "files": "ファイル",

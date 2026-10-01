@@ -274,6 +274,7 @@
     "featureform.title",
     "featuresearch.query",
     "featuresearch.title",
+    "featuresearch.typetofilter",
     "fileselector.files",
     "fileselector.placeholder",
     "geomdigitizer.applink",
