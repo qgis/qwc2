@@ -487,9 +487,9 @@ class LayerTree extends React.Component {
                 return layer.sublayers.map((sublayer, idx) => {
                     const subpath = [idx];
                     if (!isEmpty(sublayer.sublayers)) {
-                        return this.renderLayerGroup(layer, sublayer, subpath, layer.visibility, false, usedGroupIds);
+                        return this.renderLayerGroup(layer, sublayer, subpath, true, false, usedGroupIds);
                     } else {
-                        return this.renderLayer(layer, sublayer, subpath, layer.visibility, false, !haveGroups);
+                        return this.renderLayer(layer, sublayer, subpath, true, false, !haveGroups);
                     }
                 });
             }
