@@ -60,6 +60,7 @@ export default class ComboBox extends React.Component {
         const className = classnames({
             "combobox": true,
             "combobox-disabled": this.props.disabled,
+            "combobox-invalid": this.props.required && !this.props.value,
             [this.props.className]: true
         });
         const filter = this.state.filter ? new RegExp(removeDiacritics(this.state.filter).replace(/[-[\]/{}()*+?.\\^$|]/g, "\\$&"), "i") : null;

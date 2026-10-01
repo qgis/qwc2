@@ -10,6 +10,10 @@ div.combobox {
     position: relative;
 }
 
+div.combobox-invalid {
+    background-color: #FFAAAA;
+}
+
 div.combobox > input {
     position: absolute;
     inset: 0;
