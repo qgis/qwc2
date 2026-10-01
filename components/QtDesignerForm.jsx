@@ -456,7 +456,7 @@ class QtDesignerForm extends React.Component {
                 // kvrel__reltablename__attrname__datatable__keyfield__valuefield
                 const count = parts.length;
                 const fieldId = parts.slice(1, count - 3).join("__");
-                value = (feature.properties || [])[fieldId] ?? "";
+                value = feature.properties?.[fieldId] ?? "";
                 const keyvalrel = parts[count - 3] + ":" + parts[count - 2] + ":" + parts[count - 1];
                 let filterExpr = null;
                 if (field?.filterExpression) {
