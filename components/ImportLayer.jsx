@@ -75,7 +75,7 @@ class ImportLayer extends React.Component {
                     <span>{LocaleUtils.tr("importlayer.filecrs")}</span>
                     <ComboBox filterable onChange={value => this.setState({fileCrs: value})} value={this.state.fileCrs ?? this.props.mapCrs}>
                         {Object.entries(availableCRS).map(([code, entry]) => (
-                            <div key={code} value={code}>{entry.label}</div>
+                            <div key={code} title={entry.label} value={code}>{entry.label}</div>
                         ))}
                     </ComboBox>
                 </div>
