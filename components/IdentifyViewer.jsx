@@ -901,7 +901,7 @@ class IdentifyViewer extends React.Component {
             single_report: report.single_report || false
         };
         this.setState({generatingReport: true});
-        const url = serviceUrl + "/" + report.template;
+        const url = serviceUrl + "/" + report.template + "." + (report.format || "pdf");
         Request.get(url, {params, responseType: "arraybuffer"}).then(response => {
             const format = report.format || "pdf";
             const filename = (report.filename || report.title.replace(" ", "_")) + "." + format;
