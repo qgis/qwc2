@@ -88,7 +88,7 @@ export default class ComboBox extends React.Component {
                             if (child.props["data-group"] !== undefined && !this.state.expanded.includes(child.props["data-group"])) {
                                 return null;
                             }
-                            if (filter && !removeDiacritics(child.props.title).match(filter)) {
+                            if (filter && child.props.title && !removeDiacritics(child.props.title).match(filter)) {
                                 return null;
                             }
                             const expanderIcon = this.state.expanded.includes(child.props["data-group-header"]) ? "collapse" : "expand";
