@@ -267,8 +267,7 @@
     },
     "featuresearch": {
       "query": "Consulta",
-      "title": "Título",
-      "typetofilter": ""
+      "title": "Título"
     },
     "fileselector": {
       "files": "Arquivos",

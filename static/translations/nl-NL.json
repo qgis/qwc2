@@ -267,8 +267,7 @@
     },
     "featuresearch": {
       "query": "Zoeken",
-      "title": "Zoek object",
-      "typetofilter": ""
+      "title": "Zoek object"
     },
     "fileselector": {
       "files": "",

@@ -267,8 +267,7 @@
     },
     "featuresearch": {
       "query": "",
-      "title": "",
-      "typetofilter": ""
+      "title": ""
     },
     "fileselector": {
       "files": "Soubory",

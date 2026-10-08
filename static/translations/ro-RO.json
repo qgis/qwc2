@@ -267,8 +267,7 @@
     },
     "featuresearch": {
       "query": "Interogare",
-      "title": "Căutare obiecte spațiale",
-      "typetofilter": ""
+      "title": "Căutare obiecte spațiale"
     },
     "fileselector": {
       "files": "fișiere",

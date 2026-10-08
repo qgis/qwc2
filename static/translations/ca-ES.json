@@ -267,8 +267,7 @@
     },
     "featuresearch": {
       "query": "Consulta",
-      "title": "Cerca d'element",
-      "typetofilter": ""
+      "title": "Cerca d'element"
     },
     "fileselector": {
       "files": "fitxers",

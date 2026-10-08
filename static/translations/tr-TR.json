@@ -267,8 +267,7 @@
     },
     "featuresearch": {
       "query": "Sorgu",
-      "title": "Obje arama",
-      "typetofilter": ""
+      "title": "Obje arama"
     },
     "fileselector": {
       "files": "dosyalar",
