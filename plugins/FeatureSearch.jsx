@@ -181,26 +181,17 @@ class FeatureSearch extends React.Component {
         if (fieldcfg.type === "select") {
             const options = this.state.providerSelectOptions[fieldname]?.options ?? fieldcfg.options ?? [];
             const optionLabel = entry => entry.label ?? (entry.labelmsgid ? LocaleUtils.tr(entry.labelmsgid) : entry);
-            const input = fieldcfg.filterable ? (
-                <ComboBox filterable name={fieldname}
-                    onChange={value => this.setState(state => ({formValues: {...state.formValues, [fieldname]: value}}))}
-                    placeholder={LocaleUtils.tr("featuresearch.typetofilter")} role="input" value={this.state.formValues[fieldname] ?? ""}
-                >
-                    {options.map(entry => (
-                        <div key={entry.value ?? entry} title={optionLabel(entry)} value={entry.value ?? entry}>{optionLabel(entry)}</div>
-                    ))}
-                </ComboBox>
-            ) : (
-                <select defaultValue="" name={fieldname} onChange={onChange} role="input">
-                    <option disabled value="">{LocaleUtils.tr("common.select")}</option>
-                    {options.map(entry => (
-                        <option key={entry.value ?? entry} value={entry.value ?? entry}>{optionLabel(entry)}</option>
-                    ))}
-                </select>
-            );
             return (
                 <InputContainer>
-                    {input}
+                    <ComboBox filterable={fieldcfg.filterable} name={fieldname}
+                        onChange={value => this.setState(state => ({formValues: {...state.formValues, [fieldname]: value}, searchResults: null}))}
+                        placeholder={LocaleUtils.tr(fieldcfg.filterable ? "featuresearch.typetofilter" : "common.select")}
+                        role="input" value={this.state.formValues[fieldname] ?? ""}
+                    >
+                        {options.map(entry => (
+                            <div key={entry.value ?? entry} title={optionLabel(entry)} value={entry.value ?? entry}>{optionLabel(entry)}</div>
+                        ))}
+                    </ComboBox>
                     <Icon icon="clear" onClick={(ev) => this.clearField(ev, fieldname)} role="suffix" />
                 </InputContainer>
             );
