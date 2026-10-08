@@ -122,21 +122,18 @@ class ThemeList extends React.Component {
                             return null;
                         }
                     }
-                    let title = `<h1>${item.title}</h1>`;
-                    if (title && item.abstract) {
-                        title += item.abstract;
-                    }
-                    if (title && item.keywords) {
-                        title += "<br ><br >";
+                    let tooltip = `<p><b>${item.title}</b></p>`;
+                    if (item.abstract) {
+                        tooltip += `<p>${item.abstract}</p>`;
                     }
                     if (item.keywords) {
-                        title += LocaleUtils.tr("themeswitcher.match.keywords") + ": " + item.keywords;
+                        tooltip += `<p>${LocaleUtils.tr("themeswitcher.match.keywords")}: ${item.keywords}</p>`;
                     }
                     return (
                         <li className={activeThemeId === item.id ? "theme-item theme-item-active" : "theme-item"}
                             key={item.id}
                             onClick={() => this.setTheme(item)}
-                            onMouseEnter={(ev) => this.showTooltip(ev, title)}
+                            onMouseEnter={(ev) => this.showTooltip(ev, tooltip)}
                             onMouseLeave={(ev) => this.hideTooltip(ev)}
                         >
                             <div className="theme-item-title">
@@ -287,18 +284,25 @@ class ThemeList extends React.Component {
         });
     };
     showTooltip = (ev, content) => {
-        const tooltip = ev.view.document.createElement("div");
-        tooltip.innerHTML = MiscUtils.sanitizeHtml(content);
-        tooltip.className = "theme-item-tooltip";
-        tooltip.popover = "hint";
-        ev.currentTarget.popoverTargetElement = tooltip;
-        ev.currentTarget.appendChild(tooltip);
-        const rect = ev.currentTarget.getBoundingClientRect();
-        tooltip.style.left = `${rect.left}px`;
-        tooltip.style.top = `${rect.bottom}px`;
-        tooltip.showPopover();
+        const target = ev.currentTarget;
+        target.tooltipTimeout = setTimeout(() => {
+            if (target.isConnected) {
+                const tooltip = ev.view.document.createElement("div");
+                tooltip.innerHTML = MiscUtils.sanitizeHtml(content);
+                tooltip.className = "theme-item-tooltip";
+                tooltip.popover = "hint";
+                target.popoverTargetElement = tooltip;
+                target.appendChild(tooltip);
+                const rect = target.getBoundingClientRect();
+                tooltip.style.left = `${0.5 * (rect.left + rect.right)}px`;
+                tooltip.style.top = `${rect.bottom}px`;
+                tooltip.showPopover();
+            }
+            target.tooltipTimeout = null;
+        }, 500);
     };
     hideTooltip = (ev) => {
+        clearTimeout(ev.currentTarget.tooltipTimeout);
         const tooltip = ev.currentTarget.popoverTargetElement;
         if (tooltip) {
             tooltip.hidePopover();
