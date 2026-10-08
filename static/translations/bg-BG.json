@@ -267,7 +267,8 @@
     },
     "featuresearch": {
       "query": "Запитване",
-      "title": "Търсене на функции"
+      "title": "Търсене на функции",
+      "typetofilter": ""
     },
     "fileselector": {
       "files": "файлове",

@@ -46,12 +46,16 @@ export default class ComboBox extends React.Component {
     constructor(props) {
         super(props);
         this.el = null;
+        this.filterEl = null;
     }
     render() {
         const children = React.Children.toArray(this.props.children);
+        const filterable = this.props.filterable && !this.props.readOnly && !this.props.disabled;
         let activeOption = children.filter((child) => child.props.value === this.props.value);
-        if (activeOption.length === 0) {
-            if (!this.state.filter) {
+        const hasValue = activeOption.length > 0;
+        if (!hasValue) {
+            // Filterable: the placeholder is shown by the filter input itself
+            if (!this.state.filter && !filterable) {
                 activeOption = (<span>{this.props.placeholder}</span>);
             } else {
                 activeOption = (<span>&nbsp;</span>);
@@ -72,13 +76,14 @@ export default class ComboBox extends React.Component {
                     <span className="combobox-button-content">
                         {activeOption}
                     </span>
-                    {this.props.filterable && !this.props.readOnly && !this.props.disabled ? (
-                        <input className="combobox-button-filter" onChange={this.filterChanged} type="text" value={this.state.filter} />
+                    {filterable ? (
+                        <input className="combobox-button-filter" onChange={this.filterChanged}
+                            placeholder={hasValue ? "" : this.props.placeholder} ref={el => { this.filterEl = el; }} type="text" value={this.state.filter} />
                     ) : null}
                     {this.props.readOnly ? null : (<Icon icon="chevron-down" />)}
                 </div>
                 {this.el && this.state.popup ? (
-                    <PopupMenu anchor={this.el} className={"combobox-menu" + (this.props.menuClassName ? " " + this.props.menuClassName : "")} onClose={() => this.setState({popup: false})}>
+                    <PopupMenu anchor={this.filterEl || this.el} className={"combobox-menu" + (this.props.menuClassName ? " " + this.props.menuClassName : "")} onClose={() => this.setState({popup: false, filter: ''})}>
                         {children.map((child, idx) => {
                             const entryClassName = classnames({
                                 "combobox-menu-entry": true,
@@ -107,7 +112,7 @@ export default class ComboBox extends React.Component {
         );
     }
     filterChanged = (ev) => {
-        this.setState({filter: ev.target.value});
+        this.setState({filter: ev.target.value, popup: true});
         this.props.onChange('');
     };
     onChildClicked = (ev, child) => {

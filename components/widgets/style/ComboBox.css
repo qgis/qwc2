@@ -18,6 +18,7 @@ div.combobox > input {
     position: absolute;
     inset: 0;
     z-index: -10000;
+    opacity: 0;
 }
 
 div.combobox-button {
