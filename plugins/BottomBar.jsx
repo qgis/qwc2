@@ -85,7 +85,8 @@ class BottomBar extends React.Component {
         displayScales: true
     };
     state = {
-        scale: 0
+        scale: 0,
+        visibilityPresets: {}
     };
     componentWillUnmount() {
         if (this.scalebar) {
@@ -95,6 +96,21 @@ class BottomBar extends React.Component {
     componentDidUpdate(prevProps) {
         if (this.props.map !== prevProps.map) {
             this.setState({scale: Math.round(MapUtils.computeForZoom(this.props.map.scales, this.props.map.zoom))});
+        }
+        if (this.props.currentTheme && (
+            this.props.currentTheme !== prevProps.currentTheme || this.props.visibilityPresets !== prevProps.visibilityPresets
+        )) {
+            const visibilityPresets = {
+                ...this.props.currentTheme.visibilityPresets,
+                ...this.props.visibilityPresets.reduce((res, entry) => {
+                    if (entry.theme_id === this.props.currentTheme.id) {
+                        return {...res, [entry.description]: entry.data ?? entry.key};
+                    } else {
+                        return res;
+                    }
+                }, {})
+            };
+            this.setState({visibilityPresets});
         }
     }
     render() {
@@ -145,15 +161,14 @@ class BottomBar extends React.Component {
                 (this.props.bookmarks?.length > 0 || this.props.visibilityPresets?.length > 0)
             ) {
                 const bookmarks = this.filterByActiveTheme(this.props.bookmarks || []);
-                const visibilityPresets = this.filterByActiveTheme(this.props.visibilityPresets || []);
                 const options = {
                     [LocaleUtils.tr("appmenu.items.Bookmark")]: bookmarks.map(bm => ["bk:" + bm.key, bm.description]),
-                    [LocaleUtils.tr("appmenu.items.VisibilityPresets")]: visibilityPresets.map(bm => ["vp:" + bm.key, bm.description])
+                    [LocaleUtils.tr("appmenu.items.VisibilityPresets")]: Object.keys(this.state.visibilityPresets).map((vp, idx) => ["vp:" + vp, vp])
                 };
                 widgets.push((
                     <div key="quickselect">
                         <span className="bottombar-quick-select-label">{LocaleUtils.tr("bottombar.quick_select_label")}:&nbsp;</span>
-                        <GroupSelect onChange={this.openBookmarkOrPreset} options={options} placeholder={LocaleUtils.tr("common.select")} />
+                        <GroupSelect onChange={this.openBookmarkOrPreset} options={options} placeholder={LocaleUtils.tr("common.select")} value="" />
                     </div>
                 ));
             }
@@ -208,11 +223,17 @@ class BottomBar extends React.Component {
     openBookmarkOrPreset = (prefixedKey) => {
         if (prefixedKey.startsWith("vp:")) {
             const key = prefixedKey.slice("vp:".length);
-            VisibilityPresetsInterface.resolve(key, (preset) => {
-                if (preset) {
-                    this.props.setThemeLayersVisibilityPreset(preset);
-                }
-            });
+            const entry = this.state.visibilityPresets[key];
+            if (typeof entry === 'string') {
+                // NOTE: legacy path if visibilityPreset entries only contain the key and not the full preset data
+                VisibilityPresetsInterface.resolve(entry, (preset) => {
+                    if (preset) {
+                        this.props.setThemeLayersVisibilityPreset(preset);
+                    }
+                });
+            } else {
+                this.props.setThemeLayersVisibilityPreset(entry);
+            }
         } else if (prefixedKey.startsWith("bk:")) {
             const key = prefixedKey.slice("bk:".length);
             location.href = location.href.split("?")[0] + '?bk=' + key;
