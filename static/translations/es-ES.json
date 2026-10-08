@@ -518,6 +518,10 @@
       "perpage": "por página",
       "prev": "Página anterior"
     },
+    "navhistory": {
+      "back": "",
+      "forward": ""
+    },
     "newspopup": {
       "dontshowagain": "No mostrar de nuevo",
       "title": "Noticias"

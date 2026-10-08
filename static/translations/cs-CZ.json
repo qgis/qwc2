@@ -518,6 +518,10 @@
       "perpage": "na stránku",
       "prev": ""
     },
+    "navhistory": {
+      "back": "",
+      "forward": ""
+    },
     "newspopup": {
       "dontshowagain": "Znovu nezobrazovat",
       "title": "Novinky"

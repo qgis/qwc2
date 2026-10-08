@@ -518,6 +518,10 @@
       "perpage": "Per pagina",
       "prev": ""
     },
+    "navhistory": {
+      "back": "",
+      "forward": ""
+    },
     "newspopup": {
       "dontshowagain": "Niet meer tonen",
       "title": "Nieuws"

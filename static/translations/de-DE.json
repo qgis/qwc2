@@ -518,6 +518,10 @@
       "perpage": "pro Seite",
       "prev": "Nächste Seite"
     },
+    "navhistory": {
+      "back": "Vorherige Kartenansicht",
+      "forward": "Nächste Kartenansicht"
+    },
     "newspopup": {
       "dontshowagain": "Nicht mehr anzeigen",
       "title": "Aktuelles"

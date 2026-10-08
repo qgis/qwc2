@@ -465,6 +465,8 @@
     "navbar.next",
     "navbar.perpage",
     "navbar.prev",
+    "navhistory.back",
+    "navhistory.forward",
     "newspopup.dontshowagain",
     "newspopup.title",
     "numericinput.angle",

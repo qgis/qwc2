@@ -518,6 +518,10 @@
       "perpage": "per page",
       "prev": "Previous page"
     },
+    "navhistory": {
+      "back": "Previous map view",
+      "forward": "Next map view"
+    },
     "newspopup": {
       "dontshowagain": "Don't show again",
       "title": "News"

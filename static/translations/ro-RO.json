@@ -518,6 +518,10 @@
       "perpage": "pe pagină",
       "prev": "Pagina anterioară"
     },
+    "navhistory": {
+      "back": "",
+      "forward": ""
+    },
     "newspopup": {
       "dontshowagain": "Nu mai afișa acest mesaj",
       "title": "Noutăți"

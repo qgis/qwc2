@@ -518,6 +518,10 @@
       "perpage": "/ page",
       "prev": ""
     },
+    "navhistory": {
+      "back": "",
+      "forward": ""
+    },
     "newspopup": {
       "dontshowagain": "再び表示しない",
       "title": "ニュース"

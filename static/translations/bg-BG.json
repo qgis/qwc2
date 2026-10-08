@@ -518,6 +518,10 @@
       "perpage": "на страница",
       "prev": ""
     },
+    "navhistory": {
+      "back": "",
+      "forward": ""
+    },
     "newspopup": {
       "dontshowagain": "Не показвайте отново",
       "title": "Новини"

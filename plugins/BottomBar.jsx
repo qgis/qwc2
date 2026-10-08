@@ -16,6 +16,7 @@ import {setThemeLayersVisibilityPreset} from '../actions/layers';
 import {changeZoomLevel, setDisplayCrs} from '../actions/map';
 import {openExternalUrl, setBottombarHeight} from '../actions/windows';
 import CoordinateDisplayer from '../components/CoordinateDisplayer';
+import NavHistory from '../components/NavHistory';
 import GroupSelect from '../components/widgets/GroupSelect';
 import InputContainer from '../components/widgets/InputContainer';
 import NumberInput from '../components/widgets/NumberInput';
@@ -49,6 +50,8 @@ class BottomBar extends React.Component {
         currentTheme: PropTypes.object,
         /** Whether to display the coordinates in the bottom bar. */
         displayCoordinates: PropTypes.bool,
+        /** Whether to display the map navigation history controls. */
+        displayNavHistory: PropTypes.bool,
         /** Whether to show a quick-select dropdown for bookmarks and visibility presets of the currently active theme. */
         displayQuickSelectDropdown: PropTypes.bool,
         /** Whether to display the scalebar in the bottom bar. */
@@ -80,6 +83,7 @@ class BottomBar extends React.Component {
     };
     static defaultProps = {
         displayCoordinates: true,
+        displayNavHistory: true,
         displayQuickSelectDropdown: false,
         displayScalebar: true,
         displayScales: true
@@ -117,6 +121,9 @@ class BottomBar extends React.Component {
         const widgets = [];
         if (this.props.displayScalebar) {
             widgets.push((<div className="bottombar-scalebar-container" key="scalebar" ref={this.initScaleBar} />));
+        }
+        if (this.props.displayNavHistory) {
+            widgets.push((<NavHistory key="NavHistory" />));
         }
         if (!this.props.fullscreen) {
             const leftBottomLinks = (this.props.additionalBottomBarLinks || []).filter(entry => entry.side === "left").map(this.renderLink);

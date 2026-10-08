@@ -518,6 +518,10 @@
       "perpage": "per pàgina",
       "prev": "Pàgina anterior"
     },
+    "navhistory": {
+      "back": "",
+      "forward": ""
+    },
     "newspopup": {
       "dontshowagain": "No mostrar de nou",
       "title": "Notícies"
