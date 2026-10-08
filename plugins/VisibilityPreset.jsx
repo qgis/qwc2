@@ -100,11 +100,17 @@ class VisibilityPresets extends React.Component {
             const url = location.href.split("?")[0] + '?vp=' + key;
             window.open(url, '_blank');
         } else {
-            VisibilityPresetsInterface.resolve(key, (preset) => {
-                if (preset) {
-                    this.props.setThemeLayersVisibilityPreset(preset);
-                }
-            });
+            const entry = this.props.visibilityPresets.find(vp => vp.key === key);
+            if (entry.data) {
+                this.props.setThemeLayersVisibilityPreset(entry.data);
+            } else {
+                // NOTE: legacy path if visibilityPreset entries only contain the key and not the full preset data
+                VisibilityPresetsInterface.resolve(key, (preset) => {
+                    if (preset) {
+                        this.props.setThemeLayersVisibilityPreset(preset);
+                    }
+                });
+            }
         }
     };
 
