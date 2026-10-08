@@ -130,6 +130,7 @@ class LayerTree extends React.Component {
         theme: PropTypes.object,
         toggleMapTips: PropTypes.func,
         transparencyIcon: PropTypes.bool,
+        visibilityPresets: PropTypes.func,
         /** The initial width of the layertree, as a CSS width string. */
         width: PropTypes.string,
         zoomToExtent: PropTypes.func
@@ -194,7 +195,22 @@ class LayerTree extends React.Component {
             this.props.toggleMapTips(this.props.theme.mapTips && !ConfigUtils.isMobile());
         }
         if (this.props.layers !== prevProps.layers) {
-            this.setState({activePreset: LayerUtils.getActiveVisibilityPreset(this.props.layers, this.props.theme.visibilityPresets)});
+            this.setState(state => ({activePreset: LayerUtils.getActiveVisibilityPreset(this.props.layers, state.visibilityPresets)}));
+        }
+        if (this.props.theme && (
+            this.props.theme !== prevProps.theme || this.props.visibilityPresets !== prevProps.visibilityPresets
+        )) {
+            const visibilityPresets = {
+                ...this.props.theme.visibilityPresets,
+                ...this.props.visibilityPresets.reduce((res, entry) => {
+                    if (entry.data && entry.theme_id === this.props.theme.id) {
+                        return {...res, [entry.description]: entry.data};
+                    } else {
+                        return res;
+                    }
+                }, {})
+            };
+            this.setState({visibilityPresets, activePreset: LayerUtils.getActiveVisibilityPreset(this.props.layers, visibilityPresets)});
         }
     }
     renderSubLayers = (layer, group, path, enabled, inMutuallyExclusiveGroup, usedGroupIds) => {
@@ -649,7 +665,6 @@ class LayerTree extends React.Component {
             }
             vis /= Math.min(1, count);
         }
-        let needsep = false;
         if (this.props.showToggleAllLayersCheckbox) {
             menuEntries.push(
                 <div key="showallayers" onClick={() => this.toggleLayerTreeVisibility(vis === 0)}>
@@ -664,9 +679,10 @@ class LayerTree extends React.Component {
                 </div>
             );
         }
-        Object.entries(this.props.theme.visibilityPresets || {}).forEach(([name, preset], idx) => {
+        let needsep = menuEntries.length > 0;
+        Object.entries(this.state.visibilityPresets || {}).forEach(([name, preset], idx) => {
             menuEntries.push(
-                <div className={idx === 0 && menuEntries.length > 0 ? "layertree-visibility-menu-sep" : ""} key={name} onClick={() => this.props.setThemeLayersVisibilityPreset(preset)}>
+                <div className={idx === 0 && needsep ? "layertree-visibility-menu-sep" : ""} key={name} onClick={() => this.props.setThemeLayersVisibilityPreset(preset)}>
                     <Icon icon={this.state.activePreset === name ? "radio_checked" : "radio_unchecked"} /> {name}
                 </div>
             );
@@ -922,7 +938,8 @@ const selector = (state) => ({
     mapScale: MapUtils.computeForZoom(state.map.scales, state.map.zoom),
     swipe: state.layers.swipe,
     theme: state.theme.current || {},
-    mapTipsEnabled: state.map.maptips
+    mapTipsEnabled: state.map.maptips,
+    visibilityPresets: state.bookmark.visibilityPresets
 });
 
 export default connect(selector, {
