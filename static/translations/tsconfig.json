@@ -382,6 +382,7 @@
     "layertree.togglegroup",
     "layertree.transparency",
     "layertree.visiblefilter",
+    "layertree.zoomoscale",
     "layertree.zoomtolayer",
     "layertree3d.customheight",
     "layertree3d.import",

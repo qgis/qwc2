@@ -400,6 +400,7 @@
       "togglegroup": "Activar o desactivar el grupo y todas las subcapas",
       "transparency": "Transparencia",
       "visiblefilter": "Filtrar capas no visibles",
+      "zoomoscale": "",
       "zoomtolayer": "Zoom a la capa"
     },
     "layertree3d": {

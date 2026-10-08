@@ -400,6 +400,7 @@
       "togglegroup": "Toggle group and all sublayers",
       "transparency": "Trasparency",
       "visiblefilter": "Filter invisible layers",
+      "zoomoscale": "Zoom to layer scale",
       "zoomtolayer": "Zoom to layer"
     },
     "layertree3d": {

@@ -296,6 +296,9 @@ const MiscUtils = {
             width: metrics.width,
             height: metrics.actualBoundingBoxAscent + metrics.actualBoundingBoxDescent
         };
+    },
+    extentContainsPoint(bounds, pos) {
+        return pos[0] >= bounds[0] && pos[0] <= bounds[2] && pos[1] >= bounds[1] && pos[1] <= bounds[3];
     }
 };
 

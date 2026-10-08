@@ -400,6 +400,7 @@
       "togglegroup": "Basculer le groupe et toutes les sous-couches",
       "transparency": "Transparence",
       "visiblefilter": "Filtrer couches invisibles",
+      "zoomoscale": "Zoomer à l’échelle de la couche",
       "zoomtolayer": "Zoomer sur la couche"
     },
     "layertree3d": {

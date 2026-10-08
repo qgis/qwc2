@@ -17,7 +17,7 @@ import PropTypes from 'prop-types';
 
 import {setActiveLayerInfo} from '../actions/layerinfo';
 import {LayerRole, changeLayerProperty, removeLayer, reorderLayer, setSwipe, addLayerSeparator, setThemeLayersVisibilityPreset} from '../actions/layers';
-import {toggleMapTips, zoomToExtent} from '../actions/map';
+import {toggleMapTips, zoomToExtent, zoomToPoint} from '../actions/map';
 import {setCurrentTask} from '../actions/task';
 import Icon from '../components/Icon';
 import ImportLayer from '../components/ImportLayer';
@@ -29,6 +29,7 @@ import PopupMenu from '../components/widgets/PopupMenu';
 import {Image} from '../components/widgets/Primitives';
 import Spinner from '../components/widgets/Spinner';
 import ConfigUtils from '../utils/ConfigUtils';
+import CoordinatesUtils from '../utils/CoordinatesUtils';
 import LayerUtils from '../utils/LayerUtils';
 import LocaleUtils from '../utils/LocaleUtils';
 import MapUtils from '../utils/MapUtils';
@@ -133,7 +134,8 @@ class LayerTree extends React.Component {
         visibilityPresets: PropTypes.func,
         /** The initial width of the layertree, as a CSS width string. */
         width: PropTypes.string,
-        zoomToExtent: PropTypes.func
+        zoomToExtent: PropTypes.func,
+        zoomToPoint: PropTypes.func
     };
     static defaultProps = {
         layers: [],
@@ -412,12 +414,39 @@ class LayerTree extends React.Component {
     renderOptionsMenu = (layer, sublayer, path, marginRight, subtreevisibility = 0) => {
         const allowReordering = ConfigUtils.getConfigProp("allowReorderingLayers", this.props.theme) === true;
         let zoomToLayerButton = null;
-        if (sublayer.bbox && sublayer.bbox.bounds) {
+        if (sublayer.bbox?.bounds) {
             const zoomToLayerTooltip = LocaleUtils.tr("layertree.zoomtolayer");
             const crs = sublayer.bbox.crs || this.props.map.projection;
             zoomToLayerButton = (
                 <Icon icon="zoom" onClick={() => this.props.zoomToExtent(sublayer.bbox.bounds, crs)} title={zoomToLayerTooltip} />
             );
+        }
+        let zoomToScaleButton = null;
+        if (sublayer.minScale !== undefined || sublayer.maxScale !== undefined) {
+            // Zoom to closest scale at which layer is visible
+            const zoomToScale = (scale, roundFunc) => {
+                let zoom = MapUtils.computeFractionalZoom(this.props.map.scales, scale);
+                if (!ConfigUtils.getConfigProp("allowFractionalZoom")) {
+                    zoom = roundFunc(zoom);
+                }
+                let center = this.props.map.center;
+                if (sublayer.bbox?.bounds) {
+                    const bounds = CoordinatesUtils.reprojectBbox(sublayer.bbox.bounds, sublayer.bbox.crs, this.props.map.projection);
+                    if (!MiscUtils.extentContainsPoint(bounds, center)) {
+                        center = [0.5 * (bounds[0] + bounds[2]), 0.5 * (bounds[1] + bounds[3])];
+                    }
+                }
+                this.props.zoomToPoint(center, zoom, this.props.map.projection);
+            };
+            if (sublayer.maxScale !== undefined && this.props.mapScale >= sublayer.maxScale) {
+                zoomToScaleButton = (
+                    <Icon icon="zoom_scale" onClick={() => zoomToScale(sublayer.maxScale - 1, Math.ceil)} title={LocaleUtils.tr("layertree.zoomoscale")} />
+                );
+            } else if (sublayer.minScale !== undefined && this.props.mapScale <= sublayer.minScale) {
+                zoomToScaleButton = (
+                    <Icon icon="zoom_scale" onClick={() => zoomToScale(sublayer.minScale + 1, Math.floor)} title={LocaleUtils.tr("layertree.zoomoscale")} />
+                );
+            }
         }
         let reorderButtons = null;
         if (allowReordering && !this.state.filterinvisiblelayers) {
@@ -445,6 +474,7 @@ class LayerTree extends React.Component {
         return (
             <div className="layertree-item-optionsmenu" onPointerDown={this.preventLayerTreeItemDrag} style={{marginRight: (marginRight * 1.75) + 'em'}}>
                 {zoomToLayerButton}
+                {zoomToScaleButton}
                 {this.props.transparencyIcon ? (<Icon icon="transparency" />) : LocaleUtils.tr("layertree.transparency")}
                 <input className="layertree-item-transparency-slider" max="255" min="0"
                     onChange={(ev) => this.layerTransparencyChanged(layer, path, ev.target.value, !isEmpty(sublayer.sublayers) ? 'children' : null)}
@@ -952,5 +982,6 @@ export default connect(selector, {
     setActiveLayerInfo: setActiveLayerInfo,
     setCurrentTask: setCurrentTask,
     setThemeLayersVisibilityPreset: setThemeLayersVisibilityPreset,
-    zoomToExtent: zoomToExtent
+    zoomToExtent: zoomToExtent,
+    zoomToPoint: zoomToPoint
 })(LayerTree);
