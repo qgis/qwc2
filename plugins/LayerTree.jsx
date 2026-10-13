@@ -467,9 +467,9 @@ class LayerTree extends React.Component {
         let attrTableButton = null;
         if (
             this.props.showAttributeTableLink && ConfigUtils.havePlugin("AttributeTable") &&
-            layer.role === LayerRole.THEME && this.props.editConfigs[layer.wms_name]?.[sublayer.name]
+            this.props.editConfigs[layer.wms_name]?.[sublayer.name]
         ) {
-            attrTableButton = (<Icon icon="editing" onClick={() => this.props.setCurrentTask("AttributeTable", null, null, {layer: layer.wms_name + "#" + sublayer.name})} />);
+            attrTableButton = (<Icon icon="editing" onClick={() => this.props.setCurrentTask("AttributeTable", null, null, {layer: layer.wms_name + "#" + sublayer.name})} title={LocaleUtils.tr("common.openinattributetable")} />);
         }
         return (
             <div className="layertree-item-optionsmenu" onPointerDown={this.preventLayerTreeItemDrag} style={{marginRight: (marginRight * 1.75) + 'em'}}>
