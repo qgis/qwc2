@@ -86,7 +86,7 @@ class AttributeTable extends React.Component {
                 initiallyDocked={this.props.geometry.initiallyDocked} onClose={this.onClose} splitScreenWhenDocked title={LocaleUtils.tr("attribtable.title")}
             >
                 <AttributeTableWidget allowAddForGeometryLayers={this.props.allowAddForGeometryLayers} hideIdColumn={this.props.hideIdColumn}
-                    iface={this.props.iface} initialLayer={this.props.taskData?.layer} limitToExtent={this.props.limitToExtent}
+                    iface={this.props.iface} initialLayer={this.props.taskData} limitToExtent={this.props.limitToExtent}
                     showColumnFilters={this.props.showColumnFilters} showEditFormButton={this.props.showEditFormButton}
                     showHiddenFields={this.props.showHiddenFields} showLimitToExtent={this.props.showLimitToExtent} zoomLevel={this.props.zoomLevel}
                 />

@@ -55,7 +55,7 @@ class AttributeTableWidget extends React.Component {
         /** Whether to hide the id (primary key) column. */
         hideIdColumn: PropTypes.bool,
         iface: PropTypes.object,
-        initialLayer: PropTypes.string,
+        initialLayer: PropTypes.object,
         layers: PropTypes.array,
         /** Whether to limit to the extent by default. */
         limitToExtent: PropTypes.bool,
@@ -140,7 +140,7 @@ class AttributeTableWidget extends React.Component {
     }
     componentDidMount() {
         if (this.props.initialLayer) {
-            this.reload({}, this.props.initialLayer);
+            this.reload({}, this.props.initialLayer.layer, this.props.initialLayer.selection);
         }
     }
     componentDidUpdate(prevProps, prevState) {
@@ -431,7 +431,7 @@ class AttributeTableWidget extends React.Component {
         }));
     };
     selectFeatures = (geom) => {
-        this.getFeatures(this.state, this.state.loadedLayer, false, geom, (result) => {
+        this.getFeatures(this.state, this.state.loadedLayer, false, null, geom, (result) => {
             if (result) {
                 this.setState(state => {
                     if (state.selectMode === 'Point' && result.features.length === 1 && state.selectedFeatures[result.features[0].id]) {
@@ -530,7 +530,7 @@ class AttributeTableWidget extends React.Component {
         }
         return input;
     };
-    reload = (stateChange = {}, loadLayer = null) => {
+    reload = (stateChange = {}, loadLayer = null, selection = null) => {
         this.setState((state) => {
             loadLayer = loadLayer ?? state.loadedLayer;
             const newState = {...state, ...stateChange};
@@ -568,14 +568,18 @@ class AttributeTableWidget extends React.Component {
                     features: features,
                     totFeatureCount: features
                 };
+            } else if (selection) {
+                // If reload is invoked with an initial selection filter, automatically switch to selectedOnly=true
+                // and set the matched results as selectedFeatures in the callback below
+                newState.selectedOnly = true;
             }
             newState.loading = true;
-            this.getFeatures(newState, loadLayer, true, null, (result) => {
+            this.getFeatures(newState, loadLayer, true, selection, null, (result) => {
                 if (result) {
                     this.setState(state2 => ({
                         loading: false,
                         loadedLayer: loadLayer,
-                        selectedFeatures: this.filterSelectedFeatures(state2),
+                        selectedFeatures: selection ? Object.fromEntries(result.features.map(f => [f.id, f])) : this.filterSelectedFeatures(state2),
                         ...result
                     }));
                 } else {
@@ -587,7 +591,7 @@ class AttributeTableWidget extends React.Component {
             return newState;
         });
     };
-    getFeatures = (state, loadedLayer, paginate, filterGeom, callback) => {
+    getFeatures = (state, loadedLayer, paginate, filter, filterGeom, callback) => {
         // If sort or filter field is virtual, query non-paginated features and apply additional sorting/filtering client side
         const fieldMap = (state.curEditConfig?.fields || []).reduce((res, field) => ({...res, [field.id]: field}), {});
         const clientSideFilterSort = (state.filterVal && fieldMap[state.filterField]?.expression) || fieldMap[state.sortField?.field]?.expression;
@@ -606,6 +610,9 @@ class AttributeTableWidget extends React.Component {
                 options.filter = [...options.filter, 'and', [field, '~', value]];
             }
         });
+        if (filter) {
+            options.filter = [...options.filter, 'and', filter];
+        }
         if (options.filter[0] === 'and') {
             options.filter.shift();
         }
@@ -944,7 +951,7 @@ class AttributeTableWidget extends React.Component {
             formatters[format](this.state.features);
         } else {
             this.setState({loading: true});
-            this.getFeatures(this.state, this.state.loadedLayer, false, null, (result) => {
+            this.getFeatures(this.state, this.state.loadedLayer, false, null, null, (result) => {
                 if (result) {
                     formatters[format](result.features);
                 } else {

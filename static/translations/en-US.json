@@ -150,6 +150,7 @@
       "lock2dview": "Move with 2D view",
       "mode": "Mode",
       "noresults": "No results",
+      "openinattributetable": "Open in attribute table",
       "pick": "Pick",
       "point": "Point",
       "polygon": "Polygon",

@@ -64,6 +64,7 @@ class IdentifyViewer extends React.Component {
         resultsChanged: PropTypes.func,
         setActiveLayerInfo: PropTypes.func,
         setCurrentTask: PropTypes.func,
+        showAttributeTableLink: PropTypes.bool,
         showHighlight: PropTypes.bool,
         showLayerSelector: PropTypes.bool,
         showLayerTitles: PropTypes.bool,
@@ -78,6 +79,7 @@ class IdentifyViewer extends React.Component {
         resultDisplayMode: 'flat',
         resultGridSize: 200,
         resultMultiDisplay: false,
+        showAttributeTableLink: true,
         showLayerTitles: true,
         showLayerSelector: true,
         showHighlight: true,
@@ -711,6 +713,12 @@ class IdentifyViewer extends React.Component {
         const exporters = Object.fromEntries(this.getExporters().map(exporter => ([exporter.id, exporter])));
         const enabledExporters = Array.isArray(this.props.enableExport) ? this.props.enableExport.filter(id => id in exporters) : Object.keys(exporters);
         const clipboardExportDisabled = exporters[this.state.exportFormat]?.allowClipboard !== true;
+        const [layerUrl, layerName] = this.state.selectedLayer.split('#');
+        const match = LayerUtils.searchLayer(this.props.layers, 'url', layerUrl, 'name', layerName);
+        const haveAttributeTable = (
+            this.props.showAttributeTableLink && ConfigUtils.havePlugin("AttributeTable") &&
+            match && this.props.editConfigs[match.layer.wms_name]?.[match.sublayer.name]
+        );
         return (
             <div className="identify-settings-menu">
                 <table>
@@ -720,7 +728,7 @@ class IdentifyViewer extends React.Component {
                                 <td>{LocaleUtils.tr("identify.results")}:</td>
                                 <td>
                                     <div className="controlgroup">
-                                        <select className="controlgroup-expanditem" onChange={ev => this.setSelectedLayer(ev.target.value)}>
+                                        <select className="controlgroup-expanditem" onChange={ev => this.setSelectedLayer(ev.target.value)} value={this.state.selectedLayer}>
                                             <option value=''>{LocaleUtils.tr("identify.layerall")}</option>
                                             {Object.keys(this.props.identifyResults).filter(key => this.props.identifyResults[key].length).map(
                                                 layer => (
@@ -729,6 +737,11 @@ class IdentifyViewer extends React.Component {
                                                     </option>
                                                 ))}
                                         </select>
+                                        {haveAttributeTable ? (
+                                            <button className="button" onClick={() => this.openResultsInAttributeTable(match)} title={LocaleUtils.tr("common.openinattributetable")} type="button">
+                                                <Icon icon="editing" />
+                                            </button>
+                                        ) : null}
                                     </div>
                                 </td>
                             </tr>
@@ -972,6 +985,16 @@ class IdentifyViewer extends React.Component {
                 this.props.changeLayerProperty(match.layer.id, "visibility", true, match.path);
             }
         });
+    };
+    openResultsInAttributeTable = (match) => {
+        const editLayerId = `${match.layer.wms_name}#${match.sublayer.name}`;
+        const results = this.props.identifyResults[this.state.selectedLayer];
+        const selection = [
+            match.sublayer.primary_key,
+            'IN',
+            results.map(result => result.id)
+        ];
+        this.props.setCurrentTask("AttributeTable", null, null, {layer: editLayerId, selection});
     };
 }
 

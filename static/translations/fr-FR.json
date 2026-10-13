@@ -150,6 +150,7 @@
       "lock2dview": "Déplacer avec vue 2D",
       "mode": "Mode",
       "noresults": "Pas de résultats",
+      "openinattributetable": "Ouvrir dans la table d'attributes",
       "pick": "Choisir",
       "point": "Point",
       "polygon": "Polygone",
@@ -519,8 +520,8 @@
       "prev": "Page précédente"
     },
     "navhistory": {
-      "back" : "Vue précédente",
-      "forward" : "Vue suivante"
+      "back": "Vue précédente",
+      "forward": "Vue suivante"
     },
     "newspopup": {
       "dontshowagain": "Ne plus montrer",

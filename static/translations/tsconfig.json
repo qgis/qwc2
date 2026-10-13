@@ -176,6 +176,7 @@
     "common.lock2dview",
     "common.mode",
     "common.noresults",
+    "common.openinattributetable",
     "common.pick",
     "common.point",
     "common.polygon",
