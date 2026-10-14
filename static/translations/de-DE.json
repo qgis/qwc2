@@ -399,7 +399,7 @@
       "showallayers": "Alle Ebenen einblenden",
       "togglegroup": "Inklusive aller Kinder an-/abhaken",
       "transparency": "Transparenz",
-      "visiblefilter": "Unsichtbare Ebenen ausblenden",
+      "visiblefilter": "Deaktivierte Ebenen ausblenden",
       "zoomoscale": "Auf Layer-Maßstab zoomen",
       "zoomtolayer": "Auf den Layer zoomen"
     },
