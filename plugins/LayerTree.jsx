@@ -22,7 +22,7 @@ import {setCurrentTask} from '../actions/task';
 import Icon from '../components/Icon';
 import ImportLayer from '../components/ImportLayer';
 import LayerInfoWindow from '../components/LayerInfoWindow';
-import ResizeableWindow from '../components/ResizeableWindow';
+import LegendPrintWindow from '../components/LegendPrintWindow';
 import ServiceInfoWindow from '../components/ServiceInfoWindow';
 import SideBar from '../components/SideBar';
 import PopupMenu from '../components/widgets/PopupMenu';
@@ -668,7 +668,16 @@ class LayerTree extends React.Component {
                     })}
                 </SideBar>
                 {legendTooltip}
-                {this.renderLegendPrintWindow()}
+                {this.state.legendPrintVisible ? (
+                    <LegendPrintWindow
+                        addGroupTitles
+                        bboxDependentLegend={this.props.bboxDependentLegend}
+                        extraLegendParameters={this.props.extraLegendParameters}
+                        onClose={() => this.setState({legendPrintVisible: false})}
+                        scaleDependentLegend={this.props.scaleDependentLegend}
+                        visibleOnly
+                    />
+                ) : null}
                 <LayerInfoWindow bboxDependentLegend={this.props.bboxDependentLegend} extraLegendParameters={this.props.extraLegendParameters} layerInfoGeometry={this.props.layerInfoGeometry} scaleDependentLegend={this.props.scaleDependentLegend} />
                 {this.state.serviceInfoVisible &&
                     <ServiceInfoWindow layerInfoGeometry={this.props.layerInfoGeometry}
@@ -760,55 +769,6 @@ class LayerTree extends React.Component {
             </span>
         );
     };
-    renderLegendPrintWindow = () => {
-        if (!this.state.legendPrintVisible) {
-            return null;
-        }
-        const setLegendPrintContents = (el) => {
-            if (!el) {
-                return;
-            }
-            el.addEventListener('load', () => {
-                const container = el.contentWindow.document.getElementById("legendcontainer");
-                if (container) {
-                    let body = '<p id="legendcontainerbody">';
-                    body += this.props.layers.map(layer => {
-                        if (!layer.visibility) {
-                            return "";
-                        } else if (layer.legendUrl) {
-                            return this.printLayerLegend(layer, layer);
-                        } else if (layer.color) {
-                            return '<div class="legend-entry"><span style="display: inline-block; width: 1em; height: 1em; box-shadow: inset 0 0 0 1000px ' + layer.color + '; margin: 0.25em; border: 1px solid black;">&nbsp;</span>' + (layer.title || layer.name) + '</div>';
-                        } else {
-                            return "";
-                        }
-                    }).join("");
-                    body += "</p>";
-                    container.innerHTML = body;
-                } else {
-                    this.legendPrintWindow.document.body.innerHTML = "Broken template. An element with id=legendcontainer must exist.";
-                }
-            });
-        };
-        const printLegend = (ev) => {
-            ev.target.parentElement.parentElement.getElementsByTagName('iframe')[0].contentWindow.print();
-        };
-
-        return (
-            <ResizeableWindow icon="print" initialHeight={0.75 * window.innerHeight}
-                initialWidth={0.5 * window.innerWidth}
-                onClose={() => this.setState({legendPrintVisible: false})}
-                title={LocaleUtils.tr("layertree.printlegend")}
-            >
-                <div className="layertree-legend-print-body">
-                    <iframe ref={setLegendPrintContents} src={MiscUtils.resolveAssetsPath(this.props.templatePath)} />
-                    <div className="layertree-legend-print-body-buttonbar">
-                        <button onClick={printLegend}>{LocaleUtils.tr("layertree.printlegend")}</button>
-                    </div>
-                </div>
-            </ResizeableWindow>
-        );
-    };
     legendTooltipLoaded = (ev) => {
         if (ev.target.naturalWidth > 1) {
             ev.target.style.visibility = 'visible';
@@ -885,25 +845,6 @@ class LayerTree extends React.Component {
     };
     toggleSwipe = () => {
         this.props.setSwipe(this.props.swipe !== null ? null : 50);
-    };
-    printLayerLegend = (layer, sublayer) => {
-        let body = "";
-        if (sublayer.sublayers) {
-            if (sublayer.visibility) {
-                body = '<div class="legend-group">' +
-                       '<h3 class="legend-group-title">' + (sublayer.title || sublayer.name) + '</h3>' +
-                       '<div class="legend-group-body">' +
-                       sublayer.sublayers.map(subsublayer => this.printLayerLegend(layer, subsublayer)).join("\n") +
-                       '</div>' +
-                       '</div>';
-            }
-        } else {
-            if (sublayer.visibility && LayerUtils.layerScaleInRange(sublayer, this.props.mapScale)) {
-                const request = LayerUtils.getLegendUrl(layer, {name: sublayer.name}, this.props.map, this.props.bboxDependentLegend, this.props.scaleDependentLegend, this.props.extraLegendParameters);
-                body = request ? '<div class="legend-entry"><img src="' + request + '" style="max-width: 100%"/></div>' : "";
-            }
-        }
-        return body;
     };
     deleteAllLayers = () => {
         for (const layer of this.props.layers) {
