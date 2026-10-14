@@ -33,6 +33,7 @@ class AppMenu extends React.Component {
         buttonContents: PropTypes.object,
         buttonLabel: PropTypes.string,
         currentTaskBlocked: PropTypes.bool,
+        keepMenuOpen: PropTypes.bool,
         menuDisplayMode: PropTypes.string,
         menuIconOnly: PropTypes.bool,
         menuItems: PropTypes.array,
@@ -114,7 +115,7 @@ class AppMenu extends React.Component {
         this.setState((state) => ({menuVisible: !state.menuVisible, submenusVisible: [], filter: ""}));
     };
     checkCloseMenu = (ev) => {
-        if (this.menuEl && !this.menuEl.contains(ev.target) && this.props.menuDisplayMode === "normal") {
+        if (this.menuEl && !this.menuEl.contains(ev.target) && this.props.menuDisplayMode === "normal" && !this.props.keepMenuOpen) {
             this.toggleMenu();
             MiscUtils.killEvent(ev);
             this.killClick = true;
