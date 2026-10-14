@@ -632,10 +632,10 @@ class RedliningSupport extends React.Component {
             };
             if (firstSelection || this.selectedFeatures.length === 1) {
                 newRedliningState.style = this.styleProps(features[0]);
-                newRedliningState.measurements = !!features[0].get('measurements');
-                newRedliningState.geomType = featureObj?.shape ?? this.props.redlining.geomType;
                 const measurements = features[0].get('measurements');
-                if (measurements) {
+                newRedliningState.showmeasurements = !!measurements;
+                newRedliningState.geomType = featureObj?.shape ?? this.props.redlining.geomType;
+                if (newRedliningState.showmeasurements) {
                     newRedliningState.lenUnit = measurements.lenUnit;
                     newRedliningState.areaUnit = measurements.areaUnit;
                 }
