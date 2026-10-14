@@ -222,11 +222,7 @@ class OlMap extends React.Component {
     };
     render() {
         if (this.state.rebuildView) {
-            const overviewMap = this.map.getControls().getArray().find(control => control instanceof ol.control.OverviewMap);
             const view = this.createView(this.props.center, this.props.zoom, this.props.projection, this.props.resolutions, this.state.mapOptions.enableRotation, this.state.mapOptions.rotation);
-            if (overviewMap) {
-                overviewMap.getOverviewMap().setView(view);
-            }
             this.map.setView(view);
             // We have to force ol to drop tile and reload
             this.map.getLayers().forEach((l) => {
