@@ -10,6 +10,7 @@
 import isMobile from 'ismobilejs';
 import url from 'url';
 
+import PluginStore from './PluginStore';
 import Request from './Request';
 
 const defaultConfig = () => ({
@@ -76,7 +77,14 @@ export default {
         return config.plugins[config.isMobile ? "mobile" : "desktop"].find(entry => entry.name === name);
     },
     getPluginConfig(name) {
-        return config.plugins[config.isMobile ? "mobile" : "desktop"].find(entry => entry.name === name) || {};
+        const pluginConfig = {
+            ...config.plugins[config.isMobile ? "mobile" : "desktop"].find(entry => entry.name === name) || {}
+        };
+        pluginConfig.cfg = {
+            ...PluginStore.getDefaultProps(name),
+            ...pluginConfig.cfg
+        };
+        return pluginConfig;
     },
     setSessionConfig(name, value) {
         sessionConfig[name] = value;

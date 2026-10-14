@@ -25,5 +25,12 @@ export default {
             ...BuiltInPlugins,
             ...CustomPlugins
         };
+    },
+    getDefaultProps(plugin) {
+        const plugins = {
+            ...BuiltInPlugins,
+            ...CustomPlugins
+        };
+        return (plugins[plugin + "Plugin"]?.WrappedComponent ?? plugins[plugin + "Plugin"])?.defaultProps;
     }
 };
