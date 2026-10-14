@@ -40,6 +40,7 @@ div.ThemeList li.theme-item {
     position: relative;
     border-radius: var(--border-radius);
 }
+
 div.ThemeList div.theme-item-title {
     display: flex;
     align-items: center;
@@ -62,7 +63,7 @@ div.ThemeList div.theme-item-title > span.icon {
 div.theme-item-tooltip {
     inset: auto;
     margin: 0;
-    max-height: calc(50vh - var(--topbar-height) - var(--bottombar-height));
+    max-width: 16em;
     background-color: var(--tooltip-bg-color);
     border: 1px solid var(--tooltip-border-color);
     color: var(--tooltip-text-color);

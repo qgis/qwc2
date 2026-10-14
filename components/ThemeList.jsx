@@ -287,15 +287,25 @@ class ThemeList extends React.Component {
         const target = ev.currentTarget;
         target.tooltipTimeout = setTimeout(() => {
             if (target.isConnected) {
+                const appRect = MiscUtils.appContainer(target).getBoundingClientRect();
                 const tooltip = ev.view.document.createElement("div");
-                tooltip.innerHTML = MiscUtils.sanitizeHtml(content);
                 tooltip.className = "theme-item-tooltip";
                 tooltip.popover = "hint";
+                tooltip.innerHTML = MiscUtils.sanitizeHtml(content);
                 target.popoverTargetElement = tooltip;
                 target.appendChild(tooltip);
+                tooltip.showPopover();
+                const height = tooltip.getBoundingClientRect().height;
+                tooltip.hidePopover();
                 const rect = target.getBoundingClientRect();
                 tooltip.style.left = `${0.5 * (rect.left + rect.right)}px`;
-                tooltip.style.top = `${rect.bottom}px`;
+                if (rect.bottom + height > appRect.bottom && rect.top > window.innerHeight - rect.bottom) {
+                    tooltip.style.bottom = `${Math.round(window.innerHeight - rect.top)}px`;
+                    tooltip.style.maxHeight = `${rect.top}px`;
+                } else {
+                    tooltip.style.top = `${Math.round(rect.bottom)}px`;
+                    tooltip.style.maxHeight = `${window.innerHeight - rect.bottom}px`;
+                }
                 tooltip.showPopover();
             }
             target.tooltipTimeout = null;
