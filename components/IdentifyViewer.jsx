@@ -412,7 +412,7 @@ class IdentifyViewer extends React.Component {
                     );
                 });
             }
-            rows.push(...this.computeExtraAttributes(layerid, feature));
+            this.computeExtraAttributes(layerid, feature, rows);
             featureReports.forEach((report, idx) => {
                 rows.push(
                     <tr key={"__featurereport" + idx}>
@@ -434,11 +434,11 @@ class IdentifyViewer extends React.Component {
                 </div>
             );
         }
-        if (!inlineExtaAttribs && !isEmpty(this.state.reports[layerid])) {
+        if (!inlineExtaAttribs || !isEmpty(this.state.reports[layerid])) {
             extraattribs = (
                 <div className="identify-result-box">
                     <table className="attribute-list"><tbody>
-                        {this.computeExtraAttributes(layerid, feature)}
+                        {this.computeExtraAttributes(layerid, feature, [])}
                         {featureReports.map((report, idx) => (
                             <tr key={"report" + idx}>
                                 <td className={"identify-attr-title " + this.props.longAttributesDisplay}>
@@ -817,19 +817,19 @@ class IdentifyViewer extends React.Component {
             };
         });
     };
-    computeExtraAttributes = (layer, result) => {
-        const rows = [];
-        Object.values(window.qwc2?.__attributeCalculators || {}).forEach((calc, idx) => {
-            const row = calc(layer, result);
+    computeExtraAttributes = (layer, result, rows) => {
+        Object.values(window.qwc2?.__attributeCalculators || {}).forEach((entry, idx) => {
+            const row = entry.calc(layer, result);
+            const addFunc = entry.before ? x => rows.unshift(x) : x => rows.push(x);
             if (row.length === 2) {
-                rows.push((
+                addFunc((
                     <tr key={"custom-attr-" + idx}>
                         <td className="identify-attr-title"><i>{row[0]}</i></td>
                         <td className="identify-attr-value">{row[1]}</td>
                     </tr>
                 ));
             } else if (row.length === 1) {
-                rows.push((
+                addFunc((
                     <tr key={"custom-attr-" + idx}>
                         <td colSpan="2">{row[0]}</td>
                     </tr>

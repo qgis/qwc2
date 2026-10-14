@@ -244,13 +244,14 @@ Remove custom plugin
 
 * `name`: The identifier
 
-**addIdentifyAttributeCalculator(name,calcFunc)**
+**addIdentifyAttributeCalculator(name,calcFunc,before)**
 
 Add custom attribute calculator
 (i.e. computed attributes which are added to GetFeatureInfo responses).
 
 * `name`: An identifier
 * `calcFunc`: The calculator function with signature `function(layer, feature)`
+* `before`: Whether to add these computed attributes before the GetFeatureInfo response attributes.
 
 The `calcFunc` should return either a two-enty `[name, value]` pair or a one-value `[value]` array.
 

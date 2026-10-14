@@ -502,11 +502,12 @@ class API extends React.Component {
      *
      * * `name`: An identifier
      * * `calcFunc`: The calculator function with signature `function(layer, feature)`
+     * * `before`: Whether to add these computed attributes before the GetFeatureInfo response attributes.
      *
      * The `calcFunc` should return either a two-enty `[name, value]` pair or a one-value `[value]` array.
      */
-    addIdentifyAttributeCalculator = (name, calcFunc) => {
-        window.qwc2.__attributeCalculators[name] = calcFunc;
+    addIdentifyAttributeCalculator = (name, calcFunc, before = false) => {
+        window.qwc2.__attributeCalculators[name] = {calc: calcFunc, before: before};
     };
     /**
      * Remove custom identify attribute calculator
