@@ -13,6 +13,7 @@ import isEmpty from 'lodash.isempty';
 import PropTypes from 'prop-types';
 
 import {setCurrentTask} from '../actions/task';
+import LegendPrintWindow from '../components/LegendPrintWindow';
 import ResizeableWindow from '../components/ResizeableWindow';
 import {Image} from '../components/widgets/Primitives';
 import LayerUtils from '../utils/LayerUtils';
@@ -82,7 +83,8 @@ class MapLegend extends React.Component {
         onlyVisibleLegend: false,
         bboxDependentLegend: false,
         scaleDependentLegend: false,
-        visible: false
+        visible: false,
+        legendPrintVisible: false
     };
     constructor(props) {
         super(props);
@@ -107,16 +109,17 @@ class MapLegend extends React.Component {
             return null;
         }
         const extraControls = [
+            {icon: "print", callback: () => this.setState(state => ({legendPrintVisible: !state.legendPrintVisible})), actie: this.state.legendPrintVisible, title: LocaleUtils.tr("layertree.printlegend")},
             {icon: "eye", callback: () => this.setState((state) => ({onlyVisibleLegend: !state.onlyVisibleLegend})), active: this.state.onlyVisibleLegend, title: LocaleUtils.tr("maplegend.onlyvisible")},
             {icon: "box", callback: () => this.setState((state) => ({bboxDependentLegend: !state.bboxDependentLegend})), active: this.state.bboxDependentLegend, title: LocaleUtils.tr("maplegend.bboxdependent")},
             {icon: "scale", callback: () => this.setState((state) => ({scaleDependentLegend: !state.scaleDependentLegend})), active: this.state.scaleDependentLegend, title: LocaleUtils.tr("maplegend.scaledependent")}
         ];
 
-        return (
+        return [(
             <ResizeableWindow dockable={this.props.lockedWindow ? false : this.props.geometry.side} extraControls={extraControls}
                 icon="list-alt" initialHeight={this.props.geometry.initialHeight} initialWidth={this.props.geometry.initialWidth}
                 initialX={this.props.geometry.initialX} initialY={this.props.geometry.initialY}
-                initiallyDocked={this.props.geometry.initiallyDocked} maximizeable={false}
+                initiallyDocked={this.props.geometry.initiallyDocked} key="Legend" maximizeable={false}
                 onClose={this.props.lockedWindow ? null : this.onClose} title={LocaleUtils.tr("maplegend.windowtitle")}
             >
                 <div className="map-legend">
@@ -138,7 +141,20 @@ class MapLegend extends React.Component {
                     })}
                 </div>
             </ResizeableWindow>
-        );
+        ),
+        this.state.legendPrintVisible ? (
+            <LegendPrintWindow
+                addGroupTitles={this.props.addGroupTitles}
+                addLayerTitles={this.props.addLayerTitles}
+                bboxDependentLegend={this.state.bboxDependentLegend}
+                excludeLayers={this.props.excludeLayers}
+                extraLegendParameters={this.props.extraLegendParameters}
+                key="LegendPrint"
+                onClose={() => this.setState({legendPrintVisible: false})}
+                scaleDependentLegend={this.state.scaleDependentLegend}
+                visibleOnly={this.state.onlyVisibleLegend}
+            />
+        ) : null];
     }
     onClose = () => {
         this.setState({visible: false});
