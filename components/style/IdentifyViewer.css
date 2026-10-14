@@ -63,6 +63,7 @@ div.identify-body div.identify-result-tree-frame {
     display: flex;
     flex-direction: column;
     border: 1px solid var(--border-color);
+    background-color: var(--list-bg-color);
 }
 
 div.identify-body div.identify-result-frame {
