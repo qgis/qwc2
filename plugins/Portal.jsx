@@ -42,6 +42,7 @@ class Portal extends React.Component {
         currentTheme: PropTypes.object,
         /** Whether to expand theme groups by default. */
         expandGroups: PropTypes.bool,
+        /** Whether to keep menu open. */
         keepMenuOpen: PropTypes.bool,
         /** Name of a logo image below assets/img. */
         logo: PropTypes.string,

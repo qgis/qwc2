@@ -1025,6 +1025,7 @@ Displays a landing lage, consisting of a full-screen theme switcher and a config
 | bottomBarLinks | `[{`<br />`  href: string,`<br />`  label: string,`<br />`  labelmsgid: string,`<br />`  target: string,`<br />`}]` | Links to show in the portal bottom bar | `undefined` |
 | collapsibleGroups | `bool` | Whether to allow collapsing groups in the theme switcher. | `undefined` |
 | expandGroups | `bool` | Whether to expand theme groups by default. | `undefined` |
+| keepMenuOpen | `bool` | Whether to keep menu open. | `undefined` |
 | logo | `string` | Name of a logo image below assets/img. | `undefined` |
 | menuItems | `array` | Portal menu items, in the same format as the TopBar menu items. | `[]` |
 | showCloseButton | `bool` | Whether to show a button to close the portal without selecting a theme. | `true` |
