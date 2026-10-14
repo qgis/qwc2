@@ -200,7 +200,7 @@ class Redlining extends React.Component {
                 toolEnabled("Square") ? {key: "Square", tooltip: LocaleUtils.tr("common.square"), icon: "box", data: {action: "Draw", geomType: "Square", text: ""}} : null,
                 toolEnabled("Box") ? {key: "Box", tooltip: LocaleUtils.tr("common.rectangle"), icon: "rect", data: {action: "Draw", geomType: "Box", text: ""}} : null
             ].filter(Boolean),
-            {key: "Text", tooltip: LocaleUtils.tr("common.text"), icon: "text", data: {action: "Draw", geomType: "Text", text: "", measurements: false}}
+            {key: "Text", tooltip: LocaleUtils.tr("common.text"), icon: "text", data: {action: "Draw", geomType: "Text", text: "", showmeasurements: false}}
         ];
         if (ConfigUtils.isMobile()) {
             drawButtons = [drawButtons.flat()];
