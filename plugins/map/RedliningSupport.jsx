@@ -76,7 +76,7 @@ class RedliningSupport extends React.Component {
                 text: feature.getProperties().label || "",
                 rotation: feature.getProperties().rotation || 0,
                 scale: opts.strokeWidth,
-                fill: new ol.style.Fill({color: opts.textFillColor}),
+                fill: new ol.style.Fill({color: opts.fillColor}),
                 stroke: new ol.style.Stroke({color: [0, 0, 0, 0.25], width: 4})
             })
         });
