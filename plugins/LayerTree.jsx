@@ -187,12 +187,6 @@ class LayerTree extends React.Component {
     constructor(props) {
         super(props);
         this.visibilityButton = null;
-        this.legendPrintWindow = null;
-        window.addEventListener('beforeunload', () => {
-            if (this.legendPrintWindow && !this.legendPrintWindow.closed) {
-                this.legendPrintWindow.close();
-            }
-        });
     }
     componentDidUpdate(prevProps) {
         if (this.props.theme.mapTips !== undefined && this.props.theme.mapTips !== prevProps.theme.mapTips) {
