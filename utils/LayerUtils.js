@@ -1117,6 +1117,10 @@ const LayerUtils = {
         return newlayer;
     },
     propagateLayerProperty(newlayer, property, value, path = null) {
+        // Only apply expanded to groups
+        if (property === "expanded" && !newlayer.sublayers) {
+            return;
+        }
         Object.assign(newlayer, {[property]: value});
         // Don't propagate visibility for mutually exclusive groups
         if (newlayer.sublayers && !(property === "visibility" && newlayer.mutuallyExclusive)) {

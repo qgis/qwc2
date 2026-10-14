@@ -714,6 +714,16 @@ class LayerTree extends React.Component {
                 </div>
             );
         }
+        menuEntries.push(
+            <div key="collapseall" onClick={() => this.expandCollapseTree(false)}>
+                <Icon icon="tree_minus" /> {LocaleUtils.tr("common.collapseall")}
+            </div>
+        );
+        menuEntries.push(
+            <div key="expandall" onClick={() => this.expandCollapseTree(true)}>
+                <Icon icon="tree_plus" /> {LocaleUtils.tr("common.expandall")}
+            </div>
+        );
         let needsep = menuEntries.length > 0;
         Object.entries(this.state.visibilityPresets || {}).forEach(([name, preset], idx) => {
             menuEntries.push(
@@ -862,6 +872,13 @@ class LayerTree extends React.Component {
         for (const layer of this.props.layers) {
             if (layer.role === LayerRole.THEME || layer.role === LayerRole.USERLAYER) {
                 this.props.changeLayerProperty(layer.id, "visibility", visible, [], this.props.groupTogglesSublayers ? "children" : null);
+            }
+        }
+    };
+    expandCollapseTree = (expanded) => {
+        for (const layer of this.props.layers) {
+            if (layer.role === LayerRole.THEME || layer.role === LayerRole.USERLAYER) {
+                this.props.changeLayerProperty(layer.id, "expanded", expanded, [], "children");
             }
         }
     };
