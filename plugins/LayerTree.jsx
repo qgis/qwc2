@@ -47,6 +47,8 @@ import './style/LayerTree.css';
  */
 class LayerTree extends React.Component {
     static propTypes = {
+        /** Whether to add imported layers behind the existing tree layers. */
+        addImportedLayersBehind: PropTypes.func,
         addLayerSeparator: PropTypes.func,
         /** Whether to enable the compare function. Requires the `MapCompare` plugin. */
         allowCompare: PropTypes.bool,

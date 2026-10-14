@@ -744,6 +744,7 @@ with containing a container element with id=legendcontainer.
 
 | Property | Type | Description | Default value |
 |----------|------|-------------|---------------|
+| addImportedLayersBehind | `func` | Whether to add imported layers behind the existing tree layers. | `undefined` |
 | allowCompare | `bool` | Whether to enable the compare function. Requires the `MapCompare` plugin. | `true` |
 | allowImport | `bool` | Whether to allow importing external layers. | `true` |
 | allowLayerTreeSeparators | `bool` | Whether to allow adding separator entries in the layer tree, useful for organizing the tree. | `undefined` |

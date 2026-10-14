@@ -7,6 +7,7 @@ import PropTypes from 'prop-types';
 
 import {addLayer, removeLayer, replacePlaceholderLayer, LayerRole} from '../../actions/layers';
 import {openExternalUrl, NotificationType, showNotification, closeWindow} from '../../actions/windows';
+import ConfigUtils from '../../utils/ConfigUtils';
 import LayerUtils from '../../utils/LayerUtils';
 import LocaleUtils from '../../utils/LocaleUtils';
 import MiscUtils from '../../utils/MiscUtils';
@@ -242,7 +243,7 @@ class LayerCatalogWidget extends React.PureComponent {
                 title: entry.title ?? resource.name,
                 role: LayerRole.USERLAYER,
                 loading: true
-            });
+            }, this.insertPos());
             ServiceLayerUtils.findLayers(resource.type, resource.url, [resource], this.props.mapCrs, (id, layer) => {
                 if (layer) {
                     if (!asGroup) {
@@ -280,10 +281,18 @@ class LayerCatalogWidget extends React.PureComponent {
             });
         } else if (entry.type === "wms" || entry.type === "wfs" || entry.type === "wmts") {
             if (asGroup) {
-                this.props.addLayer(entry);
+                this.props.addLayer(entry, this.insertPos());
             } else {
-                this.props.addLayer({...entry, sublayers: null});
+                this.props.addLayer({...entry, sublayers: null}, this.insertPos());
             }
+        }
+    };
+    insertPos = () => {
+        const addImportedLayersBehind = ConfigUtils.getPluginConfig("LayerTree").cfg.addImportedLayersBehind;
+        if (addImportedLayersBehind) {
+            return this.props.layers.findIndex(l => l.role === LayerRole.BACKGROUND);
+        } else {
+            return null;
         }
     };
     openUrl = (ev, url, target, title) => {
