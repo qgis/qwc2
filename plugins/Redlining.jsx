@@ -187,20 +187,20 @@ class Redlining extends React.Component {
         }
         let drawButtons = [
             [
-                {key: "Point", tooltip: LocaleUtils.tr("common.point"), icon: "point", data: {action: "Draw", geomType: "Point", text: "", style: {pointShape: "circle"}}},
-                toolEnabled("PointSquare") ? {key: "PointSquare", tooltip: LocaleUtils.tr("common.square"), icon: "square", data: {action: "Draw", geomType: "Point", text: "", style: {pointShape: "square"}}} : null,
-                toolEnabled("PointStar") ? {key: "PointStar", tooltip: LocaleUtils.tr("common.star"), icon: "star", data: {action: "Draw", geomType: "Point", text: "", style: {pointShape: "star"}}} : null,
-                toolEnabled("PointTriangle") ? {key: "PointTriangle", tooltip: LocaleUtils.tr("common.triangle"), icon: "triangle", data: {action: "Draw", geomType: "Point", text: "", style: {pointShape: "triangle"}}} : null
+                {key: "Point", tooltip: LocaleUtils.tr("common.point"), icon: "point", data: {action: "Draw", geomType: "Point", style: {pointShape: "circle"}}},
+                toolEnabled("PointSquare") ? {key: "PointSquare", tooltip: LocaleUtils.tr("common.square"), icon: "square", data: {action: "Draw", geomType: "Point", style: {pointShape: "square"}}} : null,
+                toolEnabled("PointStar") ? {key: "PointStar", tooltip: LocaleUtils.tr("common.star"), icon: "star", data: {action: "Draw", geomType: "Point", style: {pointShape: "star"}}} : null,
+                toolEnabled("PointTriangle") ? {key: "PointTriangle", tooltip: LocaleUtils.tr("common.triangle"), icon: "triangle", data: {action: "Draw", geomType: "Point", style: {pointShape: "triangle"}}} : null
             ].filter(Boolean),
-            {key: "LineString", tooltip: LocaleUtils.tr("common.line"), icon: "line", data: {action: "Draw", geomType: "LineString", text: ""}},
+            {key: "LineString", tooltip: LocaleUtils.tr("common.line"), icon: "line", data: {action: "Draw", geomType: "LineString"}},
             [
-                {key: "Polygon", tooltip: LocaleUtils.tr("common.polygon"), icon: "polygon", data: {action: "Draw", geomType: "Polygon", text: ""}},
-                toolEnabled("Circle") ? {key: "Circle", tooltip: LocaleUtils.tr("common.circle"), icon: "circle", data: {action: "Draw", geomType: "Circle", text: ""}} : null,
-                toolEnabled("Ellipse") ? {key: "Ellipse", tooltip: LocaleUtils.tr("common.ellipse"), icon: "ellipse", data: {action: "Draw", geomType: "Ellipse", text: ""}} : null,
-                toolEnabled("Square") ? {key: "Square", tooltip: LocaleUtils.tr("common.square"), icon: "box", data: {action: "Draw", geomType: "Square", text: ""}} : null,
-                toolEnabled("Box") ? {key: "Box", tooltip: LocaleUtils.tr("common.rectangle"), icon: "rect", data: {action: "Draw", geomType: "Box", text: ""}} : null
+                {key: "Polygon", tooltip: LocaleUtils.tr("common.polygon"), icon: "polygon", data: {action: "Draw", geomType: "Polygon"}},
+                toolEnabled("Circle") ? {key: "Circle", tooltip: LocaleUtils.tr("common.circle"), icon: "circle", data: {action: "Draw", geomType: "Circle"}} : null,
+                toolEnabled("Ellipse") ? {key: "Ellipse", tooltip: LocaleUtils.tr("common.ellipse"), icon: "ellipse", data: {action: "Draw", geomType: "Ellipse"}} : null,
+                toolEnabled("Square") ? {key: "Square", tooltip: LocaleUtils.tr("common.square"), icon: "box", data: {action: "Draw", geomType: "Square"}} : null,
+                toolEnabled("Box") ? {key: "Box", tooltip: LocaleUtils.tr("common.rectangle"), icon: "rect", data: {action: "Draw", geomType: "Box"}} : null
             ].filter(Boolean),
-            {key: "Text", tooltip: LocaleUtils.tr("common.text"), icon: "text", data: {action: "Draw", geomType: "Text", text: "", showmeasurements: false}}
+            {key: "Text", tooltip: LocaleUtils.tr("common.text"), icon: "text", data: {action: "Draw", geomType: "Text", showmeasurements: false}}
         ];
         if (ConfigUtils.isMobile()) {
             drawButtons = [drawButtons.flat()];
@@ -208,12 +208,12 @@ class Redlining extends React.Component {
         const activeFreeHand = this.props.redlining.freehand ? "HandDrawing" : null;
         const freehandButtons = toolEnabled("HandWriting") ? [{
             key: "HandDrawing", tooltip: LocaleUtils.tr("redlining.freehand"), icon: "freehand",
-            data: {action: "Draw", geomType: this.props.redlining.geomType, text: "", freehand: !this.props.redlining.freehand},
+            data: {action: "Draw", geomType: this.props.redlining.geomType, freehand: !this.props.redlining.freehand},
             disabled: (this.props.redlining.geomType !== "LineString" && this.props.redlining.geomType !== "Polygon")
         }] : [];
         const editButtons = [
-            {key: "Pick", tooltip: LocaleUtils.tr("common.pick"), icon: "nodetool", data: {action: "Pick", geomType: null, text: ""}},
-            toolEnabled("Transform") ? {key: "Transform", tooltip: LocaleUtils.tr("redlining.transform"), icon: "transformtool", data: {action: "Transform", geomType: null, text: ""}} : null,
+            {key: "Pick", tooltip: LocaleUtils.tr("common.pick"), icon: "nodetool", data: {action: "Pick", geomType: null}},
+            toolEnabled("Transform") ? {key: "Transform", tooltip: LocaleUtils.tr("redlining.transform"), icon: "transformtool", data: {action: "Transform", geomType: null}} : null,
             toolEnabled("Clone") ? {key: "Clone", tooltip: LocaleUtils.tr("common.clone"), icon: "clone", data: {action: "Clone", geomType: null}, disabled: !this.props.redlining.selectedFeature} : null,
             {key: "Delete", tooltip: LocaleUtils.tr("common.delete"), icon: "trash", data: {action: "Delete", geomType: null}, disabled: !this.props.redlining.selectedFeature}
         ].filter(Boolean);
@@ -394,7 +394,7 @@ class Redlining extends React.Component {
                     <div className={"controlgroup" + (this.props.redlining.showmeasurements ? " redlining-control-fill" : "")}>
                         {this.props.redlining.geomType !== 'Text' && this.props.allowGeometryLabels ? (
                             <MeasureSwitcher
-                                changeMeasureState={(diff) => this.props.changeRedliningState({...diff, text: ''})}
+                                changeMeasureState={(diff) => this.props.changeRedliningState({...diff, style: {text: ''}})}
                                 geomType={this.props.redlining.geomType}
                                 measureState={this.props.redlining}
                             />
@@ -425,13 +425,8 @@ class Redlining extends React.Component {
         }
     };
     actionChanged = (data) => {
-        if (data.action === "Draw" && data.geomType === "Text") {
-            data = {...data, style: {...data.style, text: LocaleUtils.tr("common.text")}};
-        } else if (!this.props.allowGeometryLabels || this.props.redlining.geomType === "Text" && data.action === "Draw" && data.geomType !== "Text") {
-            // Merge, so the style carried by the button (the point shape) is not dropped
-            data = {...data, style: {...data.style, text: ''}};
-        }
-        this.props.changeRedliningState(data);
+        const text = (data.action === "Draw" && data.geomType === "Text") ? LocaleUtils.tr("common.text") : "";
+        this.props.changeRedliningState({...data, style: {...this.props.redlining.style, ...data.style, text: text}});
     };
     changeRedliningLayer = (layer) => {
         const action = ["Draw", "Pick", "Transform"].includes(this.props.redlining.action) ? this.props.redlining.action : "Pick";
