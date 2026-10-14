@@ -94,7 +94,7 @@ class LayerTree extends React.Component {
         layers: PropTypes.array,
         loadingLayers: PropTypes.array,
         map: PropTypes.object,
-        mapScale: PropTypes.number,
+
         mapTipsEnabled: PropTypes.bool,
         mobile: PropTypes.bool,
         /** Whether to only display layer groups but not individual layers in layertree. */
@@ -348,7 +348,7 @@ class LayerTree extends React.Component {
             "layertree-item": true,
             "layertree-item-disabled": layer.type !== "separator" && ((!this.props.groupTogglesSublayers && !enabled) || (this.props.grayUnchecked && !sublayer.visibility)),
             "layertree-item-separator": layer.type === "separator",
-            "layertree-item-outsidescalerange": (sublayer.minScale !== undefined && this.props.mapScale < sublayer.minScale) || (sublayer.maxScale !== undefined && this.props.mapScale > sublayer.maxScale)
+            "layertree-item-outsidescalerange": (sublayer.minScale !== undefined && this.props.map.scale < sublayer.minScale) || (sublayer.maxScale !== undefined && this.props.map.scale > sublayer.maxScale)
         };
         let infoButton = null;
         if (layer.type === "wms" || layer.type === "wfs" || layer.type === "wmts") {
@@ -356,7 +356,7 @@ class LayerTree extends React.Component {
         }
         let legendicon = null;
         if (this.props.showLegendIcons) {
-            const legendUrl = LayerUtils.getLegendUrl(layer, sublayer, this.props.mapScale, this.props.map, this.props.bboxDependentLegend, this.props.scaleDependentLegend, this.props.extraLegendParameters);
+            const legendUrl = LayerUtils.getLegendUrl(layer, sublayer, this.props.map, this.props.bboxDependentLegend, this.props.scaleDependentLegend, this.props.extraLegendParameters);
             if (legendUrl) {
                 legendicon = (<Image className="layertree-item-legend-thumbnail" onMouseOut={this.hideLegendTooltip} onMouseOver={ev => this.showLegendTooltip(ev, legendUrl)} onTouchStart={ev => this.showLegendTooltip(ev, legendUrl)} src={legendUrl + "&TYPE=thumbnail"} />);
             } else if (layer.color) {
@@ -438,11 +438,11 @@ class LayerTree extends React.Component {
                 }
                 this.props.zoomToPoint(center, zoom, this.props.map.projection);
             };
-            if (sublayer.maxScale !== undefined && this.props.mapScale >= sublayer.maxScale) {
+            if (sublayer.maxScale !== undefined && this.props.map.scale >= sublayer.maxScale) {
                 zoomToScaleButton = (
                     <Icon icon="zoom_scale" onClick={() => zoomToScale(sublayer.maxScale - 1, Math.ceil)} title={LocaleUtils.tr("layertree.zoomoscale")} />
                 );
-            } else if (sublayer.minScale !== undefined && this.props.mapScale <= sublayer.minScale) {
+            } else if (sublayer.minScale !== undefined && this.props.map.scale <= sublayer.minScale) {
                 zoomToScaleButton = (
                     <Icon icon="zoom_scale" onClick={() => zoomToScale(sublayer.minScale + 1, Math.floor)} title={LocaleUtils.tr("layertree.zoomoscale")} />
                 );
@@ -903,7 +903,7 @@ class LayerTree extends React.Component {
             }
         } else {
             if (sublayer.visibility && LayerUtils.layerScaleInRange(sublayer, this.props.mapScale)) {
-                const request = LayerUtils.getLegendUrl(layer, {name: sublayer.name}, this.props.mapScale, this.props.map, this.props.bboxDependentLegend, this.props.scaleDependentLegend, this.props.extraLegendParameters);
+                const request = LayerUtils.getLegendUrl(layer, {name: sublayer.name}, this.props.map, this.props.bboxDependentLegend, this.props.scaleDependentLegend, this.props.extraLegendParameters);
                 body = request ? '<div class="legend-entry"><img src="' + request + '" style="max-width: 100%"/></div>' : "";
             }
         }
@@ -965,7 +965,6 @@ const selector = (state) => ({
     filter: state.layers.filter,
     loadingLayers: state.layers.loading,
     map: state.map,
-    mapScale: MapUtils.computeForZoom(state.map.scales, state.map.zoom),
     swipe: state.layers.swipe,
     theme: state.theme.current || {},
     mapTipsEnabled: state.map.maptips,

@@ -17,7 +17,6 @@ import ResizeableWindow from '../components/ResizeableWindow';
 import Spinner from '../components/widgets/Spinner';
 import CoordinatesUtils from '../utils/CoordinatesUtils';
 import LocaleUtils from '../utils/LocaleUtils';
-import MapUtils from '../utils/MapUtils';
 import ResourceRegistry from '../utils/ResourceRegistry';
 
 import './style/Cyclomedia.css';
@@ -547,7 +546,7 @@ export default connect((state) => ({
     active: state.task.id === "Cyclomedia",
     click: state.map.click,
     mapCrs: state.map.projection,
-    mapScale: MapUtils.computeForZoom(state.map.scales, state.map.zoom),
+    mapScale: state.map.scale,
     theme: state.theme.current,
     userInfos: state.localConfig.user_infos
 }), {

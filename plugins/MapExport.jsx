@@ -300,7 +300,7 @@ class MapExport extends React.Component {
         );
     }
     onShow = () => {
-        let scale = Math.round(MapUtils.computeForZoom(this.props.map.scales, this.props.map.zoom) * this.props.defaultScaleFactor);
+        let scale = Math.round(this.props.map.scale * this.props.defaultScaleFactor);
         if (!isEmpty(this.props.allowedScales)) {
             let closestVal = Math.abs(scale - this.props.allowedScales[0]);
             let closestIdx = 0;
@@ -355,7 +355,7 @@ class MapExport extends React.Component {
 
         const format = this.state.selectedFormat.split(";")[0];
         const formatConfiguration = (this.props.formatConfiguration?.[format] || []).find(entry => entry.name === this.state.selectedFormatConfiguration);
-        const mapScale = Math.round(MapUtils.computeForZoom(this.props.map.scales, this.props.map.zoom));
+        const mapScale = this.props.map.scale;
 
         const version = this.props.theme.version;
         const crs = this.state.exportProjection;

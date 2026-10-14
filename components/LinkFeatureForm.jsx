@@ -15,7 +15,6 @@ import {setEditContext} from '../actions/editing';
 import {LayerRole, addLayerFeatures, removeLayer} from '../actions/layers';
 import {getFeatureTemplate} from '../utils/EditingUtils';
 import LocaleUtils from '../utils/LocaleUtils';
-import MapUtils from '../utils/MapUtils';
 import AttributeForm from './AttributeForm';
 import Icon from './Icon';
 
@@ -168,8 +167,7 @@ class LinkFeatureForm extends React.Component {
         }
     }
     childPickQuery = (coordinate) => {
-        const scale = Math.round(MapUtils.computeForZoom(this.props.map.scales, this.props.map.zoom));
-        this.props.iface.getFeature(this.props.editConfig, coordinate, this.props.map.projection, scale, 96, (featureCollection) => {
+        this.props.iface.getFeature(this.props.editConfig, coordinate, this.props.map.projection, this.props.map.scale, 96, (featureCollection) => {
             const features = featureCollection ? featureCollection.features : null;
             if (features && features.length === 1) {
                 if (!this.props.pickFilter) {

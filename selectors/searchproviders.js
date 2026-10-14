@@ -10,7 +10,6 @@ import {createSelector} from 'reselect';
 
 import ConfigUtils from '../utils/ConfigUtils';
 import LocaleUtils from '../utils/LocaleUtils';
-import MapUtils from '../utils/MapUtils';
 import {collectSearchProviders} from '../utils/SearchProviders';
 import ThemeUtils from '../utils/ThemeUtils';
 
@@ -20,11 +19,9 @@ export default createSelector(
         state => state.theme.current,
         state => state.theme,
         state => state.layers.flat,
-        state => state.map.scales,
-        state => state.map.zoom
-    ], (theme, themes, layers, scales, zoom) => {
+        state => state.map.scale
+    ], (theme, themes, layers, mapScale) => {
         // Collect active layers/search terms
-        const mapScale = MapUtils.computeForZoom(scales, zoom);
         const availableProviders = collectSearchProviders(theme, layers, mapScale);
         if (ConfigUtils.getConfigProp("searchThemes", theme)) {
             availableProviders.themes = {

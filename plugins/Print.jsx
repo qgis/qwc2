@@ -32,7 +32,6 @@ import ConfigUtils from '../utils/ConfigUtils';
 import CoordinatesUtils from '../utils/CoordinatesUtils';
 import LayerUtils from '../utils/LayerUtils';
 import LocaleUtils from '../utils/LocaleUtils';
-import MapUtils from '../utils/MapUtils';
 import MiscUtils from '../utils/MiscUtils';
 import Request from '../utils/Request';
 import VectorLayerUtils from '../utils/VectorLayerUtils';
@@ -177,7 +176,7 @@ class Print extends React.Component {
     }
     onShow = () => {
         // setup initial extent
-        let scale = Math.round(MapUtils.computeForZoom(this.props.map.scales, this.props.map.zoom) * this.props.defaultScaleFactor);
+        let scale = Math.round(this.props.map.scale * this.props.defaultScaleFactor);
         if (this.props.theme.printScales?.length > 0) {
             scale = this.props.theme.printScales.reduce((prev, curr) => {
                 return Math.abs(curr - scale) < Math.abs(prev - scale) ? curr : prev;

@@ -31,7 +31,6 @@ import EditingInterface from '../utils/EditingInterface';
 import {getFeatureTemplate} from '../utils/EditingUtils';
 import LayerUtils from '../utils/LayerUtils';
 import LocaleUtils from '../utils/LocaleUtils';
-import MapUtils from '../utils/MapUtils';
 
 import './style/Editing.css';
 
@@ -149,10 +148,9 @@ class Editing extends React.Component {
             const newPoint = this.props.map.click || {};
             const oldPoint = prevProps.map.click || {};
             if (newPoint.coordinate && !isEqual(newPoint.coordinate, oldPoint.coordinate)) {
-                const scale = Math.round(MapUtils.computeForZoom(this.props.map.scales, this.props.map.zoom));
                 const [wmsName, layerName] = this.state.selectedLayer.split("#");
                 const editConfig = this.props.editConfigs[wmsName][layerName];
-                this.props.iface.getFeature(editConfig, newPoint.coordinate, this.props.map.projection, scale, 96, (featureCollection) => {
+                this.props.iface.getFeature(editConfig, newPoint.coordinate, this.props.map.projection, this.props.map.scale, 96, (featureCollection) => {
                     const features = featureCollection ? featureCollection.features : null;
                     this.setState({pickedFeatures: features});
                     const feature = features ? features[0] : null;

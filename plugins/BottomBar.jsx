@@ -89,7 +89,6 @@ class BottomBar extends React.Component {
         displayScales: true
     };
     state = {
-        scale: 0,
         visibilityPresets: {}
     };
     componentWillUnmount() {
@@ -98,9 +97,6 @@ class BottomBar extends React.Component {
         }
     }
     componentDidUpdate(prevProps) {
-        if (this.props.map !== prevProps.map) {
-            this.setState({scale: Math.round(MapUtils.computeForZoom(this.props.map.scales, this.props.map.zoom))});
-        }
         if (this.props.currentTheme && (
             this.props.currentTheme !== prevProps.currentTheme || this.props.visibilityPresets !== prevProps.visibilityPresets
         )) {
@@ -159,7 +155,7 @@ class BottomBar extends React.Component {
                                 )}
                             </select>
                             <NumberInput decimals={0} hideArrows onChange={this.setScale} role="input"
-                                value={this.state.scale}/>
+                                value={this.props.map.scale}/>
                         </InputContainer>
                     </div>
                 ));

@@ -92,7 +92,7 @@ const IdentifyUtils = {
             // All non-background WMS layers with a non-empty queryLayers list
             return l.visibility && l.type === 'wms' && l.role !== LayerRole.BACKGROUND && (l.queryLayers || []).length > 0;
         });
-        const mapScale = MapUtils.computeForZoom(map.scales, map.zoom);
+        const mapScale = map.scale;
         let result = [];
         queryableLayers.forEach((layer) => {
             const layers = [];

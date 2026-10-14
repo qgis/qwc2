@@ -17,7 +17,6 @@ import ResizeableWindow from '../components/ResizeableWindow';
 import {Image} from '../components/widgets/Primitives';
 import LayerUtils from '../utils/LayerUtils';
 import LocaleUtils from '../utils/LocaleUtils';
-import MapUtils from '../utils/MapUtils';
 
 import './style/MapLegend.css';
 
@@ -107,7 +106,6 @@ class MapLegend extends React.Component {
         if (!this.state.visible && !this.props.lockedWindow) {
             return null;
         }
-        const mapScale = MapUtils.computeForZoom(this.props.map.scales, this.props.map.zoom);
         const extraControls = [
             {icon: "eye", callback: () => this.setState((state) => ({onlyVisibleLegend: !state.onlyVisibleLegend})), active: this.state.onlyVisibleLegend, title: LocaleUtils.tr("maplegend.onlyvisible")},
             {icon: "box", callback: () => this.setState((state) => ({bboxDependentLegend: !state.bboxDependentLegend})), active: this.state.bboxDependentLegend, title: LocaleUtils.tr("maplegend.bboxdependent")},
@@ -126,7 +124,7 @@ class MapLegend extends React.Component {
                         if (this.state.onlyVisibleLegend && !layer.visibility) {
                             return null;
                         } else if (layer.legendUrl) {
-                            return this.printLayerLegend(layer, layer, mapScale);
+                            return this.renderLayerLegend(layer, layer);
                         } else if (layer.color) {
                             return (
                                 <div className="map-legend-legend-entry" key={layer.name}>
@@ -145,13 +143,14 @@ class MapLegend extends React.Component {
     onClose = () => {
         this.setState({visible: false});
     };
-    printLayerLegend = (layer, sublayer, mapScale) => {
+    renderLayerLegend = (layer, sublayer) => {
+        const mapScale = this.props.map.scale;
         const isCategorized = (sublayer.sublayers || []).find(entry => entry.category_sublayer === true);
         if (this.props.excludeLayers.includes(sublayer.name)) {
             return null;
         } else if (sublayer.sublayers && !isCategorized && (!this.state.onlyVisibleLegend || sublayer.visibility)) {
             if (this.props.addGroupTitles) {
-                const children = sublayer.sublayers.map(subsublayer => this.printLayerLegend(layer, subsublayer, mapScale)).filter(x => x);
+                const children = sublayer.sublayers.map(subsublayer => this.renderLayerLegend(layer, subsublayer)).filter(x => x);
                 if (isEmpty(children)) {
                     return null;
                 } else {
@@ -159,13 +158,13 @@ class MapLegend extends React.Component {
                         <div className="map-legend-group" key={sublayer.name}>
                             <div className="map-legend-group-title">{sublayer.title || sublayer.name}</div>
                             <div className="map-legend-group-entries">
-                                {sublayer.sublayers.map(subsublayer => this.printLayerLegend(layer, subsublayer, mapScale))}
+                                {sublayer.sublayers.map(subsublayer => this.renderLayerLegend(layer, subsublayer))}
                             </div>
                         </div>
                     );
                 }
             } else {
-                return sublayer.sublayers.map(subsublayer => this.printLayerLegend(layer, subsublayer, mapScale));
+                return sublayer.sublayers.map(subsublayer => this.renderLayerLegend(layer, subsublayer));
             }
         } else {
             if (this.state.onlyVisibleLegend && !sublayer.visibility) {
@@ -174,7 +173,7 @@ class MapLegend extends React.Component {
             if ((this.state.onlyVisibleLegend || this.state.scaleDependentLegend) && !LayerUtils.layerScaleInRange(sublayer, mapScale)) {
                 return null;
             }
-            const request = LayerUtils.getLegendUrl(layer, sublayer, mapScale, this.props.map, this.state.bboxDependentLegend, this.state.scaleDependentLegend, this.props.extraLegendParameters);
+            const request = LayerUtils.getLegendUrl(layer, sublayer, this.props.map, this.state.bboxDependentLegend, this.state.scaleDependentLegend, this.props.extraLegendParameters);
             return request ? (
                 <div className="map-legend-legend-entry" key={sublayer.name}>
                     <div>

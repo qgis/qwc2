@@ -17,7 +17,6 @@ import ConfigUtils from './ConfigUtils';
 import CoordinatesUtils from './CoordinatesUtils';
 import DataServiceExprUtils from './DataServiceExprUtils';
 import LocaleUtils from './LocaleUtils';
-import MapUtils from './MapUtils';
 import Request from './Request';
 import VectorLayerUtils from './VectorLayerUtils';
 
@@ -806,7 +805,7 @@ const LayerUtils = {
 
         }
     },
-    getLegendUrl(layer, sublayer, scale, map, bboxDependentLegend, scaleDependentLegend, extraLegendParameters) {
+    getLegendUrl(layer, sublayer, map, bboxDependentLegend, scaleDependentLegend, extraLegendParameters) {
         if (layer.type !== "wms") {
             return layer.legendUrl || "";
         }
@@ -825,7 +824,7 @@ const LayerUtils = {
             Object.assign(requestParams, Object.fromEntries(extraLegendParameters.split("&").map(entry => entry.split("="))));
         }
         if (scaleDependentLegend === true || (scaleDependentLegend === "theme" && layer.role === LayerRole.THEME)) {
-            requestParams.SCALE = Math.round(scale);
+            requestParams.SCALE = Math.round(map.scale);
         }
         if (bboxDependentLegend === true || (bboxDependentLegend === "theme" && layer.role === LayerRole.THEME)) {
             const bounds = map.bbox.bounds;
@@ -1048,7 +1047,7 @@ const LayerUtils = {
             return {};
         }
 
-        const mapScale = MapUtils.computeForZoom(map.scales, map.zoom);
+        const mapScale = map.scale;
         if (!LayerUtils.layerScaleInRange(layer, mapScale)) {
             return {};
         }

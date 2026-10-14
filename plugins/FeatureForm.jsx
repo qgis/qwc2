@@ -22,7 +22,6 @@ import CoordinatesUtils from '../utils/CoordinatesUtils';
 import EditingInterface from '../utils/EditingInterface';
 import LayerUtils from '../utils/LayerUtils';
 import LocaleUtils from '../utils/LocaleUtils';
-import MapUtils from '../utils/MapUtils';
 
 import './style/FeatureForm.css';
 
@@ -64,7 +63,8 @@ class FeatureForm extends React.Component {
         }),
         iface: PropTypes.object,
         layers: PropTypes.array,
-        map: PropTypes.object,
+        mapCrs: PropTypes.string,
+        mapScale: PropTypes.number,
         setCurrentTask: PropTypes.func,
         setEditContext: PropTypes.func,
         startupParams: PropTypes.object,
@@ -138,14 +138,12 @@ class FeatureForm extends React.Component {
                     return;
                 }
                 const match = LayerUtils.searchLayer(this.props.layers, 'wms_name', mapName, 'name', layerName);
-                const mapScale = MapUtils.computeForZoom(this.props.map.scales, this.props.map.zoom);
-                if (!match || !LayerUtils.sublayerVisible(match.layer, match.path) || !LayerUtils.layerScaleInRange(match.sublayer, mapScale)) {
+                if (!match || !LayerUtils.sublayerVisible(match.layer, match.path) || !LayerUtils.layerScaleInRange(match.sublayer, this.props.mapScale)) {
                     return;
                 }
                 const layerOrder = match.layer.params.LAYERS.split(",");
                 ++pendingRequests;
-                const scale = Math.round(MapUtils.computeForZoom(this.props.map.scales, this.props.map.zoom));
-                this.props.iface.getFeature(editConfig, pos, this.props.map.projection, scale, 96, (featureCollection) => {
+                this.props.iface.getFeature(editConfig, pos, this.props.mapCrs, this.props.mapScale, 96, (featureCollection) => {
                     this.setState((state) => {
                         let pickedFeatures = state.pickedFeatures;
                         if (!isEmpty(featureCollection?.features)) {
@@ -289,7 +287,8 @@ export default (iface = EditingInterface) => connect((state) => {
         iface: iface,
         layers: state.layers.flat,
         filter: state.layers.filter,
-        map: state.map,
+        mapScale: state.map.scale,
+        mapCrs: state.map.projection,
         editConfigs: state.layers.editConfigs,
         theme: state.theme.current,
         startupParams: state.localConfig.startupParams

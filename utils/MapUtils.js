@@ -225,8 +225,7 @@ const MapUtils = {
         }
         if (positionFormat === "centerAndZoom") {
             const center = CoordinatesUtils.reproject(state.center, state.projection, positionCrs);
-            const scale = Math.round(MapUtils.computeForZoom(state.scales, state.zoom));
-            Object.assign(newParams, {c: center.map(x => x.toFixed(prec)).join(","), s: scale});
+            Object.assign(newParams, {c: center.map(x => x.toFixed(prec)).join(","), s: state.scale});
         } else {
             const bounds = CoordinatesUtils.reprojectBbox(state.bbox.bounds, state.projection, positionCrs);
             Object.assign(newParams, {e: bounds.map(x => x.toFixed(prec)).join(",")});

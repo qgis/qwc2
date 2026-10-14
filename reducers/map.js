@@ -22,6 +22,7 @@ const defaultState = {
     projection: "EPSG:3857",
     displayCrs: "EPSG:3857",
     zoom: 0,
+    scale: 0,
     scales: [0],
     resolutions: [0],
     click: null,
@@ -42,7 +43,11 @@ export default function map(state = defaultState, action) {
     case CHANGE_MAP_VIEW: {
         // eslint-disable-next-line
         const {type, ...params} = action;
-        const newState = {...state, ...params};
+        const newState = {
+            ...state,
+            ...params
+        };
+        newState.scale = MapUtils.computeForZoom(newState.scales, newState.zoom);
         MapUtils.updateMapUrlParams(newState);
         return newState;
     }
@@ -65,6 +70,7 @@ export default function map(state = defaultState, action) {
             bbox: {...state.bbox, bounds: bounds},
             center: center,
             zoom: zoom,
+            scale: MapUtils.computeForZoom(state.scales, zoom),
             projection: action.crs,
             displayCrs: action.defaultdisplaycrs ?? action.crs,
             scales: action.scales,
@@ -72,7 +78,11 @@ export default function map(state = defaultState, action) {
         };
     }
     case CHANGE_ZOOM_LVL: {
-        return {...state, zoom: action.zoom};
+        return {
+            ...state,
+            zoom: action.zoom,
+            scale: MapUtils.computeForZoom(state.scales, action.zoom)
+        };
     }
     case ZOOM_TO_EXTENT: {
         // Ugh...
@@ -98,6 +108,7 @@ export default function map(state = defaultState, action) {
             ...state,
             center: [0.5 * (bounds[0] + bounds[2]), 0.5 * (bounds[1] + bounds[3])],
             zoom: zoom,
+            scale: MapUtils.computeForZoom(state.scales, zoom),
             bbox: {...state.bbox, bounds: bounds}
         };
         MapUtils.updateMapUrlParams(newState);
@@ -108,6 +119,7 @@ export default function map(state = defaultState, action) {
             ...state,
             center: CoordinatesUtils.reproject(action.pos, action.crs || state.projection, state.projection),
             zoom: action.zoom,
+            scale: MapUtils.computeForZoom(state.scales, action.zoom),
             bbox: {
                 ...state.bbox,
                 rotation: action.rotation ?? state.bbox.rotation

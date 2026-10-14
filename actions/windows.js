@@ -11,7 +11,6 @@ import windowsReducer from '../reducers/windows';
 import ConfigUtils from '../utils/ConfigUtils';
 import CoordinatesUtils from '../utils/CoordinatesUtils';
 import LocaleUtils from '../utils/LocaleUtils';
-import MapUtils from '../utils/MapUtils';
 import {UrlParams} from '../utils/PermaLinkUtils';
 
 ReducerIndex.register("windows", windowsReducer);
@@ -139,8 +138,7 @@ export function openExternalUrl(url, target = '', iframeDialogOpts = {}) {
         const x = Math.round(0.5 * (bounds[0] + bounds[2]) * roundfactor) / roundfactor;
         const y = Math.round(0.5 * (bounds[1] + bounds[3]) * roundfactor) / roundfactor;
         if (state.map.scales) {
-            const scale = Math.round(MapUtils.computeForZoom(state.map.scales, state.map.zoom));
-            url = url.replace('$s$', scale);
+            url = url.replace('$s$', state.map.scale);
             url = url.replace('$c$', x + "," + y);
         }
         url = url.replace('$e$', [xmin, ymin, xmax, ymax].join(","));

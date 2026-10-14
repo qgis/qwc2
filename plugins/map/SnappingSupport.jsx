@@ -212,7 +212,7 @@ class SnappingSupport extends React.Component {
         }
         const snappingConfig = this.props.theme.snapping || {};
         // Gather snapping layers based on visibility scale ranges
-        const scale = MapUtils.computeForZoom(this.props.mapObj.scales, this.props.mapObj.zoom);
+        const scale = this.props.mapObj.scale;
         const snapLayers = (snappingConfig.snaplayers || []).reduce((res, cur) => {
             if (cur.min !== undefined && cur.min !== null && scale < cur.min) {
                 // Below scale range

@@ -284,7 +284,7 @@ class Panoramax extends React.Component {
 export default connect((state) => ({
     active: state.task.id === "Panoramax",
     click: state.map.click,
-    mapScale: MapUtils.computeForZoom(state.map.scales, state.map.zoom),
+    mapScale: state.map.scale,
     theme: state.theme.current
 }), {
     addLayer: addLayer,

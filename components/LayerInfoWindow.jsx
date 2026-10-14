@@ -15,7 +15,6 @@ import {setActiveLayerInfo} from '../actions/layerinfo';
 import ResizeableWindow from '../components/ResizeableWindow';
 import LayerUtils from '../utils/LayerUtils';
 import LocaleUtils from '../utils/LocaleUtils';
-import MapUtils from '../utils/MapUtils';
 import MiscUtils from '../utils/MiscUtils';
 import {Image} from './widgets/Primitives';
 
@@ -61,8 +60,7 @@ class LayerInfoWindow extends React.Component {
             return null;
         }
         let legend = null;
-        const scale = MapUtils.computeForZoom(this.props.map.scales, this.props.map.zoom);
-        const legendUrl = LayerUtils.getLegendUrl(this.props.layer, this.props.sublayer, scale, this.props.map, this.props.bboxDependentLegend, this.props.scaleDependentLegend, this.props.extraLegendParameters);
+        const legendUrl = LayerUtils.getLegendUrl(this.props.layer, this.props.sublayer, this.props.map, this.props.bboxDependentLegend, this.props.scaleDependentLegend, this.props.extraLegendParameters);
         if (legendUrl) {
             legend = (<Image className="layer-info-window-legend" src={legendUrl} />);
         } else if (this.props.layer.color) {

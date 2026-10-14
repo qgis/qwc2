@@ -23,7 +23,6 @@ import {Image} from '../components/widgets/Primitives';
 import ConfigUtils from '../utils/ConfigUtils';
 import LayerUtils from '../utils/LayerUtils';
 import LocaleUtils from '../utils/LocaleUtils';
-import MapUtils from '../utils/MapUtils';
 import MiscUtils, {ToggleSet} from '../utils/MiscUtils';
 
 import './ThemeBrowser.css';
@@ -206,8 +205,7 @@ class ThemeBrowser extends React.Component {
     };
     renderLayerTreeEntryDetails = (layer, entry) => {
         let legend = null;
-        const scale = MapUtils.computeForZoom(this.props.map.scales, this.props.map.zoom);
-        const legendUrl = LayerUtils.getLegendUrl(layer, entry, scale, this.props.map, this.props.bboxDependentLegend, this.props.scaleDependentLegend);
+        const legendUrl = LayerUtils.getLegendUrl(layer, entry, this.props.map, this.props.bboxDependentLegend, this.props.scaleDependentLegend);
         if (legendUrl) {
             legend = (<Image className="themebrowser-tree-entry-legend" src={legendUrl} />);
         } else if (layer.color) {
