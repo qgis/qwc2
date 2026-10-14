@@ -65,6 +65,8 @@ class LayerTree extends React.Component {
         /** Whether to display a BBOX dependent legend. Can be `true|false|"theme"`, latter means only for theme layers. */
         bboxDependentLegend: PropTypes.oneOfType([PropTypes.bool, PropTypes.string]),
         changeLayerProperty: PropTypes.func,
+        /** The DnD delay when dragging a layer tree entry, in milliseconds. */
+        dndDelay: PropTypes.number,
         editConfigs: PropTypes.object,
         /** Whether to enable the legend print functionality. */
         enableLegendPrint: PropTypes.bool,
@@ -148,6 +150,7 @@ class LayerTree extends React.Component {
         allowCompare: true,
         allowImport: true,
         allowSelectIdentifyableLayers: false,
+        dndDelay: 200,
         groupTogglesSublayers: false,
         grayUnchecked: true,
         layerInfoGeometry: {
@@ -309,7 +312,7 @@ class LayerTree extends React.Component {
                 </div>
                 {this.state.activemenu === groupId ? this.renderOptionsMenu(layer, group, path, allowRemove, subtreevisibility) : null}
                 {this.state.activestylemenu === groupId ? this.renderStyleMenu(styles, this.getSelectedStyles(layer), (style) => this.applyLayerStyle(style, layer)) : null}
-                <Sortable onChange={this.onSortChange} options={{disabled: sortable === false, ghostClass: 'drop-ghost', delay: 200, forceFallback: this.props.fallbackDrag}}>
+                <Sortable onChange={this.onSortChange} options={{disabled: sortable === false, ghostClass: 'drop-ghost', delay: this.props.dndDelay, forceFallback: this.props.fallbackDrag}}>
                     {sublayersContent}
                 </Sortable>
             </div>
@@ -600,7 +603,7 @@ class LayerTree extends React.Component {
                     }}
                     ref={MiscUtils.setupKillTouchEvents}
                 >
-                    <Sortable onChange={this.onSortChange} options={{disabled: sortable === false, ghostClass: 'drop-ghost', delay: 200, forceFallback: this.props.fallbackDrag}}>
+                    <Sortable onChange={this.onSortChange} options={{disabled: sortable === false, ghostClass: 'drop-ghost', delay: this.props.dndDelay, forceFallback: this.props.fallbackDrag}}>
                         {this.renderLayerTree(treelayers)}
                     </Sortable>
                 </div>

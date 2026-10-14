@@ -752,6 +752,7 @@ with containing a container element with id=legendcontainer.
 | allowRemovingThemeLayers | `bool` | Whether to allow removing theme layers. | `undefined` |
 | allowSelectIdentifyableLayers | `bool` | Whether to allow selection of identifyable layers. The `showQueryableIcon` property should be `true` to be able to select identifyable layers. | `false` |
 | bboxDependentLegend | `{bool, string}` | Whether to display a BBOX dependent legend. Can be `true|false|"theme"`, latter means only for theme layers. | `false` |
+| dndDelay | `number` | The DnD delay when dragging a layer tree entry, in milliseconds. | `200` |
 | enableLegendPrint | `bool` | Whether to enable the legend print functionality. | `true` |
 | enableServiceInfo | `bool` | Whether to display a service info button to display the WMS service metadata. | `true` |
 | enableVisibleFilter | `bool` | Whether to display a button to filter invisible layers from the layertree. | `true` |
