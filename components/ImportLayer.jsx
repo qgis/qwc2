@@ -103,9 +103,7 @@ class ImportLayer extends React.Component {
         let layerList = null;
         if (this.state.serviceLayers !== null) {
             layerList = (
-                <LayerCatalogWidget
-                    addLayer={this.props.addLayer} catalog={this.state.serviceLayers}
-                    pendingRequests={this.state.pendingRequests} />
+                <LayerCatalogWidget catalog={this.state.serviceLayers} pendingRequests={this.state.pendingRequests} />
             );
         }
         const disableLocal = ConfigUtils.getConfigProp("disableImportingLocalLayers", this.props.theme);
