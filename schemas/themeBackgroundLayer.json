@@ -1,0 +1,64 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "$id": "https://github.com/qgis/qwc2/raw/master/schemas/themeBackgroundLayer.json",
+    "title": "Theme background layer",
+    "description": "Reference to a background layer definition, as listed in the backgroundLayers of a theme.",
+    "type": "object",
+    "properties": {
+        "name": {
+            "type": "string",
+            "description": "Name of the matching background layer definition in themes.backgroundLayers."
+        },
+        "visibility": {
+            "type": "boolean",
+            "description": "Initial visibility of the layer when the theme is loaded."
+        },
+        "overview": {
+            "type": "boolean",
+            "description": "Set the layer as the overview map layer, i.e. it is displayed in the overview map regardless of the background layer visible in the main map."
+        },
+        "printLayer": {
+            "description": "QGIS layer name or layer resource string to use as matching background layer when printing. Alternatively, a list of layers by scale, ordered in ascending order by maxScale, whose last entry has a null maxScale and is used for all remaining scales. If omitted, no background is printed, unless the layer is of type wms and printExternalLayers is true in the Print plugin configuration.",
+            "oneOf": [
+                {
+                    "type": "string",
+                    "title": "Layer name"
+                },
+                {
+                    "type": "array",
+                    "title": "Layers by scale",
+                    "items": {
+                        "type": "object",
+                        "properties": {
+                            "maxScale": {
+                                "type": [
+                                    "number",
+                                    "null"
+                                ],
+                                "description": "Scale denominator up to which this layer is used, null or omitted for the last entry."
+                            },
+                            "name": {
+                                "type": "string",
+                                "description": "QGIS layer name or layer resource string."
+                            }
+                        },
+                        "required": [
+                            "name"
+                        ]
+                    }
+                }
+            ]
+        },
+        "omitFromCycle": {
+            "type": "boolean",
+            "description": "Exclude the layer when cycling through the background layers."
+        },
+        "omitFromSelect": {
+            "type": "boolean",
+            "description": "Hide the layer from the background layer selection."
+        }
+    },
+    "required": [
+        "name"
+    ]
+}

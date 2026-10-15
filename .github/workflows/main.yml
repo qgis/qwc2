@@ -39,6 +39,11 @@ jobs:
             fi
           fi
 
+      - name: Validate themesConfig.json against its schema
+        run: |
+          pipx run check-jsonschema --check-metaschema schemas/*.json
+          pipx run check-jsonschema --base-uri "file://$PWD/schemas/" --schemafile schemas/themesConfig.json static/themesConfig.json
+
       - name: Compile a deployable application bundle
         run: npm run prod
 

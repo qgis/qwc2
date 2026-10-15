@@ -1,0 +1,213 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "$id": "https://github.com/qgis/qwc2/raw/master/schemas/searchProvider.json",
+    "title": "Search provider",
+    "description": "Search provider entry, as listed in the searchProviders of a theme: either a provider key, a QGIS feature search, or another provider with parameters.",
+    "definitions": {
+        "providerEntry": {
+            "type": "object",
+            "properties": {
+                "key": {
+                    "type": "string",
+                    "description": "Key to disambiguate multiple configurations of the same provider type."
+                },
+                "label": {
+                    "type": "string",
+                    "description": "Provider label displayed in the provider selection menu."
+                },
+                "labelmsgid": {
+                    "type": "string",
+                    "description": "Translation message ID of the provider label, alternative to label."
+                }
+            }
+        },
+        "qgisSearch": {
+            "title": "QGIS feature search",
+            "allOf": [
+                {
+                    "$ref": "#/definitions/providerEntry"
+                }
+            ],
+            "properties": {
+                "provider": {
+                    "const": "qgis",
+                    "description": "Provider key."
+                },
+                "params": {
+                    "type": "object",
+                    "description": "QGIS feature search parameters.",
+                    "properties": {
+                        "title": {
+                            "type": "string",
+                            "description": "Search name, also used as result group title and for sorting in the FeatureSearch plugin."
+                        },
+                        "titlemsgid": {
+                            "type": "string",
+                            "description": "Translation message ID of the search name, alternative to title."
+                        },
+                        "expression": {
+                            "type": "object",
+                            "description": "Filter expression per layer name: either a WMS GetFeatureInfo FILTER expression with $TEXT$ or $<FIELD>$ placeholders, or a data service filter expression.",
+                            "additionalProperties": {
+                                "oneOf": [
+                                    {
+                                        "type": "string",
+                                        "title": "WMS filter expression"
+                                    },
+                                    {
+                                        "type": "array",
+                                        "title": "Data service filter expression"
+                                    }
+                                ]
+                            }
+                        },
+                        "fields": {
+                            "type": "object",
+                            "description": "Input fields of the FeatureSearch plugin form, keyed by placeholder name.",
+                            "additionalProperties": {
+                                "type": "object",
+                                "description": "Input field.",
+                                "properties": {
+                                    "label": {
+                                        "type": "string",
+                                        "description": "Field label."
+                                    },
+                                    "labelmsgid": {
+                                        "type": "string",
+                                        "description": "Translation message ID of the field label, alternative to label."
+                                    },
+                                    "type": {
+                                        "type": "string",
+                                        "description": "HTML input type, or select for a combo box, or checkbox for a yes/no choice."
+                                    },
+                                    "options": {
+                                        "description": "For select fields, the list of values or of value/label pairs. For other fields, additional HTML input attributes, e.g. min and max.",
+                                        "oneOf": [
+                                            {
+                                                "type": "array",
+                                                "title": "Select options"
+                                            },
+                                            {
+                                                "type": "object",
+                                                "title": "Input attributes"
+                                            }
+                                        ]
+                                    },
+                                    "options_query": {
+                                        "type": "string",
+                                        "description": "URL returning the options of a select field, where $<FIELD>$ placeholders are replaced by the current form values."
+                                    },
+                                    "value_field": {
+                                        "type": "string",
+                                        "description": "Feature property used as option value when options_query returns features."
+                                    },
+                                    "label_field": {
+                                        "type": "string",
+                                        "description": "Feature property used as option label when options_query returns features."
+                                    },
+                                    "order": {
+                                        "type": "number",
+                                        "description": "Position of the field in the search form."
+                                    }
+                                }
+                            }
+                        },
+                        "featureCount": {
+                            "type": "integer",
+                            "description": "Maximum number of returned features.",
+                            "default": 100
+                        },
+                        "resultTitle": {
+                            "type": "string",
+                            "description": "Format string for the result title, with {layername} and {<fieldname>} placeholders."
+                        },
+                        "description": {
+                            "type": "string",
+                            "description": "Text displayed above the search fields in the FeatureSearch plugin."
+                        },
+                        "default": {
+                            "type": "boolean",
+                            "description": "Select the search by default in the FeatureSearch plugin."
+                        },
+                        "group": {
+                            "type": "string",
+                            "description": "Group name of the search in the FeatureSearch selection."
+                        },
+                        "featuresearch": {
+                            "type": "boolean",
+                            "description": "Include the search in the FeatureSearch plugin.",
+                            "default": true
+                        }
+                    }
+                }
+            },
+            "required": [
+                "provider",
+                "params"
+            ]
+        },
+        "otherProvider": {
+            "title": "Other provider",
+            "allOf": [
+                {
+                    "$ref": "#/definitions/providerEntry"
+                }
+            ],
+            "properties": {
+                "provider": {
+                    "type": "string",
+                    "description": "Provider key, e.g. fulltext, nominatim or the key of a custom provider.",
+                    "not": {
+                        "const": "qgis"
+                    }
+                },
+                "params": {
+                    "type": "object",
+                    "description": "Provider parameters. For fulltext: default (search facets enabled by default) and layers (facet enabled when a theme layer is visible, keyed by layer name). For nominatim: additional Nominatim API parameters, e.g. countrycodes."
+                }
+            },
+            "required": [
+                "provider"
+            ]
+        },
+        "legacyProvider": {
+            "type": "object",
+            "title": "Legacy entry",
+            "description": "Deprecated entry identified by key without provider, as used by older applications. The standard search providers ignore it.",
+            "properties": {
+                "key": {
+                    "type": "string",
+                    "description": "Provider key."
+                },
+                "label": {
+                    "type": "string",
+                    "description": "Provider label."
+                }
+            },
+            "required": [
+                "key"
+            ],
+            "not": {
+                "required": [
+                    "provider"
+                ]
+            }
+        }
+    },
+    "oneOf": [
+        {
+            "type": "string",
+            "title": "Provider key",
+            "description": "Provider key, e.g. coordinates, nominatim, or the key of a custom provider."
+        },
+        {
+            "$ref": "#/definitions/qgisSearch"
+        },
+        {
+            "$ref": "#/definitions/otherProvider"
+        },
+        {
+            "$ref": "#/definitions/legacyProvider"
+        }
+    ]
+}
