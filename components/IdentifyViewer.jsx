@@ -374,7 +374,7 @@ class IdentifyViewer extends React.Component {
             );
         } else if (feature.type === "html") {
             resultbox = (
-                <iframe className="identify-result-box" onLoad={ev => this.setIframeContent(ev.target, feature.text)} ref={el => this.pollIframe(el, feature.text)} />
+                <iframe className="identify-result-box" srcDoc={feature.text} />
             );
         } else if (feature.properties.htmlContent) {
             if (feature.properties.htmlContentInline) {
@@ -383,7 +383,7 @@ class IdentifyViewer extends React.Component {
                 );
             } else {
                 resultbox = (
-                    <iframe className="identify-result-box" onLoad={ev => this.setIframeContent(ev.target, feature.properties.htmlContent)} ref={el => this.pollIframe(el, feature.properties.htmlContent)} />
+                    <iframe className="identify-result-box" srcDoc={feature.properties.htmlContent} />
                 );
             }
         } else {
@@ -843,32 +843,6 @@ class IdentifyViewer extends React.Component {
             ...IdentifyExporters,
             ...Object.values(window.qwc2?.__identifyExportes || [])
         ];
-    };
-    setIframeContent = (iframe, html) => {
-        if (iframe.getAttribute("identify-content-set")) {
-            return;
-        }
-        iframe.setAttribute("identify-content-set", true);
-        iframe.contentWindow.document.open();
-        iframe.contentWindow.document.write(html);
-        iframe.contentWindow.document.close();
-    };
-    pollIframe = (iframe, html) => {
-        if (iframe && !iframe.getAttribute("identify-content-set")) {
-            const interval = setInterval(() => {
-                if (iframe.getAttribute("identify-content-set")) {
-                    return clearInterval(interval);
-                }
-                if (iframe.contentWindow && iframe.contentWindow.document) {
-                    iframe.setAttribute("identify-content-set", true);
-                    iframe.contentWindow.document.open();
-                    iframe.contentWindow.document.write(html);
-                    iframe.contentWindow.document.close();
-                    clearInterval(interval);
-                }
-                return true;
-            }, 500);
-        }
     };
     collectFeatureReportTemplates = (entry) => {
         let reports = {};
