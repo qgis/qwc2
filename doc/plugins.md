@@ -1251,10 +1251,6 @@ Generic map button to launch a task.
 
 The `task` generally corresponds to the `key` of a menuItem or toolbaritem.
 
-The following special values for `task` are suppported:
-
-* `ServiceInfo`: Open the service info of the current theme.
-
 | Property | Type | Description | Default value |
 |----------|------|-------------|---------------|
 | icon | `string` | The icon name. | `undefined` |
