@@ -205,7 +205,7 @@ class LayerTree extends React.Component {
                 ...this.props.theme.visibilityPresets,
                 ...this.props.visibilityPresets.reduce((res, entry) => {
                     if (entry.data && entry.theme_id === this.props.theme.id) {
-                        return {...res, [entry.description]: entry.data};
+                        return {...res, [entry.key]: entry.data};
                     } else {
                         return res;
                     }
@@ -728,10 +728,18 @@ class LayerTree extends React.Component {
             </div>
         );
         let needsep = menuEntries.length > 0;
-        Object.entries(this.state.visibilityPresets || {}).forEach(([name, preset], idx) => {
+        Object.entries(this.props.theme.visibilityPresets || {}).forEach(([name, preset], idx) => {
             menuEntries.push(
                 <div className={idx === 0 && needsep ? "layertree-visibility-menu-sep" : ""} key={name} onClick={() => this.props.setThemeLayersVisibilityPreset(preset)}>
                     <Icon icon={this.state.activePreset === name ? "radio_checked" : "radio_unchecked"} /> {name}
+                </div>
+            );
+            needsep = true;
+        });
+        this.props.visibilityPresets.filter(entry => entry.theme_id === this.props.theme.id && entry.data).map((entry, idx) => {
+            menuEntries.push(
+                <div className={idx === 0 && needsep ? "layertree-visibility-menu-sep" : ""} key={entry.key} onClick={() => this.props.setThemeLayersVisibilityPreset(entry.data)}>
+                    <Icon icon={this.state.activePreset === entry.key ? "radio_checked" : "radio_unchecked"} /> {entry.description}
                 </div>
             );
             needsep = true;

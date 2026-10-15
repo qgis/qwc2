@@ -119,6 +119,8 @@
       "quick_select_label": "Accès rapide",
       "scale_label": "Echelle",
       "terms_label": "Conditions d'utilisation",
+      "theme_visibility_presets": "Profils de visibilité du thème",
+      "user_visibility_presets": "Profils de visibilité utilisateur",
       "viewertitle_label": "Page d'accueil"
     },
     "common": {

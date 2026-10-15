@@ -9,6 +9,7 @@
 import React from 'react';
 import {connect} from 'react-redux';
 
+import isEmpty from 'lodash.isempty';
 import ol from 'openlayers';
 import PropTypes from 'prop-types';
 
@@ -88,29 +89,9 @@ class BottomBar extends React.Component {
         displayScalebar: true,
         displayScales: true
     };
-    state = {
-        visibilityPresets: {}
-    };
     componentWillUnmount() {
         if (this.scalebar) {
             MapUtils.getHook(MapUtils.GET_MAP)?.removeControl?.(this.scalebar);
-        }
-    }
-    componentDidUpdate(prevProps) {
-        if (this.props.currentTheme && (
-            this.props.currentTheme !== prevProps.currentTheme || this.props.visibilityPresets !== prevProps.visibilityPresets
-        )) {
-            const visibilityPresets = {
-                ...this.props.currentTheme.visibilityPresets,
-                ...this.props.visibilityPresets.reduce((res, entry) => {
-                    if (entry.theme_id === this.props.currentTheme.id) {
-                        return {...res, [entry.description]: entry.data ?? entry.key};
-                    } else {
-                        return res;
-                    }
-                }, {})
-            };
-            this.setState({visibilityPresets});
         }
     }
     render() {
@@ -160,13 +141,15 @@ class BottomBar extends React.Component {
                     </div>
                 ));
             }
+            const themePresets = this.props.visibilityPresets.filter(entry => entry.theme_id === this.props.currentTheme?.id);
             if (this.props.displayQuickSelectDropdown &&
-                (this.props.bookmarks?.length > 0 || this.props.visibilityPresets?.length > 0)
+                (this.props.bookmarks?.length > 0 || !isEmpty(themePresets) || !isEmpty(this.props.currentTheme?.visibilityPresets))
             ) {
                 const bookmarks = this.filterByActiveTheme(this.props.bookmarks || []);
                 const options = {
                     [LocaleUtils.tr("appmenu.items.Bookmark")]: bookmarks.map(bm => ["bk:" + bm.key, bm.description]),
-                    [LocaleUtils.tr("appmenu.items.VisibilityPresets")]: Object.keys(this.state.visibilityPresets).map((vp, idx) => ["vp:" + vp, vp])
+                    [LocaleUtils.tr("bottombar.theme_visibility_presets")]: Object.keys(this.props.currentTheme?.visibilityPresets ?? {}).map(vp => ["tvp:" + vp, vp]),
+                    [LocaleUtils.tr("bottombar.user_visibility_presets")]: themePresets.map(vp => ["uvp:" + vp.key, vp.description])
                 };
                 widgets.push((
                     <div key="quickselect">
@@ -224,19 +207,24 @@ class BottomBar extends React.Component {
         ev.preventDefault();
     };
     openBookmarkOrPreset = (prefixedKey) => {
-        if (prefixedKey.startsWith("vp:")) {
-            const key = prefixedKey.slice("vp:".length);
-            const entry = this.state.visibilityPresets[key];
-            if (typeof entry === 'string') {
+        if (prefixedKey.startsWith("uvp:")) {
+            const key = prefixedKey.slice("uvp:".length);
+            const vp = this.props.visibilityPresets.find(entry => entry.key === key);
+            if (!vp.data) {
                 // NOTE: legacy path if visibilityPreset entries only contain the key and not the full preset data
-                VisibilityPresetsInterface.resolve(entry, (preset) => {
+                VisibilityPresetsInterface.resolve(vp, (preset) => {
                     if (preset) {
                         this.props.setThemeLayersVisibilityPreset(preset);
                     }
                 });
             } else {
-                this.props.setThemeLayersVisibilityPreset(entry);
+                this.props.setThemeLayersVisibilityPreset(vp.data);
             }
+        } else if (prefixedKey.startsWith("tvp:")) {
+            const key = prefixedKey.slice("tvp:".length);
+            const entry = this.props.currentTheme.visibilityPresets[key];
+            this.props.setThemeLayersVisibilityPreset(entry);
+
         } else if (prefixedKey.startsWith("bk:")) {
             const key = prefixedKey.slice("bk:".length);
             location.href = location.href.split("?")[0] + '?bk=' + key;

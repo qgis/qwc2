@@ -147,6 +147,8 @@
     "bottombar.quick_select_label",
     "bottombar.scale_label",
     "bottombar.terms_label",
+    "bottombar.theme_visibility_presets",
+    "bottombar.user_visibility_presets",
     "bottombar.viewertitle_label",
     "common.add",
     "common.all",

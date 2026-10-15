@@ -119,6 +119,8 @@
       "quick_select_label": "Schnellauswahl",
       "scale_label": "Massstab",
       "terms_label": "Nutzungsbedingungen",
+      "theme_visibility_presets": "Benutzer-Sichtbarkeitsprofile",
+      "user_visibility_presets": "Themen-Sichtbarkeitsprofile",
       "viewertitle_label": "Homepage"
     },
     "common": {
