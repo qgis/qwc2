@@ -270,3 +270,13 @@ div.plugins-container.qwc-root-embedded {
     bottom: 0;
     z-index: 999999999999;
 }
+
+:where(.qwc-root) .ewresizing, .ewresizing * {
+    cursor: ew-resize!important;
+    user-select: none;
+}
+
+:where(.qwc-root) .nsresizing, .nsresizing * {
+    cursor: ns-resize!important;
+    user-select: none;
+}

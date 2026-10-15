@@ -89,13 +89,3 @@ div.attribtable-filter .attribtable-filter-value {
     min-width: 5em;
     max-width: 15em;
 }
-
-.ewresizing, .ewresizing * {
-    cursor: ew-resize!important;
-    user-select: none;
-}
-
-.nsresizing, .nsresizing * {
-    cursor: ns-resize!important;
-    user-select: none;
-}
