@@ -277,10 +277,11 @@ class Editing extends React.Component {
                 return {value: mapName + "#" + layerName, title: layerTitle};
             })
         )).flat().filter(Boolean).sort((a, b) => a.title.localeCompare(b.title));
+        const selectedLayer = this.state.selectedLayer || (editLayers.length === 1 ? editLayers[0].value : "");
         return (
             <div className="editing-body">
                 <div className="editing-layer-selection">
-                    <select className="combo editing-layer-select" disabled={this.props.editContext.changed === true || this.props.editContext.id !== this.props.currentEditContext} onChange={ev => this.changeSelectedLayer(ev.target.value)} value={this.state.selectedLayer || ""}>
+                    <select className="combo editing-layer-select" disabled={this.props.editContext.changed === true || this.props.editContext.id !== this.props.currentEditContext} onChange={ev => this.changeSelectedLayer(ev.target.value)} value={selectedLayer}>
                         <option disabled value="">{LocaleUtils.tr("common.selectlayer")}</option>
                         {editLayers.map(entry => (
                             <option key={entry.value} value={entry.value}>{entry.title}</option>
