@@ -82,6 +82,20 @@ div.qt-designer-widget-relation {
     max-height: 6.5em;
 }
 
+div.qt-designer-widget-relation-resize-border {
+    touch-action: none;
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    width: 32px;
+    max-width: 100%;
+    height: 0;
+    border-bottom: 2px solid transparent;
+    border-top: 2px solid transparent;
+    z-index: 1;
+    cursor: ns-resize;
+}
+
 div.qt-designer-widget-relation-resize-handle {
     touch-action: none;
     position: absolute;

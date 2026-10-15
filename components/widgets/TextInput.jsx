@@ -130,6 +130,11 @@ export default class TextInput extends React.Component {
                 ) : null}
                 {this.props.multiline ? (
                     <div
+                        className="text-input-resize-border"
+                        onPointerDown={this.startResize} />
+                ) : null}
+                {this.props.multiline ? (
+                    <div
                         className="text-input-resize-handle"
                         onPointerDown={this.startResize} />
                 ) : null}
@@ -275,11 +280,15 @@ export default class TextInput extends React.Component {
         const resizeInput = (event) => {
             container.style.height = Math.max(MiscUtils.convertEmToPx(2), (startHeight + (event.clientY - startMouseY))) + 'px';
         };
-        const appContainer = MiscUtils.appContainer(ev.target);
-        appContainer.style.userSelect = 'none';
+        const eventShield = ev.view.document.createElement("div");
+        eventShield.className = '__event_shield';
+        const shieldParent = MiscUtils.appContainer(ev.target);
+        shieldParent.classList.add('nsresizing');
+        shieldParent.appendChild(eventShield);
         ev.view.addEventListener("pointermove", resizeInput);
         ev.view.addEventListener("pointerup", () => {
-            appContainer.style.userSelect = '';
+            eventShield.remove();
+            shieldParent.classList.remove('nsresizing');
             ev.view.removeEventListener("pointermove", resizeInput);
         }, {once: true});
     };

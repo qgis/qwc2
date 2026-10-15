@@ -687,6 +687,7 @@ class QtDesignerForm extends React.Component {
                 {!this.props.readOnly && editPermissions.creatable !== false && editPermissions.geomreadonly !== true ? (
                     <ButtonBar buttons={addButtons} onClick={this.addRelationRecordAction} />
                 ) : null}
+                <div className="qt-designer-widget-relation-resize-border" onPointerDown={this.startRelationTableResize} />
                 <div className="qt-designer-widget-relation-resize-handle" onPointerDown={this.startRelationTableResize} />
             </div>
         );
@@ -724,11 +725,15 @@ class QtDesignerForm extends React.Component {
         const resizeInput = (event) => {
             container.style.height = Math.max(MiscUtils.convertEmToPx(2.5), (startHeight + (event.clientY - startMouseY))) + 'px';
         };
-        const appContainer = MiscUtils.appContainer(ev.target);
-        appContainer.style.userSelect = 'none';
+        const eventShield = ev.view.document.createElement("div");
+        eventShield.className = '__event_shield';
+        const shieldParent = MiscUtils.appContainer(ev.target);
+        shieldParent.classList.add('nsresizing');
+        shieldParent.appendChild(eventShield);
         ev.view.addEventListener("pointermove", resizeInput);
         ev.view.addEventListener("pointerup", () => {
-            appContainer.style.userSelect = '';
+            eventShield.remove();
+            shieldParent.classList.remove('nsresizing');
             ev.view.removeEventListener("pointermove", resizeInput);
         }, {once: true});
     };
