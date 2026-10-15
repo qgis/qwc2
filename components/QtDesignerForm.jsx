@@ -563,7 +563,7 @@ class QtDesignerForm extends React.Component {
                         } else {
                             const featurebuttons = [
                                 {key: 'Pick', icon: 'pick', label: LocaleUtils.tr("common.pick")},
-                                {key: 'Create', icon: 'editdraw', label: LocaleUtils.tr("editing.create")}
+                                {key: 'Create', icon: 'editdraw', label: LocaleUtils.tr("common.draw")}
                             ];
                             return (<ButtonBar buttons={featurebuttons} onClick={(action) => this.props.switchEditContext(action, layer, null, (f) => updateField(attrname, f.id))} />);
                         }
@@ -602,7 +602,7 @@ class QtDesignerForm extends React.Component {
         const addButtons = this.state.relationAddPressed === relDataset ? [{
             key: editConfig.pickMode ?? "Pick", icon: "pick", label: LocaleUtils.tr("common.pick"), data: addData
         }, {
-            key: "Create", icon: "editdraw", label: LocaleUtils.tr("editing.create"), data: addData
+            key: "Create", icon: "editdraw", label: LocaleUtils.tr("common.draw"), data: addData
         }, {
             key: "Cancel", icon: "remove", label: LocaleUtils.tr("common.cancel"), extraClasses: "button-reject"
         }] : [{
