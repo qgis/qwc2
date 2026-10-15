@@ -85,8 +85,6 @@ class Print extends React.Component {
         printMapHighlights: PropTypes.bool,
         /** Restrict print scale to list of predefined print scales, if any. */
         restrictToPrintScales: PropTypes.bool,
-        /** Scale factor to apply to line widths, font sizes, ... of redlining drawings passed to GetPrint.  */
-        scaleFactor: PropTypes.number,
         setIdentifyEnabled: PropTypes.func,
         setSnappingConfig: PropTypes.func,
         /** The side of the application on which to display the sidebar. */
@@ -106,7 +104,6 @@ class Print extends React.Component {
         inlinePrintOutput: false,
         printExternalLayers: true,
         printMapHighlights: true,
-        scaleFactor: 1.9, // Experimentally determined...
         side: 'right'
     };
     state = {
@@ -750,7 +747,7 @@ class Print extends React.Component {
         const printDpi = parseInt(this.state.dpi, 10) || 0;
 
         if (this.props.printMapHighlights) {
-            const highlightParams = VectorLayerUtils.createPrintHighlighParams(this.props.layers, mapCrs, this.state.scale, printDpi, this.props.scaleFactor);
+            const highlightParams = VectorLayerUtils.createPrintHighlighParams(this.props.layers, mapCrs, this.state.scale, printDpi, this.props.map.scale / this.state.scale);
             formData[mapName + ":HIGHLIGHT_GEOM"] = highlightParams.geoms.join(";");
             formData[mapName + ":HIGHLIGHT_SYMBOL"] = highlightParams.styles.join(";");
             formData[mapName + ":HIGHLIGHT_LABELSTRING"] = highlightParams.labels.join(";");
