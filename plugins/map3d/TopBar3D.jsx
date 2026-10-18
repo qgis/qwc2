@@ -10,7 +10,6 @@ import React from 'react';
 import {connect} from 'react-redux';
 
 import classNames from 'classnames';
-import isEmpty from 'lodash.isempty';
 import PropTypes from 'prop-types';
 
 import {toggleFullscreen, ViewMode} from '../../actions/display';
