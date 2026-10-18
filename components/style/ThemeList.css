@@ -1,9 +1,4 @@
-div.ThemeList ul {
-    padding: 0;
-    list-style-type: none;
-}
-
-div.ThemeList li.theme-group-header > span {
+div.ThemeList div.theme-group-header {
     font-weight: bold;
     display: flex;
     align-items: center;
@@ -12,22 +7,18 @@ div.ThemeList li.theme-group-header > span {
     margin: 0 0.5em 0.5em 0.5em;
 }
 
-div.ThemeList li.theme-group-header > span > span.icon {
+div.ThemeList div.theme-group-header > span.icon {
     margin-right: 0.25em;
 }
 
-div.ThemeList ul.theme-group-body {
+div.ThemeList div.theme-group-body-items {
     display: flex;
     flex-wrap: wrap;
     align-items: flex-end;
     padding: 0.25em;
 }
 
-div.ThemeList li.theme-group-header ul.theme-group-body {
-    margin-left: 0.25em;
-}
-
-div.ThemeList li.theme-item {
+div.ThemeList div.theme-item {
     background-color: var(--list-bg-color);
     font-weight: bold;
     font-size: small;
@@ -54,24 +45,14 @@ div.ThemeList div.theme-item-title > span:first-child {
     white-space: nowrap;
 }
 
+div.ThemeList div.theme-item-active div.theme-item-title > span:first-child {
+    color: var(--color-active);
+}
+
 div.ThemeList div.theme-item-title > span.icon {
     flex: 0 0 auto;
     padding: 0.125em;
     font-size: large;
-}
-
-div.theme-item-tooltip {
-    inset: auto;
-    margin: 0;
-    max-width: 16em;
-    background-color: var(--tooltip-bg-color);
-    border: 1px solid var(--tooltip-border-color);
-    color: var(--tooltip-text-color);
-    font-weight: normal;
-    padding: 0 0.5em;
-    border-radius: 0.5em;
-    white-space: normal;
-    transform: translateX(-50%);
 }
 
 div.ThemeList div.theme-item-body {
@@ -79,10 +60,6 @@ div.ThemeList div.theme-item-body {
     width: 15em;
     display: flex;
     flex-direction: column;
-}
-
-div.ThemeList li.theme-item-active div.theme-item-title > span:first-child {
-    color: var(--color-active);
 }
 
 div.ThemeList img.theme-item-thumbnail {
@@ -228,4 +205,18 @@ div.ThemeList div.theme-item-restricted-content {
     top: 0;
     opacity: .5;
     padding: 0.25em;
+}
+
+div.theme-item-tooltip {
+    inset: auto;
+    margin: 0;
+    max-width: 16em;
+    background-color: var(--tooltip-bg-color);
+    border: 1px solid var(--tooltip-border-color);
+    color: var(--tooltip-text-color);
+    font-weight: normal;
+    padding: 0 0.5em;
+    border-radius: 0.5em;
+    white-space: normal;
+    transform: translateX(-50%);
 }

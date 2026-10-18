@@ -84,15 +84,16 @@ class ThemeList extends React.Component {
                 return null;
             }
             return (
-                <li className={"theme-group-header " + (expanded ? "theme-group-header-expanded" : "")} key={subdir.id}>
-                    <span
-                        onClick={() => this.setState((state) => ({expandedGroups: {...state.expandedGroups, [subdir.id]: !expanded}}))}
+                <div className={"theme-group "  + (expanded ? "theme-group-expanded" : "")} key={subdir.id}>
+                    <div className="theme-group-header"
+                        onClick={this.props.collapsibleGroups ? () => this.setState((state) => ({expandedGroups: {...state.expandedGroups, [subdir.id]: !expanded}})) : null}
                         onKeyDown={MiscUtils.checkKeyActivate} tabIndex="0"
                     >
-                        {this.props.collapsibleGroups ? (<Icon icon={expanded ? "collapse" : "expand"} />) : null} {subdir.titleMsgId ? LocaleUtils.tr(subdir.titleMsgId) : subdir.title}
-                    </span>
+                        {this.props.collapsibleGroups ? (<Icon icon={expanded ? "collapse" : "expand"} />) : null}
+                        {subdir.titleMsgId ? LocaleUtils.tr(subdir.titleMsgId) : subdir.title}
+                    </div>
                     {expanded ? this.renderThemeGroup(subdir, filter) : null}
-                </li>
+                </div>
             );
         });
         const activeThemeId = this.props.activeTheme ? this.props.activeTheme.id : null;
@@ -103,87 +104,89 @@ class ThemeList extends React.Component {
         const username = ConfigUtils.getConfigProp("username");
 
         return (
-            <ul className="theme-group-body">
-                {(!isEmpty(group.items) ? group.items : []).map(item => {
-                    const infoLinks = (item.themeInfoLinks && item.themeInfoLinks.entries || []).map(name => this.props.themes.themeInfoLinks.find(entry => entry.name === name)).filter(entry => entry);
-                    const matches = [];
-                    if (filter) {
-                        let match = null;
-                        if ((match = removeDiacritics(item.title).match(filter))) {
-                            matches.push([LocaleUtils.tr("themeswitcher.match.title"), this.extractSubstr(match, item.title), item.title]);
+            <div className="theme-group-body">
+                <div className="theme-group-body-items">
+                    {(!isEmpty(group.items) ? group.items : []).map(item => {
+                        const infoLinks = (item.themeInfoLinks && item.themeInfoLinks.entries || []).map(name => this.props.themes.themeInfoLinks.find(entry => entry.name === name)).filter(entry => entry);
+                        const matches = [];
+                        if (filter) {
+                            let match = null;
+                            if ((match = removeDiacritics(item.title).match(filter))) {
+                                matches.push([LocaleUtils.tr("themeswitcher.match.title"), this.extractSubstr(match, item.title), item.title]);
+                            }
+                            if ((match = removeDiacritics(item.keywords || "").match(filter))) {
+                                matches.push([LocaleUtils.tr("themeswitcher.match.keywords"), this.extractSubstr(match, item.keywords), item.keywords]);
+                            }
+                            if ((match = removeDiacritics(item.abstract || "").match(filter))) {
+                                matches.push([LocaleUtils.tr("themeswitcher.match.abstract"), this.extractSubstr(match, item.abstract), item.abstract]);
+                            }
+                            if (isEmpty(matches)) {
+                                return null;
+                            }
                         }
-                        if ((match = removeDiacritics(item.keywords || "").match(filter))) {
-                            matches.push([LocaleUtils.tr("themeswitcher.match.keywords"), this.extractSubstr(match, item.keywords), item.keywords]);
+                        let tooltip = `<p><b>${item.title}</b></p>`;
+                        if (item.abstract) {
+                            tooltip += `<p>${item.abstract}</p>`;
                         }
-                        if ((match = removeDiacritics(item.abstract || "").match(filter))) {
-                            matches.push([LocaleUtils.tr("themeswitcher.match.abstract"), this.extractSubstr(match, item.abstract), item.abstract]);
+                        if (item.keywords) {
+                            tooltip += `<p>${LocaleUtils.tr("themeswitcher.match.keywords")}: ${item.keywords}</p>`;
                         }
-                        if (isEmpty(matches)) {
-                            return null;
-                        }
-                    }
-                    let tooltip = `<p><b>${item.title}</b></p>`;
-                    if (item.abstract) {
-                        tooltip += `<p>${item.abstract}</p>`;
-                    }
-                    if (item.keywords) {
-                        tooltip += `<p>${LocaleUtils.tr("themeswitcher.match.keywords")}: ${item.keywords}</p>`;
-                    }
-                    return (
-                        <li className={activeThemeId === item.id ? "theme-item theme-item-active" : "theme-item"}
-                            key={item.id}
-                            onClick={() => this.setTheme(item)}
-                            onMouseEnter={(ev) => this.showTooltip(ev, tooltip)}
-                            onMouseLeave={(ev) => this.hideTooltip(ev)}
-                        >
-                            <div className="theme-item-title">
-                                <span>{item.title}</span>
-                            </div>
-                            {!isEmpty(infoLinks) ? (<div className={"theme-item-info-menu " + (this.state.visibleThemeInfoMenu ? "theme-item-info-menu-active" : "")} onClick={ev => this.toggleThemeInfoMenu(ev, item.id)}>
-                                <Icon icon="info" />
-                                {item.themeInfoLinks.title ? (<span>{item.themeInfoLinks.title}</span>) : LocaleUtils.tr(item.themeInfoLinks.titleMsgId)}
-                                <Icon icon="triangle-down" />
-                                {this.state.visibleThemeInfoMenu === item.id ? (
-                                    <div className="theme-item-info-links" onClick={ev => ev.stopPropagation()}>
-                                        {infoLinks.map(link => (
-                                            <a href={link.url} key={link.name} target={link.target}>{link.title}</a>
-                                        ))}
+                        return (
+                            <div className={activeThemeId === item.id ? "theme-item theme-item-active" : "theme-item"}
+                                key={item.id}
+                                onClick={() => this.setTheme(item)}
+                                onMouseEnter={(ev) => this.showTooltip(ev, tooltip)}
+                                onMouseLeave={(ev) => this.hideTooltip(ev)}
+                            >
+                                <div className="theme-item-title">
+                                    <span>{item.title}</span>
+                                </div>
+                                {!isEmpty(infoLinks) ? (<div className={"theme-item-info-menu " + (this.state.visibleThemeInfoMenu ? "theme-item-info-menu-active" : "")} onClick={ev => this.toggleThemeInfoMenu(ev, item.id)}>
+                                    <Icon icon="info" />
+                                    {item.themeInfoLinks.title ? (<span>{item.themeInfoLinks.title}</span>) : LocaleUtils.tr(item.themeInfoLinks.titleMsgId)}
+                                    <Icon icon="triangle-down" />
+                                    {this.state.visibleThemeInfoMenu === item.id ? (
+                                        <div className="theme-item-info-links" onClick={ev => ev.stopPropagation()}>
+                                            {infoLinks.map(link => (
+                                                <a href={link.url} key={link.name} target={link.target}>{link.title}</a>
+                                            ))}
+                                        </div>
+                                    ) : null}
+                                </div>) : null}
+                                <div className="theme-item-body" onKeyDown={MiscUtils.checkKeyActivate} tabIndex={0}>
+                                    {item.description ? (<div className="theme-item-description" dangerouslySetInnerHTML={{__html: MiscUtils.sanitizeHtml(item.description)}} />) : null}
+                                    <img className="theme-item-thumbnail" src={assetsPath + "/" + item.thumbnail} />
+                                </div>
+                                {!item.restricted ? (
+                                    <div className="theme-item-icons">
+                                        {this.props.allowAddingOtherThemeLayers ? (<Icon icon="layers" onClick={ev => this.getThemeLayersToList(ev, item)} title={addLayersTitle} />) : null}
+                                        {this.props.allowAddingOtherThemes ? (<Icon icon="plus" onClick={ev => this.addThemeLayers(ev, item)} title={addTitle} />) : null}
+                                        <Icon icon="open_link" onClick={ev => this.openInTab(ev, item.id)} title={openTabTitle} />
+                                        {this.props.showDefaultThemeSelector && username  ? (<Icon className={ (this.extractThemeId(this.props.defaultUrlParams) === item.id ? "icon-active" : "")} icon="new" onClick={ev => this.changeDefaultUrlParams(ev, item.id)} title={changeDefaultUrlTitle} />) : null }
+                                    </div>
+                                ) : (
+                                    <div className="theme-item-restricted-overlay">
+                                        <Icon icon="lock" />
+                                    </div>
+                                )}
+                                {item.hasRestrictedContent ? (
+                                    <div className="theme-item-restricted-content" title={LocaleUtils.tr("themeswitcher.restrictedcontent")}>
+                                        <Icon icon="lock" />
                                     </div>
                                 ) : null}
-                            </div>) : null}
-                            <div className="theme-item-body" onKeyDown={MiscUtils.checkKeyActivate} tabIndex={0}>
-                                {item.description ? (<div className="theme-item-description" dangerouslySetInnerHTML={{__html: MiscUtils.sanitizeHtml(item.description)}} />) : null}
-                                <img className="theme-item-thumbnail" src={assetsPath + "/" + item.thumbnail} />
+                                {isEmpty(matches) ? null : (
+                                    <div className="theme-item-filterinfo-overlay">
+                                        {matches.map(match => (
+                                            <div key={match[0]} title={match[2]}><i>{match[0]}:</i><br />{match[1][0]}<b>{match[1][1]}</b>{match[1][2]}</div>
+                                        ))}
+                                    </div>
+                                )}
                             </div>
-                            {!item.restricted ? (
-                                <div className="theme-item-icons">
-                                    {this.props.allowAddingOtherThemeLayers ? (<Icon icon="layers" onClick={ev => this.getThemeLayersToList(ev, item)} title={addLayersTitle} />) : null}
-                                    {this.props.allowAddingOtherThemes ? (<Icon icon="plus" onClick={ev => this.addThemeLayers(ev, item)} title={addTitle} />) : null}
-                                    <Icon icon="open_link" onClick={ev => this.openInTab(ev, item.id)} title={openTabTitle} />
-                                    {this.props.showDefaultThemeSelector && username  ? (<Icon className={ (this.extractThemeId(this.props.defaultUrlParams) === item.id ? "icon-active" : "")} icon="new" onClick={ev => this.changeDefaultUrlParams(ev, item.id)} title={changeDefaultUrlTitle} />) : null }
-                                </div>
-                            ) : (
-                                <div className="theme-item-restricted-overlay">
-                                    <Icon icon="lock" />
-                                </div>
-                            )}
-                            {item.hasRestrictedContent ? (
-                                <div className="theme-item-restricted-content" title={LocaleUtils.tr("themeswitcher.restrictedcontent")}>
-                                    <Icon icon="lock" />
-                                </div>
-                            ) : null}
-                            {isEmpty(matches) ? null : (
-                                <div className="theme-item-filterinfo-overlay">
-                                    {matches.map(match => (
-                                        <div key={match[0]} title={match[2]}><i>{match[0]}:</i><br />{match[1][0]}<b>{match[1][1]}</b>{match[1][2]}</div>
-                                    ))}
-                                </div>
-                            )}
-                        </li>
-                    );
-                })}
+                        );
+                    })}
+                </div>
                 {subtree}
-            </ul>
+            </div>
         );
     };
     groupContainsActiveTheme = (group) => {
