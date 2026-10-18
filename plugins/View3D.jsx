@@ -329,7 +329,7 @@ class View3D extends React.Component {
                 >
                     {this.state.componentLoaded ? (
                         <Provider store={this.store}>
-                            <PluginsContainer pluginsConfig={pluginsConfig}>
+                            <PluginsContainer className="plugins-container-3d" pluginsConfig={pluginsConfig}>
                                 <Map3D
                                     controlsPosition={this.props.controlsPosition}
                                     defaultColorLayerVisibility={this.props.defaultColorLayerVisibility}

@@ -75,7 +75,7 @@ class TopBar3D extends React.Component {
     }
     filter2DItems = (item) => {
         const pluginConf = ConfigUtils.getPluginConfig(item.key);
-        return isEmpty(pluginConf) || (this.props.viewMode === ViewMode._3DFullscreen && pluginConf.availableIn3D);
+        return item.key.endsWith("3D") || (this.props.viewMode === ViewMode._3DFullscreen && pluginConf.availableIn3D);
     };
     render() {
         const config = ConfigUtils.getPluginConfig("TopBar")?.cfg || {};
