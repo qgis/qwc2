@@ -364,7 +364,7 @@ class MapExport3D extends React.Component {
         }
     }
     renderPrintLabelField = (label, opts) => {
-        let defaultValue = opts.defaultValue || "";
+        let defaultValue = MiscUtils.resolveUserPlaceholders(opts.defaultValue || "").trim();
         let autopopulated = false;
         if (label === this.props.theme.printLabelForSearchResult) {
             defaultValue = this.getSearchMarkerLabel();
@@ -372,11 +372,8 @@ class MapExport3D extends React.Component {
         } else if (label === this.props.theme.printLabelForAttribution) {
             defaultValue = this.getAttributionLabel();
             autopopulated = true;
-        } else if (MiscUtils.resolveUserPlaceholders(defaultValue) !== defaultValue) {
-            defaultValue = MiscUtils.resolveUserPlaceholders(defaultValue).trim();
-            autopopulated = true;
         }
-        if (autopopulated && this.props.hideAutopopulatedFields) {
+        if (opts.hidden || (autopopulated && this.props.hideAutopopulatedFields)) {
             return (<tr key={"label." + label}><td colSpan="2"><input defaultValue={defaultValue} name={opts.name} type="hidden" /></td></tr>);
         } else {
             if (opts.options) {
