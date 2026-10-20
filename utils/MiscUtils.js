@@ -181,6 +181,16 @@ const MiscUtils = {
     capitalizeFirst(text) {
         return text.slice(0, 1).toUpperCase() + text.slice(1);
     },
+    /**
+     * Replaces the `{username}` and `{user_infos.<field>}` placeholders with
+     * the values of the currently logged in user.
+     */
+    resolveUserPlaceholders(text) {
+        const userInfos = ConfigUtils.getConfigProp("user_infos", null, {});
+        return text.replace(/\{(username|user_infos\.(\w+))\}/g, (match, key, field) => (
+            (field ? userInfos[field] : ConfigUtils.getConfigProp("username")) ?? ""
+        ));
+    },
     isNumeric(value) {
         return typeof value === 'string' && value.trim() !== '' && String(Number(value)) === value.trim();
     },
