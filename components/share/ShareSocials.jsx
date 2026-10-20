@@ -15,7 +15,7 @@ import {
     WhatsappShareButton,
     EmailShareButton,
     FacebookIcon,
-    TwitterIcon,
+    XIcon,
     LinkedinIcon,
     WhatsappIcon,
     EmailIcon
@@ -61,7 +61,7 @@ export default class ShareSocials extends React.Component {
             twitter: (
                 <div className="social-box" key="twitter">
                     <TwitterShareButton title={title} url={url}>
-                        <TwitterIcon round size={32} />
+                        <XIcon round size={32} />
                     </TwitterShareButton>
                 </div>
             ),
