@@ -398,7 +398,7 @@
                 "properties": {
                     "defaultValue": {
                         "type": "string",
-                        "description": "Default value."
+                        "description": "Default value. Can contain the placeholders `{username}` and `{user_infos.<field>}`, which are replaced with the values of the logged in user and make the field read-only."
                     },
                     "options": {
                         "type": "array",

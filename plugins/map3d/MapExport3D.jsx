@@ -372,6 +372,9 @@ class MapExport3D extends React.Component {
         } else if (label === this.props.theme.printLabelForAttribution) {
             defaultValue = this.getAttributionLabel();
             autopopulated = true;
+        } else if (MiscUtils.resolveUserPlaceholders(defaultValue) !== defaultValue) {
+            defaultValue = MiscUtils.resolveUserPlaceholders(defaultValue).trim();
+            autopopulated = true;
         }
         if (autopopulated && this.props.hideAutopopulatedFields) {
             return (<tr key={"label." + label}><td colSpan="2"><input defaultValue={defaultValue} name={opts.name} type="hidden" /></td></tr>);
