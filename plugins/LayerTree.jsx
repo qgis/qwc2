@@ -74,6 +74,8 @@ class LayerTree extends React.Component {
         enableServiceInfo: PropTypes.bool,
         /** Whether to display a button to filter invisible layers from the layertree. */
         enableVisibleFilter: PropTypes.bool,
+        /** List of layernames for which no legend is displayed, neither as icon nor in the legend print. */
+        excludeLegendLayers: PropTypes.array,
         /** Additional parameters to pass to the GetLegendGraphics request. */
         extraLegendParameters: PropTypes.string,
         /** Whether to use the fallback logic for drag-and-drop. */
@@ -167,6 +169,7 @@ class LayerTree extends React.Component {
         enableLegendPrint: true,
         enableVisibleFilter: true,
         enableServiceInfo: true,
+        excludeLegendLayers: [],
         infoInSettings: true,
         showGroupStyleSelector: true,
         showStyleSelector: true,
@@ -354,7 +357,7 @@ class LayerTree extends React.Component {
             infoButton = (<Icon className="layertree-item-metadata" icon="info-sign" onClick={() => this.props.setActiveLayerInfo(layer, sublayer)}/>);
         }
         let legendicon = null;
-        if (this.props.showLegendIcons) {
+        if (this.props.showLegendIcons && !this.props.excludeLegendLayers.includes(sublayer.name)) {
             const legendUrl = LayerUtils.getLegendUrl(layer, sublayer, this.props.map, this.props.bboxDependentLegend, this.props.scaleDependentLegend, this.props.extraLegendParameters);
             if (legendUrl) {
                 legendicon = (<Image className="layertree-item-legend-thumbnail" onMouseOut={this.hideLegendTooltip} onMouseOver={ev => this.showLegendTooltip(ev, legendUrl)} onTouchStart={ev => this.showLegendTooltip(ev, legendUrl)} src={legendUrl + "&TYPE=thumbnail"} />);
@@ -675,6 +678,7 @@ class LayerTree extends React.Component {
                     <LegendPrintWindow
                         addGroupTitles
                         bboxDependentLegend={this.props.bboxDependentLegend}
+                        excludeLayers={this.props.excludeLegendLayers}
                         extraLegendParameters={this.props.extraLegendParameters}
                         onClose={() => this.setState({legendPrintVisible: false})}
                         scaleDependentLegend={this.props.scaleDependentLegend}
