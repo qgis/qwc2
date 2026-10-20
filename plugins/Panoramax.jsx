@@ -282,7 +282,7 @@ class Panoramax extends React.Component {
 }
 
 export default connect((state) => ({
-    active: state.task.id === "Panoramax",
+    active: state.task.id === "Panoramax" && !!state.theme.current,
     click: state.map.click,
     mapScale: state.map.scale,
     theme: state.theme.current
