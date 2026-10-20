@@ -174,7 +174,7 @@ class Print extends React.Component {
     onShow = () => {
         // setup initial extent
         let scale = Math.round(this.props.map.scale * this.props.defaultScaleFactor);
-        if (this.props.theme.printScales?.length > 0) {
+        if (this.props.theme?.printScales?.length > 0) {
             scale = this.props.theme.printScales.reduce((prev, curr) => {
                 return Math.abs(curr - scale) < Math.abs(prev - scale) ? curr : prev;
             });
@@ -196,12 +196,12 @@ class Print extends React.Component {
         this.setState({minimized: false, printSeriesEnabled: false, atlasFeatures: []});
     };
     renderBody = (themeLayer) => {
-        if (!this.state.layout) {
-            return (<div className="print-body" role="body">{LocaleUtils.tr("print.nolayouts")}</div>);
-        }
         const haveThemeLayers = this.props.layers.find(layer => layer.role === LayerRole.THEME) !== undefined;
         if (!this.props.theme || (!this.props.printExternalLayers && !haveThemeLayers)) {
             return (<div className="print-body" role="body">{LocaleUtils.tr("print.notheme")}</div>);
+        }
+        if (!this.state.layout) {
+            return (<div className="print-body" role="body">{LocaleUtils.tr("print.nolayouts")}</div>);
         }
 
         const mapName = this.state.layout.map.name;
