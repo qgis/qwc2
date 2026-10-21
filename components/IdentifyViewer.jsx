@@ -866,8 +866,8 @@ class IdentifyViewer extends React.Component {
         const serviceUrl = ConfigUtils.getConfigProp("documentServiceUrl").replace(/\/$/, "");
         const params = {
             feature: result.id,
-            x: result.clickPos[0],
-            y: result.clickPos[1],
+            x: result.clickPos?.[0],
+            y: result.clickPos?.[1],
             crs: this.props.map.projection,
             single_report: report.single_report || false
         };
@@ -882,8 +882,8 @@ class IdentifyViewer extends React.Component {
         const serviceUrl = ConfigUtils.getConfigProp("documentServiceUrl").replace(/\/$/, "");
         const params = {
             feature: results.map(result => result.id).join(","),
-            x: results[0].clickPos[0],
-            y: results[0].clickPos[1],
+            x: results[0].clickPos?.[0],
+            y: results[0].clickPos?.[1],
             crs: this.props.map.projection,
             single_report: report.single_report || false
         };
