@@ -255,7 +255,7 @@ class FeatureSearch extends React.Component {
 
         this.setState({busy: true, searchResults: null});
         Request.get(this.props.theme.featureInfoUrl, {params}).then(response => {
-            const results = IdentifyUtils.parseResponse(response.data, this.props.theme, 'text/xml', null, this.props.map.projection);
+            let results = IdentifyUtils.parseResponse(response.data, this.props.theme, 'text/xml', null, this.props.map.projection);
             // Enable the layers
             Object.keys(results).forEach(layername => {
                 const path = [];
@@ -267,6 +267,7 @@ class FeatureSearch extends React.Component {
                     this.props.changeLayerProperty(layer.id, "visibility", true, path, 'both');
                 }
             });
+            // Apply result title formatting
             if (provider.params.resultTitle) {
                 Object.entries(results).forEach(([layername, features]) => {
                     features.forEach(feature => {
@@ -279,6 +280,8 @@ class FeatureSearch extends React.Component {
                     });
                 });
             }
+            // Prefix searchResult keys with service_url
+            results = Object.fromEntries(Object.entries(results).map(([layername, features]) => ([this.props.theme.url + "#" + layername, features])));
             const bbox = VectorLayerUtils.computeFeaturesBBox(Object.values(results).flat());
             if (bbox) {
                 const maxZoom = MapUtils.computeZoom(this.props.map.scales, this.props.theme.minSearchScaleDenom || 1000);
