@@ -301,9 +301,6 @@ class AttributeTableWidget extends React.Component {
                             <div value="<">&lt;</div>
                         </ComboBox>
                         {valueInput}
-                        <button className={"button " + (this.state.selectedOnly ? "pressed" : "")} disabled={isEmpty(this.state.selectedFeatures)} onClick={() => this.setState(state => ({selectedOnly: !state.selectedOnly}))} title={LocaleUtils.tr("attribtable.selectedonly")} type="button">
-                            <Icon icon="checked" />
-                        </button>
                     </div>
                     {this.props.showLimitToExtent ? (
                         <div>
@@ -407,6 +404,9 @@ class AttributeTableWidget extends React.Component {
                             <span>{LocaleUtils.tr("attribtable.discard")}</span>
                         </button>
                     ) : null}
+                    <button className={"button " + (this.state.selectedOnly ? "pressed" : "")} disabled={isEmpty(this.state.selectedFeatures)} onClick={() => this.setState(state => ({selectedOnly: !state.selectedOnly}))} title={LocaleUtils.tr("attribtable.selectedonly")} type="button">
+                        <Icon icon="checked" />
+                    </button>
                     <MenuButton menuIcon="export" onActivate={this.export} tooltip={LocaleUtils.tr("common.export")}>
                         <div value="csv">CSV</div>
                         <div value="xlsx">XLSX</div>
