@@ -150,7 +150,7 @@ const LayerUtils = {
                 });
             } else {
                 layerNames.push(sublayer.name);
-                opacities.push(Number.isInteger(sublayer.opacity) ? sublayer.opacity : 255);
+                opacities.push(Math.round(sublayer.opacity ?? 255));
                 styles.push(sublayer.style || "");
                 omitFromQueryLayers.push(sublayer.omitFromQueryLayers);
                 if (sublayer.queryable && !sublayer.omitFromQueryLayers) {
