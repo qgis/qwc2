@@ -98,11 +98,6 @@ class Editing extends React.Component {
         pendingClone: null
     };
     onShow = () => {
-        if (this.props.taskData) {
-            this.changeSelectedLayer(this.props.taskData.layer, this.props.taskData.feature);
-        } else {
-            this.changeSelectedLayer(this.state.selectedLayer);
-        }
         this.props.setSnappingConfig(this.props.snapping, this.props.snappingActive);
     };
     onHide = () => {
@@ -140,7 +135,9 @@ class Editing extends React.Component {
                 this.props.iface.getFeatureById(editConfig, this.props.taskData.feature, this.props.map.projection, (feature) => {
                     this.changeSelectedLayer(this.props.taskData.layer, feature || this.props.taskData.feature);
                 });
-            } else this.changeSelectedLayer(this.props.taskData.layer);
+            } else {
+                this.changeSelectedLayer(this.props.taskData.layer);
+            }
         }
         // If click point changed and in pick mode with a selected layer, trigger a pick
         const isCurrentContext = this.props.editContext.id === this.props.currentEditContext;
