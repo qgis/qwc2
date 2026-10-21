@@ -36,8 +36,7 @@ const MiscUtils = {
                 null,
                 // Original String: (\s|^)((http(s)?|(s)?ftp):\/\/.)?(www\.)?[-a-zA-Z0-9@:%._+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_+.~#?&//=\u00C0-\u00FF\u0370-\u03FF]*)
                 // Escaped with https://www.freeformatter.com/json-escape.html
-                // eslint-disable-next-line
-                "(\\s|^)((http(s)?|(s)?ftp):\\\/\\\/.)?(www\\.)?[-a-zA-Z0-9@:%._+~#=]{2,256}\\.[a-z]{2,6}\\b([-a-zA-Z0-9@:%_+.~#?&\/\/=\\u00C0-\\u00FF\\u0370-\\u03FF]*)"
+                "\\b(?:(?:https?|mailto|ftp)://|www\\.)[^\\s<>\"']*[^\\s<>\"'.,;:!?)]|\\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}\\b|\\b(?:[A-Za-z0-9](?:[A-Za-z0-9-]*[A-Za-z0-9])?\\.)+[A-Za-z]{2,}(?::\\d{1,5})?(?:/[^\\s<>\"']*)?"
             ),
             "g"
         );
@@ -47,19 +46,18 @@ const MiscUtils = {
         while ((match = urlRegEx.exec(value))) {
             // If URL is part of a HTML attribute, don't add anchor
             if (value.substring(match.index - 2, match.index).match(/^=['"]$/) === null) {
-                const url = match[0].substr(match[1].length);
-                let protoUrl = url;
-                if (match[2] === undefined) {
+                let url = match[0];
+                // Add protocol if necessary
+                if (!/^\w+:/.exec(url)) {
                     if (match[0].indexOf('@') !== -1) {
-                        protoUrl = "mailto:" + url;
+                        url = "mailto:" + url;
                     } else {
-                        protoUrl = "http://" + url;
+                        url = "https://" + url;
                     }
                 }
-                const pos = match.index + match[1].length;
-                const anchor = "<a href=\"" + MiscUtils.htmlEncode(protoUrl) + "\" target=\"_blank\">" + MiscUtils.htmlEncode(url) + "</a>";
-                value = value.substring(0, pos) + anchor + value.substring(pos + url.length);
-                urlRegEx.lastIndex = pos + anchor.length;
+                const anchor = "<a href=\"" + MiscUtils.htmlEncode(url) + "\" target=\"_blank\">" + MiscUtils.htmlEncode(match[0]) + "</a>";
+                value = value.substring(0, match.index) + anchor + value.substring(match.index + match[0].length);
+                urlRegEx.lastIndex = match.index + anchor.length;
             }
         }
         // Reset
