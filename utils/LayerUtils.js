@@ -388,7 +388,10 @@ const LayerUtils = {
     reorderLayer(layers, layerId, sublayerpath, delta, preventSplittingGroups) {
         // Extract foreground layers
         let newlayers = layers.filter(layer => layer.role !== LayerRole.BACKGROUND);
-        if (preventSplittingGroups) {
+        // If root entry is not displayed, allow "splitting" the theme WMS structure at the top level
+        const splitToplevelThemeWms = isEmpty(sublayerpath) && !ConfigUtils.getPluginConfig("LayerTree")?.cfg?.showRootEntry;
+
+        if (preventSplittingGroups && !splitToplevelThemeWms) {
             const moveLayerIdx = newlayers.findIndex(l => l.id === layerId);
             let oldIndex = moveLayerIdx;
             let group = newlayers;
@@ -430,10 +433,26 @@ const LayerUtils = {
             }
             // Reorder layer
             if (delta < 0) {
+                if (splitToplevelThemeWms) {
+                    let childCount = 0;
+                    for (let i = 0; i > delta; --i) {
+                        const nextGroup = exploded[indices[0] - childCount - 1];
+                        childCount += Math.max(1, exploded.filter(entry => entry.layer.id === nextGroup.layer.id && LayerUtils.pathEqualOrBelow([nextGroup.path[0]], entry.path)).length);
+                    }
+                    delta = -childCount;
+                }
                 for (const idx of indices) {
                     exploded.splice(idx + delta, 0, exploded.splice(idx, 1)[0]);
                 }
             } else {
+                if (splitToplevelThemeWms) {
+                    let childCount = 0;
+                    for (let i = 0; i < delta; ++i) {
+                        const nextGroup = exploded[indices[indices.length - 1] + childCount + 1];
+                        childCount += Math.max(1, exploded.filter(entry => entry.layer.id === nextGroup.layer.id && LayerUtils.pathEqualOrBelow([nextGroup.path[0]], entry.path)).length);
+                    }
+                    delta = childCount;
+                }
                 for (const idx of indices.reverse()) {
                     exploded.splice(idx + delta, 0, exploded.splice(idx, 1)[0]);
                 }
