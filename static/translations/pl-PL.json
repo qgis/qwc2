@@ -626,8 +626,8 @@
       "transform": "Przekształcenie"
     },
     "reports": {
-      "region": "",
-      "selectlayer": ""
+      "region": "Wybierz region",
+      "selectlayer": "Wybierz warstwę raportu..."
     },
     "routing": {
       "add": "",
@@ -672,39 +672,39 @@
       "finish": ""
     },
     "search": {
-      "circleradius": "",
-      "coordinates": "",
-      "existinglayer": "",
-      "filter": "",
-      "layers": "",
-      "limittoarea": "",
-      "more": "",
-      "nodescription": "",
-      "none": "",
-      "placeholder": "",
-      "places": "",
-      "providerselection": "",
-      "recent": "",
+      "circleradius": "Promień okręgu",
+      "coordinates": "Współrzędne",
+      "existinglayer": "Ta warstwa już istnieje na mapie",
+      "filter": "Doprecyzuj wyszukiwanie",
+      "layers": "Warstwy",
+      "limittoarea": "Ogranicz do obszaru",
+      "more": "{0} więcej wyników",
+      "nodescription": "Brak dostępnego opisu",
+      "none": "Brak",
+      "placeholder": "Wyszukaj miejsce lub dodaj mapę...",
+      "places": "Miejsca",
+      "providerselection": "Wybierz dostawcę",
+      "recent": "Ostatnie wyszukiwania",
       "search": "Szukaj",
-      "tasks": "",
-      "themelayers": "",
+      "tasks": "Menu zadań",
+      "themelayers": "Warstwy motywu",
       "themes": "Motywy",
-      "unknownmore": ""
+      "unknownmore": "Więcej wyników"
     },
     "sensorthingstool": {
-      "addDatastream": "",
-      "addLocation": "",
-      "addLocationAndDatastreams": "",
+      "addDatastream": "Dodaj strumień danych do wykresu",
+      "addLocation": "Dodaj miejsce",
+      "addLocationAndDatastreams": "Dodaj miejsce i pokaż jego wszystkie strumienie danych na wykresie",
       "datastreamInfo": {
-        "calibration": "",
-        "description": "",
-        "location": "",
-        "name": "",
+        "calibration": "Kalibracja",
+        "description": "Opis",
+        "location": "Miejsce",
+        "name": "Nazwa",
         "observedProperty": "",
-        "sensor": "",
+        "sensor": "Sensor",
         "thing": "",
         "title": "",
-        "unit": ""
+        "unit": "Jednostka"
       },
       "datastreamLabel": "",
       "datastreamNone": "",
@@ -732,39 +732,39 @@
         "thing": "",
         "title": ""
       },
-      "exportCSV": "",
-      "exportImage": "",
+      "exportCSV": "Eksportuj jako CSV",
+      "exportImage": "Eksportuj jako obraz",
       "graphOptions": {
-        "reverseAxis": "",
-        "threshold": "",
-        "thresholdLabel": "",
-        "thresholdValue": "",
-        "title": "",
-        "toggleGridLines": "",
-        "toggleSecondYAxis": "",
-        "xAxis": "",
-        "xAxisAtTop": "",
-        "yAuto": "",
-        "yAxis": "",
-        "yMax": "",
-        "yMin": ""
+        "reverseAxis": "Odwróć osie",
+        "threshold": "Próg",
+        "thresholdLabel": "Etykieta",
+        "thresholdValue": "Wartość",
+        "title": "Ustawienia",
+        "toggleGridLines": "Linie siatki",
+        "toggleSecondYAxis": "Druga oś X",
+        "xAxis": "oś X",
+        "xAxisAtTop": "Na górze",
+        "yAuto": "auto",
+        "yAxis": "oś Y",
+        "yMax": "Górny limit",
+        "yMin": "Dolny limit"
       },
       "intervalOptions": {
-        "custom": "",
-        "day": "",
-        "hour": "",
-        "month": "",
-        "week": "",
-        "year": ""
+        "custom": "Własny",
+        "day": "Dzień",
+        "hour": "Godzina",
+        "month": "Miesiąc",
+        "week": "Tydzień",
+        "year": "Rok"
       },
       "locationInfo": {
-        "description": "",
-        "inactive": "",
-        "name": "",
-        "platform": "",
-        "qompSensorId": "",
-        "serialNumber": "",
-        "title": ""
+        "description": "Opis",
+        "inactive": "Nieaktywna",
+        "name": "Nazwa",
+        "platform": "Platforma",
+        "qompSensorId": "QOMP Sensor ID",
+        "serialNumber": "Numer seryjny",
+        "title": "Informacjo o miejscu"
       },
       "locationLabel": "",
       "pickLocation": "",
@@ -784,53 +784,53 @@
         "arithmeticMean": "",
         "nthPercentile": ""
       },
-      "title": ""
+      "title": "SensorThings Query"
     },
     "serviceinfo": {
-      "abstract": "",
-      "contactEmail": "",
-      "contactOrganization": "",
-      "contactPerson": "",
-      "contactPhone": "",
-      "contactPosition": "",
-      "keywords": "",
-      "onlineResource": "",
-      "title": ""
+      "abstract": "Streszczenie",
+      "contactEmail": "E-mail",
+      "contactOrganization": "Organizacja",
+      "contactPerson": "Osoba kontaktowa",
+      "contactPhone": "Telefon",
+      "contactPosition": "Stanowisko",
+      "keywords": "Słowa kluczowe",
+      "onlineResource": "Zasób online",
+      "title": "Informacja o motywie"
     },
     "settings": {
-      "colorscheme": "",
-      "confirmlang": "",
-      "default": "",
-      "defaulttheme": "",
-      "defaultthemefailed": "",
-      "language": "",
-      "systemlang": "",
-      "themes": ""
+      "colorscheme": "Wygląd",
+      "confirmlang": "Aplikacja będzie przeładowana aby dokonać zmiany języka. Kontynuować?",
+      "default": "Domeyślny",
+      "defaulttheme": "Domyślny motyw",
+      "defaultthemefailed": "Nie udało się ustawić domyślnego motywu: {0}",
+      "language": "Język",
+      "systemlang": "Język systemu",
+      "themes": "Informacja o motywie"
     },
     "settings3d": {
-      "fov": "",
-      "pointSize": "",
-      "pointSizeAuto": "",
-      "quality": ""
+      "fov": "Pole widzenia",
+      "pointSize": "Wielkość punktu",
+      "pointSizeAuto": "Auto",
+      "quality": "Jakość"
     },
     "share": {
       "QRCodeLinkTitle": "QR code",
       "directLinkTitle": "Poprzez link bezpośredni",
-      "expires": "",
-      "norestriction": "",
-      "refresh": "",
-      "restricttogroup": "",
+      "expires": "Ten permalink jest wazny do {0}",
+      "norestriction": "Brak ograniczeń",
+      "refresh": "Wygeneruj permalink",
+      "restricttogroup": "Ogranicz do grupy",
       "shareTitle": "QWC2",
-      "showpin": "",
+      "showpin": "Pokaż pin",
       "socialIntro": "W twoich ulubionych mediach społecznościowych"
     },
     "snapping": {
-      "edge": "",
-      "intersection": "",
-      "loading": "",
-      "perpendicular": "",
-      "snappingenabled": "",
-      "vertex": ""
+      "edge": "Przyciągaj do krawędzi",
+      "intersection": "Przciągaj do przecięć",
+      "loading": "Wczytywanie geometrii przyciągania...",
+      "perpendicular": "Przyciąganie prostopadłe",
+      "snappingenabled": "Przyciąganie",
+      "vertex": "Przyciąganie do wierzchołków"
     },
     "sunexposure3d": {
       "end": "",
@@ -859,9 +859,9 @@
         "keywords": "",
         "title": ""
       },
-      "openintab": "",
-      "restrictedcontent": "",
-      "restrictedthemeinfo": ""
+      "openintab": "Otwórz w karcie",
+      "restrictedcontent": "Motyw z treścią dostępną tylko dla zalogowanych użytkowników",
+      "restrictedthemeinfo": "Nie masz uprawnień do wyświetlenia tego motywu lub nie jesteś zalogowany."
     },
     "timemanager": {
       "animationinterval": "",
@@ -909,15 +909,15 @@
       }
     },
     "tooltip": {
-      "background": "Zmień podkład map",
-      "fullscreendisable": "",
-      "fullscreenenable": "",
+      "background": "Zmień podkład",
+      "fullscreendisable": "Wyłącz tryb pełnoekranowy",
+      "fullscreenenable": "Włacz tryb pełnoekranowy",
       "home": "Pokaż całą mapę"
     },
     "tourguide": {
-      "done": "",
-      "next": "",
-      "previous": ""
+      "done": "Gotowe",
+      "next": "Następny",
+      "previous": "Poprzedni"
     },
     "valuetool": {
       "allbands": "",
@@ -938,8 +938,8 @@
       "ymin": ""
     },
     "vectorlayerpicker": {
-      "none": "",
-      "prompt": ""
+      "none": "Brak",
+      "prompt": "Wprowadź nazwę warstwy"
     },
     "view3d": {
       "storingstate": ""
@@ -948,11 +948,11 @@
       "cubemap": ""
     },
     "viewshed3d": {
-      "maxDistance": "",
-      "observerpos": "",
-      "occludedcolor": "",
-      "showgizmo": "",
-      "visiblecolor": ""
+      "maxDistance": "Maksymalna odległość",
+      "observerpos": "Pozycja obserwatora",
+      "occludedcolor": "Kolor przesłonięty",
+      "showgizmo": "Pokaż gizmo",
+      "visiblecolor": "Widoczny kolor"
     },
     "visibilitypreset": {
       "addfailed": "",
@@ -968,22 +968,22 @@
       "update": ""
     },
     "window": {
-      "detach": "",
-      "dock": "",
-      "embed": "",
-      "maximize": "",
-      "minimize": "",
-      "undock": "",
-      "unmaximize": "",
-      "unminimize": ""
+      "detach": "Odłącz",
+      "dock": "Zadokuj",
+      "embed": "Osadź",
+      "maximize": "Maksymalizuj",
+      "minimize": "Minimalizuj",
+      "undock": "Oddokuj",
+      "unmaximize": "Przywróć",
+      "unminimize": "Odminimalizuj"
     },
     "colorschemes": {
-      "default": "",
-      "default_rounded": "",
-      "dark": "",
-      "dark_rounded": "",
-      "highcontrast": "",
-      "highcontrast_rounded": ""
+      "default": "Domyślny",
+      "default_rounded": "Domyslny zaokrąglony",
+      "dark": "Ciemny",
+      "dark_rounded": "Ciemny zaokrąglony",
+      "highcontrast": "Wysoki kontrast",
+      "highcontrast_rounded": "Wysoki konrast zaokrąglony"
     },
     "plotdescr": {
       "title": "",
