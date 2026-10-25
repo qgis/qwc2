@@ -896,7 +896,7 @@ class AttributeTableWidget extends React.Component {
             return;
         }
         const feature = Object.values(this.state.selectedFeatures)[0];
-        this.props.setCurrentTask("Editing", null, null, {layer: this.state.loadedLayer, feature: feature});
+        this.props.setCurrentTask("Editing", null, null, {layer: this.state.loadedLayer, featureId: feature.id});
     };
     export = (format) => {
         const primaryKey = this.state.curEditConfig.primaryKey ?? "id";

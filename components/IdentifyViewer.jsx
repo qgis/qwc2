@@ -461,7 +461,7 @@ class IdentifyViewer extends React.Component {
         }
         let editButton = null;
         if (ConfigUtils.havePlugin("Editing") && this.props.editConfigs[feature.wms_name]?.[feature.layername]) {
-            editButton = (<Icon icon="editing" onClick={() => this.props.setCurrentTask("Editing", null, null, {layer: `${feature.wms_name}#${feature.layername}`, feature: feature.id})} title={LocaleUtils.tr("identify.editform")} />);
+            editButton = (<Icon icon="editing" onClick={() => this.props.setCurrentTask("Editing", null, null, {layer: `${feature.wms_name}#${feature.layername}`, featureId: feature.id})} title={LocaleUtils.tr("identify.editform")} />);
         }
         const key = layerid + "$" + feature.id;
         const expanded = this.state.expandedResults.has(key);
