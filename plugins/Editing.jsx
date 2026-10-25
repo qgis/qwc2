@@ -145,7 +145,7 @@ class Editing extends React.Component {
             }
         }
         // If click point changed and in pick mode with a selected layer, trigger a pick
-        const isCurrentContext = this.props.editContext.id === this.props.currentEditContext;
+        const isCurrentContext = this.props.currentEditContext && this.props.editContext.id === this.props.currentEditContext;
         if (this.props.enabled && isCurrentContext && this.props.editContext.action === 'Pick' && this.state.selectedLayer && !this.props.editContext.changed) {
             const newPoint = this.props.map.click || {};
             const oldPoint = prevProps.map.click || {};
@@ -227,6 +227,7 @@ class Editing extends React.Component {
         }
         const editConfig = this.props.editContext?.editConfig;
         const editPermissions = editConfig?.permissions ?? {};
+        const inChildContext = this.props.currentEditContext && this.props.editContext.id !== this.props.currentEditContext;
 
         const actionButtons = [];
         actionButtons.push({key: 'Pick', icon: 'pick', label: LocaleUtils.tr("common.pick"), data: {action: 'Pick', feature: null}});
@@ -242,7 +243,7 @@ class Editing extends React.Component {
             const featureText = LocaleUtils.tr("editing.feature");
             featureSelection = (
                 <div className="editing-feature-selection">
-                    <select className="combo editing-feature-select" disabled={this.props.editContext.changed === true || this.props.editContext.id !== this.props.currentEditContext} onChange={(ev) => this.setEditFeature(ev.target.value)}  value={(this.props.editContext.feature || {}).id || ""}>
+                    <select className="combo editing-feature-select" disabled={this.props.editContext.changed === true || inChildContext} onChange={(ev) => this.setEditFeature(ev.target.value)}  value={(this.props.editContext.feature || {}).id || ""}>
                         {this.state.pickedFeatures.map(feature => (
                             <option key={feature.id} value={feature.id}>{editConfig.displayField ? feature.properties[editConfig.displayField] : featureText + " " + feature.id}</option>
                         ))}
@@ -282,7 +283,7 @@ class Editing extends React.Component {
         return (
             <div className="editing-body">
                 <div className="editing-layer-selection">
-                    <select className="combo editing-layer-select" disabled={this.props.editContext.changed === true || this.props.editContext.id !== this.props.currentEditContext} onChange={ev => this.changeSelectedLayer(ev.target.value)} value={this.state.selectedLayer || ""}>
+                    <select className="combo editing-layer-select" disabled={this.props.editContext.changed === true || inChildContext} onChange={ev => this.changeSelectedLayer(ev.target.value)} value={this.state.selectedLayer || ""}>
                         <option disabled value="">{LocaleUtils.tr("common.selectlayer")}</option>
                         {editLayers.map(entry => (
                             <option key={entry.value} value={entry.value}>{entry.title}</option>
