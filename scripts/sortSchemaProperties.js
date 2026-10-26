@@ -50,6 +50,6 @@ for (const filename of fs.readdirSync(schemaDir).filter(name => name.endsWith(".
     }
 }
 if (check && unsorted.length > 0) {
-    process.stderr.write("Schema properties not sorted alphabetically in: " + unsorted.join(", ") + "\nRun node scripts/sortSchemaProperties.js to sort them.\n");
+    process.stderr.write("Schema properties not sorted alphabetically in: " + unsorted.join(", ") + "\nRun npm run schemasort to sort them.\n");
     process.exit(1);
 }

@@ -146,6 +146,7 @@
         "themesconfig": "node scripts/themesConfig.js || :",
         "tsupdate": "node scripts/updateTranslations.js",
         "plugindoc": "node scripts/gen-plugin-docs.js",
+        "schemasort": "node scripts/sortSchemaProperties.js",
         "dist": "./scripts/dist.sh",
         "build": "npm run prod",
         "analyze": "webpack --mode production --progress --env ANALYZE=1",

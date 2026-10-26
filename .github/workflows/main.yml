@@ -40,7 +40,7 @@ jobs:
           fi
 
       - name: Check that the schema properties are sorted
-        run: node scripts/sortSchemaProperties.js --check
+        run: npm run schemasort -- --check
 
       - name: Validate themesConfig.json against its schema
         run: |
