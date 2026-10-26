@@ -29,21 +29,17 @@
                 }
             ],
             "properties": {
-                "provider": {
-                    "const": "qgis",
-                    "description": "Provider key."
-                },
                 "params": {
                     "type": "object",
                     "description": "QGIS feature search parameters.",
                     "properties": {
-                        "title": {
-                            "type": "string",
-                            "description": "Search name, also used as result group title and for sorting in the FeatureSearch plugin."
+                        "default": {
+                            "type": "boolean",
+                            "description": "Select the search by default in the FeatureSearch plugin."
                         },
-                        "titlemsgid": {
+                        "description": {
                             "type": "string",
-                            "description": "Translation message ID of the search name, alternative to title."
+                            "description": "Text displayed above the search fields in the FeatureSearch plugin."
                         },
                         "expression": {
                             "type": "object",
@@ -61,6 +57,16 @@
                                 ]
                             }
                         },
+                        "featureCount": {
+                            "type": "integer",
+                            "description": "Maximum number of returned features.",
+                            "default": 100
+                        },
+                        "featuresearch": {
+                            "type": "boolean",
+                            "description": "Include the search in the FeatureSearch plugin.",
+                            "default": true
+                        },
                         "fields": {
                             "type": "object",
                             "description": "Input fields of the FeatureSearch plugin form, keyed by placeholder name.",
@@ -72,13 +78,13 @@
                                         "type": "string",
                                         "description": "Field label."
                                     },
+                                    "label_field": {
+                                        "type": "string",
+                                        "description": "Feature property used as option label when options_query returns features."
+                                    },
                                     "labelmsgid": {
                                         "type": "string",
                                         "description": "Translation message ID of the field label, alternative to label."
-                                    },
-                                    "type": {
-                                        "type": "string",
-                                        "description": "HTML input type, or select for a combo box, or checkbox for a yes/no choice."
                                     },
                                     "options": {
                                         "description": "For select fields, the list of values or of value/label pairs. For other fields, additional HTML input attributes, e.g. min and max.",
@@ -97,48 +103,42 @@
                                         "type": "string",
                                         "description": "URL returning the options of a select field, where $<FIELD>$ placeholders are replaced by the current form values."
                                     },
-                                    "value_field": {
-                                        "type": "string",
-                                        "description": "Feature property used as option value when options_query returns features."
-                                    },
-                                    "label_field": {
-                                        "type": "string",
-                                        "description": "Feature property used as option label when options_query returns features."
-                                    },
                                     "order": {
                                         "type": "number",
                                         "description": "Position of the field in the search form."
+                                    },
+                                    "type": {
+                                        "type": "string",
+                                        "description": "HTML input type, or select for a combo box, or checkbox for a yes/no choice."
+                                    },
+                                    "value_field": {
+                                        "type": "string",
+                                        "description": "Feature property used as option value when options_query returns features."
                                     }
                                 }
                             }
-                        },
-                        "featureCount": {
-                            "type": "integer",
-                            "description": "Maximum number of returned features.",
-                            "default": 100
-                        },
-                        "resultTitle": {
-                            "type": "string",
-                            "description": "Format string for the result title, with {layername} and {<fieldname>} placeholders."
-                        },
-                        "description": {
-                            "type": "string",
-                            "description": "Text displayed above the search fields in the FeatureSearch plugin."
-                        },
-                        "default": {
-                            "type": "boolean",
-                            "description": "Select the search by default in the FeatureSearch plugin."
                         },
                         "group": {
                             "type": "string",
                             "description": "Group name of the search in the FeatureSearch selection."
                         },
-                        "featuresearch": {
-                            "type": "boolean",
-                            "description": "Include the search in the FeatureSearch plugin.",
-                            "default": true
+                        "resultTitle": {
+                            "type": "string",
+                            "description": "Format string for the result title, with {layername} and {<fieldname>} placeholders."
+                        },
+                        "title": {
+                            "type": "string",
+                            "description": "Search name, also used as result group title and for sorting in the FeatureSearch plugin."
+                        },
+                        "titlemsgid": {
+                            "type": "string",
+                            "description": "Translation message ID of the search name, alternative to title."
                         }
                     }
+                },
+                "provider": {
+                    "const": "qgis",
+                    "description": "Provider key."
                 }
             },
             "required": [
@@ -154,16 +154,16 @@
                 }
             ],
             "properties": {
+                "params": {
+                    "type": "object",
+                    "description": "Provider parameters. For fulltext: default (search facets enabled by default) and layers (facet enabled when a theme layer is visible, keyed by layer name). For nominatim: additional Nominatim API parameters, e.g. countrycodes."
+                },
                 "provider": {
                     "type": "string",
                     "description": "Provider key, e.g. fulltext, nominatim or the key of a custom provider.",
                     "not": {
                         "const": "qgis"
                     }
-                },
-                "params": {
-                    "type": "object",
-                    "description": "Provider parameters. For fulltext: default (search facets enabled by default) and layers (facet enabled when a theme layer is visible, keyed by layer name). For nominatim: additional Nominatim API parameters, e.g. countrycodes."
                 }
             },
             "required": [
