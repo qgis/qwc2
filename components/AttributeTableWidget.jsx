@@ -189,6 +189,7 @@ class AttributeTableWidget extends React.Component {
                 field.id !== primaryKey &&
                 (this.props.showHiddenFields || field.constraints?.hidden !== true)
             ));
+            const pkField = curEditConfig.fields.find(field => field.id === primaryKey);
             const indexOffset = this.state.currentPage * this.state.pageSize;
             const features = this.state.features.slice(indexOffset, indexOffset + this.state.pageSize);
             table = (
@@ -210,7 +211,7 @@ class AttributeTableWidget extends React.Component {
                                     <th onClick={() => this.sortBy(primaryKey)} onKeyDown={MiscUtils.checkKeyActivate} tabIndex={0} title={this.translateFieldName(primaryKey)}>
                                         <span>
                                             <span className="attribtable-table-headername">{this.translateFieldName(primaryKey)}</span>
-                                            {this.renderSortIndicator(primaryKey)}
+                                            {this.renderSortIndicator(pkField?.name ?? primaryKey)}
                                             {this.renderColumnResizeHandle(1, 'r')}
                                         </span>
                                     </th>
