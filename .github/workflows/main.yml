@@ -39,6 +39,9 @@ jobs:
             fi
           fi
 
+      - name: Check that the schema properties are sorted
+        run: npm run schemasort -- --check
+
       - name: Validate themesConfig.json against its schema
         run: |
           pipx run check-jsonschema --check-metaschema schemas/*.json

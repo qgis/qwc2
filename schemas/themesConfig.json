@@ -7,13 +7,12 @@
         "themeGroup": {
             "type": "object",
             "properties": {
-                "title": {
-                    "type": "string",
-                    "description": "Group title."
-                },
-                "titleMsgId": {
-                    "type": "string",
-                    "description": "Translation message ID of the group title, alternative to title."
+                "groups": {
+                    "type": "array",
+                    "description": "Nested groups.",
+                    "items": {
+                        "$ref": "#/definitions/themeGroup"
+                    }
                 },
                 "items": {
                     "type": "array",
@@ -22,12 +21,13 @@
                         "$ref": "theme.json"
                     }
                 },
-                "groups": {
-                    "type": "array",
-                    "description": "Nested groups.",
-                    "items": {
-                        "$ref": "#/definitions/themeGroup"
-                    }
+                "title": {
+                    "type": "string",
+                    "description": "Group title."
+                },
+                "titleMsgId": {
+                    "type": "string",
+                    "description": "Translation message ID of the group title, alternative to title."
                 }
             }
         }
@@ -41,55 +41,6 @@
             "format": "uri",
             "default": "https://github.com/qgis/qwc2/raw/master/schemas/themesConfig.json"
         },
-        "themes": {
-            "type": "object",
-            "description": "Themes, theme groups and the definitions they reference.",
-            "properties": {
-                "items": {
-                    "type": "array",
-                    "description": "Themes.",
-                    "items": {
-                        "$ref": "theme.json"
-                    }
-                },
-                "groups": {
-                    "type": "array",
-                    "description": "Theme groups.",
-                    "items": {
-                        "$ref": "#/definitions/themeGroup"
-                    }
-                },
-                "backgroundLayers": {
-                    "type": "array",
-                    "description": "Background layer definitions.",
-                    "items": {
-                        "type": "object"
-                    }
-                },
-                "externalLayers": {
-                    "type": "array",
-                    "description": "External layer definitions.",
-                    "items": {
-                        "type": "object"
-                    }
-                },
-                "themeInfoLinks": {
-                    "type": "array",
-                    "description": "Theme info link definitions.",
-                    "items": {
-                        "type": "object"
-                    }
-                },
-                "pluginData": {
-                    "type": "object",
-                    "description": "Plugin data resources, keyed by plugin name."
-                }
-            }
-        },
-        "defaultTheme": {
-            "type": "string",
-            "description": "ID of the default theme."
-        },
         "defaultBackgroundLayers": {
             "type": "array",
             "description": "Background layers of the themes that define none.",
@@ -97,16 +48,17 @@
                 "$ref": "themeBackgroundLayer.json"
             }
         },
-        "defaultSearchProviders": {
-            "type": "array",
-            "description": "Search providers of the themes that define none.",
-            "items": {
-                "$ref": "searchProvider.json"
-            }
-        },
-        "defaultWMSVersion": {
+        "defaultDisplayCrs": {
             "type": "string",
-            "description": "WMS version of the themes, e.g. 1.3.0."
+            "description": "Default CRS for the coordinates in the bottom bar and in measurements."
+        },
+        "defaultLabelProfiles": {
+            "description": "Labelling profiles of the Redlining plugin for all themes. The profiles a theme defines for a layer replace these.",
+            "allOf": [
+                {
+                    "$ref": "theme.json#/definitions/labelProfiles"
+                }
+            ]
         },
         "defaultMapCrs": {
             "type": "string",
@@ -121,13 +73,19 @@
                 }
             ]
         },
-        "defaultDisplayCrs": {
-            "type": "string",
-            "description": "Default CRS for the coordinates in the bottom bar and in measurements."
+        "defaultMapTips": {
+            "type": [
+                "boolean",
+                "null"
+            ],
+            "description": "Whether map tips are enabled by default."
         },
-        "defaultScales": {
+        "defaultPrintGrid": {
+            "$ref": "theme.json#/definitions/printGrid"
+        },
+        "defaultPrintResolutions": {
             "type": "array",
-            "description": "Map scale denominators of the themes that define none.",
+            "description": "Print resolutions of the themes that define none.",
             "items": {
                 "type": "number"
             }
@@ -139,30 +97,72 @@
                 "type": "number"
             }
         },
-        "defaultPrintResolutions": {
+        "defaultScales": {
             "type": "array",
-            "description": "Print resolutions of the themes that define none.",
+            "description": "Map scale denominators of the themes that define none.",
             "items": {
                 "type": "number"
             }
         },
-        "defaultPrintGrid": {
-            "$ref": "theme.json#/definitions/printGrid"
+        "defaultSearchProviders": {
+            "type": "array",
+            "description": "Search providers of the themes that define none.",
+            "items": {
+                "$ref": "searchProvider.json"
+            }
         },
-        "defaultMapTips": {
-            "type": [
-                "boolean",
-                "null"
-            ],
-            "description": "Whether map tips are enabled by default."
+        "defaultTheme": {
+            "type": "string",
+            "description": "ID of the default theme."
         },
-        "defaultLabelProfiles": {
-            "description": "Labelling profiles of the Redlining plugin for all themes. The profiles a theme defines for a layer replace these.",
-            "allOf": [
-                {
-                    "$ref": "theme.json#/definitions/labelProfiles"
+        "defaultWMSVersion": {
+            "type": "string",
+            "description": "WMS version of the themes, e.g. 1.3.0."
+        },
+        "themes": {
+            "type": "object",
+            "description": "Themes, theme groups and the definitions they reference.",
+            "properties": {
+                "backgroundLayers": {
+                    "type": "array",
+                    "description": "Background layer definitions.",
+                    "items": {
+                        "type": "object"
+                    }
+                },
+                "externalLayers": {
+                    "type": "array",
+                    "description": "External layer definitions.",
+                    "items": {
+                        "type": "object"
+                    }
+                },
+                "groups": {
+                    "type": "array",
+                    "description": "Theme groups.",
+                    "items": {
+                        "$ref": "#/definitions/themeGroup"
+                    }
+                },
+                "items": {
+                    "type": "array",
+                    "description": "Themes.",
+                    "items": {
+                        "$ref": "theme.json"
+                    }
+                },
+                "pluginData": {
+                    "type": "object",
+                    "description": "Plugin data resources, keyed by plugin name."
+                },
+                "themeInfoLinks": {
+                    "type": "array",
+                    "description": "Theme info link definitions.",
+                    "items": {
+                        "type": "object"
+                    }
                 }
-            ]
+            }
         }
     },
     "required": [

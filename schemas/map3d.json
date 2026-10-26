@@ -38,23 +38,42 @@
                 }
             ],
             "properties": {
-                "url": {
+                "alphaAttr": {
                     "type": "string",
-                    "description": "URL of the tileset.json."
+                    "description": "Feature attribute storing the feature alpha as integer between 0 and 255."
+                },
+                "baseColor": {
+                    "type": "string",
+                    "description": "Fallback color of the tile objects, as CSS color, white if another style attribute is set."
+                },
+                "colorAttr": {
+                    "type": "string",
+                    "description": "Feature attribute storing the feature color as 0xRRGGBB integer."
+                },
+                "idAttr": {
+                    "type": "string",
+                    "description": "Feature attribute storing the object ID.",
+                    "default": "id"
+                },
+                "infoAttrBlacklist": {
+                    "type": "array",
+                    "description": "Feature attributes to omit from the identify results.",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "labelAttr": {
+                    "type": "string",
+                    "description": "Feature attribute storing the feature label, displayed above the geometry."
                 },
                 "snap": {
                     "type": "boolean",
                     "description": "Include the tileset in the snappable scene objects when drawing.",
                     "default": true
                 },
-                "baseColor": {
+                "style": {
                     "type": "string",
-                    "description": "Fallback color of the tile objects, as CSS color, white if another style attribute is set."
-                },
-                "idAttr": {
-                    "type": "string",
-                    "description": "Feature attribute storing the object ID.",
-                    "default": "id"
+                    "description": "Tileset style enabled by default, defaults to the first style."
                 },
                 "styles": {
                     "type": "object",
@@ -63,28 +82,9 @@
                         "type": "string"
                     }
                 },
-                "style": {
+                "url": {
                     "type": "string",
-                    "description": "Tileset style enabled by default, defaults to the first style."
-                },
-                "colorAttr": {
-                    "type": "string",
-                    "description": "Feature attribute storing the feature color as 0xRRGGBB integer."
-                },
-                "alphaAttr": {
-                    "type": "string",
-                    "description": "Feature attribute storing the feature alpha as integer between 0 and 255."
-                },
-                "labelAttr": {
-                    "type": "string",
-                    "description": "Feature attribute storing the feature label, displayed above the geometry."
-                },
-                "infoAttrBlacklist": {
-                    "type": "array",
-                    "description": "Feature attributes to omit from the identify results.",
-                    "items": {
-                        "type": "string"
-                    }
+                    "description": "URL of the tileset.json."
                 }
             },
             "required": [
@@ -99,14 +99,14 @@
                 }
             ],
             "properties": {
-                "url": {
-                    "type": "string",
-                    "description": "URL of the GLTF file."
-                },
                 "snap": {
                     "type": "boolean",
                     "description": "Include the object in the snappable scene objects when drawing.",
                     "default": true
+                },
+                "url": {
+                    "type": "string",
+                    "description": "URL of the GLTF file."
                 }
             },
             "required": [
@@ -156,19 +156,10 @@
                 }
             ],
             "properties": {
-                "type": {
-                    "const": "group",
-                    "description": "Entry type."
-                },
                 "expanded": {
                     "type": "boolean",
                     "description": "Initially expand the group.",
                     "default": true
-                },
-                "mutuallyExclusive": {
-                    "type": "boolean",
-                    "description": "Allow only one visible child.",
-                    "default": false
                 },
                 "items": {
                     "type": "array",
@@ -176,6 +167,15 @@
                     "items": {
                         "$ref": "#/definitions/object"
                     }
+                },
+                "mutuallyExclusive": {
+                    "type": "boolean",
+                    "description": "Allow only one visible child.",
+                    "default": false
+                },
+                "type": {
+                    "const": "group",
+                    "description": "Entry type."
                 }
             },
             "required": [
@@ -199,34 +199,34 @@
     },
     "type": "object",
     "properties": {
-        "dtm": {
-            "type": "object",
-            "description": "Terrain model.",
-            "properties": {
-                "url": {
-                    "type": "string",
-                    "description": "URL of a cloud optimized GeoTIFF."
-                },
-                "crs": {
-                    "type": "string",
-                    "description": "CRS of the terrain model.",
-                    "default": "EPSG:3857"
-                },
-                "min": {
-                    "type": "number",
-                    "description": "Minimum elevation, used together with max."
-                },
-                "max": {
-                    "type": "number",
-                    "description": "Maximum elevation, used together with min."
-                }
-            }
-        },
         "basemaps": {
             "type": "array",
             "description": "Background layers of the 3D view.",
             "items": {
                 "$ref": "themeBackgroundLayer.json"
+            }
+        },
+        "dtm": {
+            "type": "object",
+            "description": "Terrain model.",
+            "properties": {
+                "crs": {
+                    "type": "string",
+                    "description": "CRS of the terrain model.",
+                    "default": "EPSG:3857"
+                },
+                "max": {
+                    "type": "number",
+                    "description": "Maximum elevation, used together with min."
+                },
+                "min": {
+                    "type": "number",
+                    "description": "Minimum elevation, used together with max."
+                },
+                "url": {
+                    "type": "string",
+                    "description": "URL of a cloud optimized GeoTIFF."
+                }
             }
         },
         "extent": {
@@ -259,6 +259,10 @@
                         }
                     ]
                 },
+                "personHeight": {
+                    "type": "number",
+                    "description": "Person height, activates the first person view when greater than 0."
+                },
                 "target": {
                     "description": "Camera target as [x, y, z].",
                     "allOf": [
@@ -266,10 +270,6 @@
                             "$ref": "#/definitions/position"
                         }
                     ]
-                },
-                "personHeight": {
-                    "type": "number",
-                    "description": "Person height, activates the first person view when greater than 0."
                 }
             }
         },
@@ -280,18 +280,18 @@
                 "$ref": "#/definitions/object"
             }
         },
-        "tiles3d": {
-            "type": "array",
-            "description": "Deprecated, use objects entries of type tiles3d.",
-            "items": {
-                "$ref": "#/definitions/tilesetEntry"
-            }
-        },
         "objects3d": {
             "type": "array",
             "description": "Deprecated, use objects entries of type object3d.",
             "items": {
                 "$ref": "#/definitions/gltfEntry"
+            }
+        },
+        "tiles3d": {
+            "type": "array",
+            "description": "Deprecated, use objects entries of type tiles3d.",
+            "items": {
+                "$ref": "#/definitions/tilesetEntry"
             }
         }
     }
