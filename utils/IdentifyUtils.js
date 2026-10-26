@@ -76,6 +76,7 @@ function identifyRequestParams(layer, queryLayers, projection, params) {
             info_format: format,
             with_geometry: true,
             with_maptip: false,
+            with_htmlcontent: true,
             ...layer.dimensionValues,
             ...params
         }
