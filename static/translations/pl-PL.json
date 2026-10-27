@@ -2,279 +2,279 @@
   "locale": "pl-PL",
   "messages": {
     "app": {
-      "missingbg": "",
-      "missingdefaulttheme": "",
-      "missinglayers": "",
-      "missingpermalink": "",
-      "missingprojection": "",
-      "missingtheme": ""
+      "missingbg": "Nie można odnaleźć tła \"{0}\", wyświetlam domyślne tło.",
+      "missingdefaulttheme": "Nie można wczytać domyślnego motywu.",
+      "missinglayers": "Nie można odnaleźć następujących warstw: {0}.",
+      "missingpermalink": "Wskazany bezpośredni odnośnik lub zakładka jest nieprawidłowy albo wygasł.",
+      "missingprojection": "Nie można wczytać motywu \"{0}\": projekcja {1} nie jest zdefiniowana.",
+      "missingtheme": "Nie można odnaleźć motywu \"{0}\", wczytywanie domyślnego."
     },
     "appmenu": {
       "items": {
-        "Bookmark": "",
-        "Compare3D": "",
+        "Bookmark": "Zakładki",
+        "Compare3D": "Porównaj",
         "Editing": "Edycja",
-        "ExportObjects3D": "",
-        "FeatureSelection": "",
-        "HideObjects3D": "",
-        "LayerTree": "Warstwy i ich legendy",
-        "LayerTree3D": "",
+        "ExportObjects3D": "Eksport obiektów",
+        "FeatureSelection": "Wybór funkcji",
+        "HideObjects3D": "Ukryj obiekty",
+        "LayerTree": "Warstwy i legenda",
+        "LayerTree3D": "Warstwy",
         "MapExport": "Eksportuj mapę",
-        "MapExport3D": "",
-        "MapFilter": "",
-        "MapLight3D": "",
-        "MeasureObjects3D": "",
-        "ObjectList": "",
-        "PlotInfoTool": "",
+        "MapExport3D": "Eksportuj mapę",
+        "MapFilter": "Filtr mapy",
+        "MapLight3D": "Oświetlenie i cienie",
+        "MeasureObjects3D": "Pomiar obiektów",
+        "ObjectList": "Lista obiektów",
+        "PlotInfoTool": "Informacje o nieruchomościach",
         "Print": "Drukuj",
-        "Reports": "",
-        "Settings": "",
-        "Settings3D": "",
-        "Share": "Udostępnij Link",
-        "SunExposure3D": "",
-        "ThemeBrowser": "",
+        "Reports": "Raporty",
+        "Settings": "Ustawienia",
+        "Settings3D": "Ustawienia 3D",
+        "Share": "Udostępnij link",
+        "SunExposure3D": "Ekspozycja na słońce",
+        "ThemeBrowser": "Motyw przeglądarki",
         "ThemeSwitcher": "Motyw",
         "Viewshed3D": "",
-        "VisibilityPresets": "",
-        "AttributeTable": "",
+        "VisibilityPresets": "Ustawienia widoczności",
+        "AttributeTable": "Tabela atrybutów",
         "AuthenticationLogin": "Zaloguj",
         "AuthenticationLogout": "Wyloguj - {0}",
-        "Cyclomedia": "",
-        "Draw3D": "",
+        "Cyclomedia": "Cyclomedia",
+        "Draw3D": "Rysuj",
         "FeatureForm": "",
-        "FeatureSearch": "",
-        "GeometryDigitizer": "",
+        "FeatureSearch": "Szukaj funkcji",
+        "GeometryDigitizer": "Digitizer geometrii",
         "Help": "Pomoc",
-        "IdentifyPoint": "",
-        "IdentifyRadius": "",
-        "IdentifyRegion": "Identifikuj Obszar",
-        "LayerCatalog": "",
+        "IdentifyPoint": "Identyfikuj punkt",
+        "IdentifyRadius": "Identyfikuj w promieniu",
+        "IdentifyRegion": "Identifikuj obszar",
+        "LayerCatalog": "Katalog warstw",
         "Login": "Zaloguj",
         "Logout": "Wyloguj",
-        "MapLegend": "",
-        "Measure": "Pomiary",
-        "Measure3D": "",
-        "MeasureObject3D": "",
-        "MeasureLineString": "Zmierzyć linię",
-        "MeasurePolygon": "Zmierzyć wielokąt",
-        "NewsPopup": "",
-        "ObliqueView": "",
-        "Panoramax": "",
-        "Portal": "",
-        "PrintScreen3D": "",
-        "Redlining": "Redlining",
+        "MapLegend": "Legenda",
+        "Measure": "Pomiar",
+        "Measure3D": "Pomiar",
+        "MeasureObject3D": "Pomiar obiektu",
+        "MeasureLineString": "Zmierz linię",
+        "MeasurePolygon": "Zmierz wielokąt",
+        "NewsPopup": "Wiadomości",
+        "ObliqueView": "Widok skośny z powietrza",
+        "Panoramax": "Panoramax",
+        "Portal": "Portal",
+        "PrintScreen3D": "Eksport rastra",
+        "Redlining": "Rysowanie",
         "Routing": "",
-        "SensorThingsTool": "",
-        "ServiceInfo": "",
-        "Tools": "Narzędzia Mapy",
-        "TourGuide": "",
-        "TimeManager": "",
-        "View3D": ""
+        "SensorThingsTool": "SensorThings Query",
+        "ServiceInfo": "Informacja o motywie",
+        "Tools": "Narzędzia mapy",
+        "TourGuide": "Przewodnik",
+        "TimeManager": "Menedżer czasu",
+        "View3D": "Widok 3D"
       },
-      "menulabel": "Zawartość mapy i narzędzia"
+      "menulabel": "Mapa i narzędzia"
     },
     "attribtable": {
-      "addfeature": "",
-      "calculatedfield": "",
-      "commit": "",
-      "deletefailed": "",
-      "deletefeatures": "",
-      "deleting": "",
-      "discard": "",
-      "formeditmode": "",
+      "addfeature": "dodaj właściwość",
+      "calculatedfield": "Przeliczone pole",
+      "commit": "Zatwierdź zmieniony wiersz",
+      "deletefailed": "Jedna lub więcej właściwości nie może zostać usunięta",
+      "deletefeatures": "Usuń wybrane właściwości",
+      "deleting": "Usuwanie właściwości...",
+      "discard": "Odrzuć zmieniony wiersz",
+      "formeditmode": "Otwórz formularz edycji dla wybranej właściwości",
       "geomnoadd": "",
       "limittoextent": "",
       "loadfailed": "",
-      "nodelete": "",
+      "nodelete": "Nie kasuj",
       "nogeomnoform": "",
       "pleasereload": "",
-      "reload": "",
+      "reload": "Przeładuj",
       "selectatpoint": "",
       "selectedonly": "",
       "selectinregion": "",
-      "title": "",
+      "title": "Tabela atrybutów",
       "zoomtoselection": ""
     },
     "bgswitcher": {
       "nobg": "Bez tła"
     },
     "bookmark": {
-      "addfailed": "",
-      "confirmDelete": "",
-      "confirmOverwrite": "",
-      "lastUpdate": "",
-      "newbookmark": "",
-      "nobookmarks": "",
-      "open": "",
-      "openTab": "",
-      "public": "",
-      "removefailed": "",
-      "savefailed": "",
-      "togglePublic": "",
-      "update": "",
-      "zoomToExtent": ""
+      "addfailed": "Nie udało się utworzyć zakładki",
+      "confirmDelete": "Skasować zakładkę?",
+      "confirmOverwrite": "Nadpisać zakładkę?",
+      "lastUpdate": "Ostatni zapis",
+      "newbookmark": "Nowa zakładka",
+      "nobookmarks": "Brak zakładek",
+      "open": "Otwórz zakładkę w bieżącej karcie",
+      "openTab": "Otwórz zakładkę w karcie",
+      "public": "Zakładka publiczna",
+      "removefailed": "Nie udało się usunąć zakładki",
+      "savefailed": "Nie udało się zaktualizować zakładki",
+      "togglePublic": "Włącz/wyłącz publiczną zakładkę",
+      "update": "Zaktualizuj zakładkę",
+      "zoomToExtent": "Powiększ aby rozszerzyć"
     },
     "bottombar": {
       "mousepos_label": "Współrzędne",
-      "quick_select_label": "",
+      "quick_select_label": "Szybki wybór",
       "scale_label": "Skala",
       "terms_label": "Warunki korzystania",
-      "theme_visibility_presets": "",
-      "user_visibility_presets": "",
-      "viewertitle_label": ""
+      "theme_visibility_presets": "Ustawienia widoczności motywu",
+      "user_visibility_presets": "Ustawienia widoczności użytkownika",
+      "viewertitle_label": "Strona główna"
     },
     "common": {
-      "add": "",
-      "all": "",
-      "cancel": "",
-      "circle": "",
-      "clear": "",
-      "clone": "",
-      "close": "",
-      "collapseall": "",
-      "compute": "",
-      "custom": "",
-      "dataloadfailed": "",
-      "date": "",
-      "delete": "",
-      "disabled": "",
-      "download": "",
+      "add": "Dodaj",
+      "all": "Wszystko",
+      "cancel": "Anuluj",
+      "circle": "Okrąg",
+      "clear": "Wyczyść",
+      "clone": "Klonuj",
+      "close": "Zamknij",
+      "collapseall": "Zwiń wszystko",
+      "compute": "Przelicz",
+      "custom": "Własne",
+      "dataloadfailed": "Nie udało się wczytać danych",
+      "date": "Data",
+      "delete": "Skasuj",
+      "disabled": "Wyłączone",
+      "download": "Pobierz",
       "draw": "Rysuj",
       "edit": "Edytuj",
-      "ellipse": "",
-      "expandall": "",
-      "export": "",
-      "false": "",
+      "ellipse": "Elipsa",
+      "expandall": "Rozwiń wszystko",
+      "export": "Eksport",
+      "false": "fałsz",
       "filter": "Filtruj...",
-      "format": "Format:",
-      "import": "",
+      "format": "Format",
+      "import": "Import",
       "layer": "Warstwa",
       "line": "Linia",
-      "loading": "",
+      "loading": "Wczytywanie...",
       "lock2dview": "",
-      "mode": "",
-      "noresults": "",
-      "openinattributetable": "",
-      "pick": "",
+      "mode": "Tryb",
+      "noresults": "Brak wyników",
+      "openinattributetable": "Otwórz tabelę atrybutów",
+      "pick": "Wybierz",
       "point": "Punkt",
       "polygon": "Poligon",
-      "radius": "",
-      "rectangle": "",
-      "rename": "",
-      "resolution": "Rozdzielczość:",
-      "save": "",
-      "select": "Zaznacz...",
-      "selectlayer": "",
-      "square": "",
-      "star": "",
-      "sync2dview": "",
+      "radius": "Promień",
+      "rectangle": "Prostokąt",
+      "rename": "Zmień nazwę",
+      "resolution": "Rozdzielczość",
+      "save": "Zapisz",
+      "select": "Wybierz...",
+      "selectlayer": "Wybierz warstwę...",
+      "square": "Kwadrat",
+      "star": "Gwiazda",
+      "sync2dview": "Synchronizuj z widokiem 2D",
       "text": "Tekst",
-      "triangle": "",
-      "true": "",
-      "wait": "",
+      "triangle": "Trójkąt",
+      "true": "prawda",
+      "wait": "Proszę czekać...",
       "zoomin": "Przybliż",
       "zoomout": "Oddal"
     },
     "compare3d": {
       "clipplane": "",
-      "compare_objects": "",
-      "info_message": "",
-      "modify": "",
-      "toggleall": ""
+      "compare_objects": "Porównaj obiekty",
+      "info_message": "Porównywanie obiektów jest aktywne",
+      "modify": "Modyfikuj",
+      "toggleall": "Przełącz wszystko"
     },
     "cookiepopup": {
-      "accept": "",
-      "message": ""
+      "accept": "Zaakceptuj",
+      "message": "Ta strona używa ciasteczek."
     },
     "copybtn": {
       "click_to_copy": "Kliknij, aby skopiować",
       "copied": "Skopiowano",
-      "copyfailed": ""
+      "copyfailed": "Kopiowanie nieudane"
     },
     "cyclomedia": {
       "clickonmap": "",
-      "initializing": "",
-      "loaderror": "",
-      "loading": "",
-      "login": "",
+      "initializing": "Inicjalizacja Cyclomedia...",
+      "loaderror": "Inicjalizacja Cyclomedia nieudana",
+      "loading": "Wczytywanie widoku...",
+      "login": "Login",
       "scalehint": "",
-      "title": ""
+      "title": "Przeglądarka Cyclomedia"
     },
     "draw3d": {
-      "cone": "",
-      "cuboid": "",
-      "cylinder": "",
-      "drawings": "",
-      "intersect": "",
-      "label": "",
-      "newgroupprompt": "",
-      "numericinput": "",
-      "position": "",
-      "pyramid": "",
-      "rotate": "",
-      "rotation": "",
-      "scale": "",
+      "cone": "Stożek",
+      "cuboid": "Prostopadłościan",
+      "cylinder": "Cylinder",
+      "drawings": "Eysowanie",
+      "intersect": "Przecięcie",
+      "label": "Etykieta",
+      "newgroupprompt": "Nowa grupa rysunku",
+      "numericinput": "Wprowadzenie numeryczne",
+      "position": "Pozycja",
+      "pyramid": "Ostrosłup",
+      "rotate": "Obróć",
+      "rotation": "Rotacja",
+      "scale": "Skala",
       "snap_2dedge": "",
       "snap_2dvertex": "",
       "snap_3dbody": "",
-      "sphere": "",
-      "subtract": "",
-      "thescale": "",
-      "thesize": "",
-      "translate": "",
-      "undoBool": "",
-      "union": "",
+      "sphere": "Sfera",
+      "subtract": "Odejmij",
+      "thescale": "Skala",
+      "thesize": "Wielkość",
+      "translate": "Translacja",
+      "undoBool": "Cofnij operację",
+      "union": "Unia",
       "wedge": ""
     },
     "editdataset3d": {
       "moveobj": "",
-      "zoomto": ""
+      "zoomto": "Powiększ do obiektu"
     },
     "editing": {
-      "attrtable": "",
+      "attrtable": "Tabela",
       "canceldelete": "Nie usuwaj",
-      "clone_all": "",
-      "clone_copy": "",
-      "clone_defaulted": "",
-      "clone_dontcopy": "",
-      "clone_hidden": "",
-      "clone_none": "",
-      "clone_select_attrs": "",
-      "clone_visible": "",
+      "clone_all": "Wszystko",
+      "clone_copy": "Skopiuj wybrane",
+      "clone_defaulted": "(wartość domyślna)",
+      "clone_dontcopy": "Nie kopiuj",
+      "clone_hidden": "(ukryte)",
+      "clone_none": "Brak",
+      "clone_select_attrs": "Wybierz atrybuty do skopiowania:",
+      "clone_visible": "Widoczne bez wartości domyślnych",
       "commit": "Zatwierdź",
-      "commitfailed": "",
-      "contraintviolation": "",
+      "commitfailed": "Zatwierdzenie nieudane",
+      "contraintviolation": "Naruszenie ograniczenia",
       "discard": "Odrzuć",
-      "emptyvalue": "",
-      "feature": "",
-      "geomnonzeroz": "",
-      "geomreadonly": "",
+      "emptyvalue": "Wartość pusta",
+      "feature": "Właściwość",
+      "geomnonzeroz": "Geometria zawiera niezerowe wartości Z, dlatego jest dostępna tylko do odczytu.",
+      "geomreadonly": "Geometria tylko do odczytu",
       "invalidform": "",
       "noeditablelayers": "Brak edytowalnych warstw.",
-      "paint": "",
-      "pickdrawfeature": "",
+      "paint": "Modyfikuj",
+      "pickdrawfeature": "Klonuj istniejącą geometrię",
       "reallydelete": "Usuń",
-      "relationcommitfailed": "",
+      "relationcommitfailed": "Niektórych wartości relacji nie udało się zapisać; szczegółowe informacje można znaleźć w podpowiedziach wyświetlanych po najechaniu kursorem na ikony.",
       "takepicture": "",
-      "unsavedchanged": ""
+      "unsavedchanged": "Istnieją niezapisane zmiany. Czy mimo to chcesz opuścić stronę?"
     },
     "featureattributes": {
-      "name": "",
+      "name": "Nazwa",
       "nofeatureormultiple": "",
-      "value": "",
-      "windowtitle": ""
+      "value": "Wartość",
+      "windowtitle": "Artybuty właściwości"
     },
     "featureform": {
-      "feature": "",
+      "feature": "Właściwość",
       "querying": "",
-      "title": ""
+      "title": "Formularz właściwości"
     },
     "featuresearch": {
-      "query": "",
-      "title": ""
+      "query": "Kwerenda",
+      "title": "Wyszukiwanie właściwości"
     },
     "fileselector": {
-      "files": "",
+      "files": "pliki",
       "placeholder": "Wybierz plik..."
     },
     "geomdigitizer": {
@@ -292,22 +292,22 @@
     },
     "heightprofile": {
       "asl": "a.s.l.",
-      "dhmdefaultname": "",
+      "dhmdefaultname": "Zestaw danych",
       "distance": "Odległość",
       "drawnodes": "",
-      "error": "",
-      "export": "",
+      "error": "Nieudane przeliczenie profilu wysokości",
+      "export": "Eksport profilu",
       "height": "Wysokość",
       "loading": "Obliczanie profilu wysokości...",
-      "loadingimage": "",
-      "print": "",
-      "title": ""
+      "loadingimage": "Wczytywanie obrazu mapy...",
+      "print": "Drukuj profil wysokości",
+      "title": "Profil wysokości"
     },
     "hideobjects3d": {
-      "clickonmap": "",
-      "object": "",
-      "restore": "",
-      "restoreall": ""
+      "clickonmap": "Kliknij na obiektcie, aby go ukryć",
+      "object": "Obiekt",
+      "restore": "Przywróć obiekt",
+      "restoreall": "Przywróć wszystko"
     },
     "identify": {
       "aggregatedreport": "",
@@ -341,12 +341,12 @@
       "zoomtofeature": ""
     },
     "imageeditor": {
-      "confirmclose": "",
-      "title": ""
+      "confirmclose": "Zamknąć bez zapisu?",
+      "title": "Edytor obrazu"
     },
     "import3d": {
-      "importing": "",
-      "noprocessesserver": ""
+      "importing": "Importowanie {0}...",
+      "noprocessesserver": "Brak skonfigurowanych usług importu"
     },
     "importlayer": {
       "addfailed": "",
@@ -377,8 +377,8 @@
       "radius": ""
     },
     "layercatalog": {
-      "openlink": "",
-      "windowtitle": ""
+      "openlink": "Link informacyjny",
+      "windowtitle": "Katalog warstw"
     },
     "layerinfo": {
       "abstract": "Abstrakt",
@@ -386,9 +386,9 @@
       "dataUrl": "URL danych",
       "keywords": "Słowa kluczowe",
       "legend": "Legenda",
-      "maxscale": "",
+      "maxscale": "Maks. skala wyświetlania",
       "metadataUrl": "URL metadanych",
-      "minscale": "",
+      "minscale": "Min. skala wyświetlania",
       "title": "Informacja o warstwie"
     },
     "layertree": {
@@ -397,23 +397,23 @@
       "importlayer": "Importuj warstwę",
       "maptip": "Pokaż wskazówki dla warstwy",
       "printlegend": "Drukuj legendę",
-      "separator": "",
-      "separatortooltip": "",
-      "showallayers": "",
-      "togglegroup": "",
-      "transparency": "",
-      "visiblefilter": "",
-      "zoomoscale": "",
-      "zoomtolayer": ""
+      "separator": "Separator",
+      "separatortooltip": "Dodaj separator",
+      "showallayers": "Pokaż wszystkie warstwy",
+      "togglegroup": "Przełącz grupę i wszystkie podwarstwy",
+      "transparency": "Przezroczystość",
+      "visiblefilter": "Filtruj niewidoczne warstwy",
+      "zoomoscale": "Powiększ do skali warstwy",
+      "zoomtolayer": "Powiększ do warstwy"
     },
     "layertree3d": {
-      "customheight": "",
-      "import": "",
-      "importobjects": "",
-      "layers": "",
-      "objects": "",
-      "supportedformats": "",
-      "zoomtoobject": ""
+      "customheight": "Wartość",
+      "import": "Import",
+      "importobjects": "Import obiektów",
+      "layers": "Warstwy",
+      "objects": "Obiekty",
+      "supportedformats": "Wspierane formaty: GLTF",
+      "zoomtoobject": "Powiększ do obiektu"
     },
     "linkfeatureform": {
       "drawhint": "",
@@ -427,7 +427,7 @@
       "statustooltip": {
         "DISABLED": "Pozycja: wyłączona",
         "ENABLED": "Pozycja: włączona",
-        "FOLLOWING": "Pozycja: following",
+        "FOLLOWING": "Pozycja: podążanie",
         "LOCATING": "Pozycja: lokalizowanie...",
         "PERMISSION_DENIED": "Pozycja: dostęp zabroniony"
       }
@@ -437,13 +437,13 @@
       "stop": ""
     },
     "map": {
-      "loading": "Ładowanie...",
-      "resetrotation": ""
+      "loading": "Wczytywanie...",
+      "resetrotation": "Resetuj obrót"
     },
     "map3d": {
-      "noterrain": "",
-      "terrain": "",
-      "title": ""
+      "noterrain": "Brak terenu",
+      "terrain": "Teren",
+      "title": "Widok 3D"
     },
     "mapdropimport": {
       "dropfiles": ""
@@ -509,26 +509,26 @@
       "showmeasurements": ""
     },
     "measureobjects3d": {
-      "clickonmap": "",
-      "object": "",
-      "remove": "",
-      "removeall": ""
+      "clickonmap": "Kliknij obiekty, aby je zmierzyć...",
+      "object": "Obiekt",
+      "remove": "Usuń pomiar",
+      "removeall": "Usuń wszystko"
     },
     "misc": {
-      "ctrlclickhint": ""
+      "ctrlclickhint": "Otwórz przez Ctrl+Click"
     },
     "navbar": {
-      "next": "",
-      "perpage": "",
-      "prev": ""
+      "next": "Następna strona",
+      "perpage": "na stronę",
+      "prev": "Poprzednia strona"
     },
     "navhistory": {
-      "back": "",
-      "forward": ""
+      "back": "Poprzedni widok mapy",
+      "forward": "Następny widok mapy"
     },
     "newspopup": {
-      "dontshowagain": "",
-      "title": ""
+      "dontshowagain": "Nie pokazuj ponownie",
+      "title": "Wiadomości"
     },
     "numericinput": {
       "angle": "",
@@ -540,10 +540,10 @@
       "windowtitle": ""
     },
     "obliqueview": {
-      "directionEast": "",
-      "directionNorth": "",
-      "directionSouth": "",
-      "directionWest": "",
+      "directionEast": "E",
+      "directionNorth": "N",
+      "directionSouth": "S",
+      "directionWest": "W",
       "nodataset": "",
       "title": ""
     },
@@ -585,49 +585,49 @@
       "menulabel": ""
     },
     "print": {
-      "atlasfeature": "",
-      "download_as_onepdf": "",
-      "download_as_onezip": "",
-      "download_as_single": "",
+      "atlasfeature": "Właściwość atlasu",
+      "download_as_onepdf": "jako jeden plik PDF",
+      "download_as_onezip": "jako jeden plik ZIP",
+      "download_as_single": "jako pojedyncze pliki",
       "grid": "Siatka",
-      "layout": "Layout",
-      "legend": "",
+      "layout": "Układ",
+      "legend": "Legenda",
       "nolayouts": "Wybrany motyw nie umożliwia drukowania",
       "notheme": "Brak wybranego motywu",
-      "output": "Drukuj output",
-      "overlap": "",
+      "output": "Wyjście druku",
+      "overlap": "Nakładanie",
       "pickatlasfeature": "",
       "rotation": "Obrót",
       "scale": "Skala",
-      "series": "",
+      "series": "Drukuj serie",
       "submit": "Drukuj"
     },
     "qtdesignerform": {
-      "loading": ""
+      "loading": "Wczytywanie formularza..."
     },
     "redlining": {
-      "attributes": "",
+      "attributes": "Atrybuty właściwości",
       "buffer": "Buforuj",
       "buffercompute": "Oblicz",
       "bufferdistance": "Odległość",
-      "bufferlayer": "Destynacja",
+      "bufferlayer": "Cel",
       "bufferlayername": "Buforuj",
-      "bufferselectfeature": "Wybierz element do buforowania",
-      "ctrlhint": "",
-      "featurelabel": "",
-      "freehand": "",
+      "bufferselectfeature": "Wybierz element do buforowania...",
+      "ctrlhint": "Naciśnij Ctrl, aby wybrać kilka...",
+      "featurelabel": "Właściwość etykiety",
+      "freehand": "Rysowanie dowolne",
       "label": "Etykieta",
-      "labelselectfeature": "",
-      "layertitle": "",
-      "markers": "",
-      "numericinput": "",
-      "segmentdistance": "",
+      "labelselectfeature": "Wybierz właściwości etykiety...",
+      "layertitle": "Rysowanie",
+      "markers": "Znaczniki",
+      "numericinput": "Wprowadzanie numeryczne",
+      "segmentdistance": "Odległość",
       "size": "Rozmiar",
-      "transform": ""
+      "transform": "Przekształcenie"
     },
     "reports": {
-      "region": "",
-      "selectlayer": ""
+      "region": "Wybierz region",
+      "selectlayer": "Wybierz warstwę raportu..."
     },
     "routing": {
       "add": "",
@@ -672,39 +672,39 @@
       "finish": ""
     },
     "search": {
-      "circleradius": "",
-      "coordinates": "",
-      "existinglayer": "",
-      "filter": "",
-      "layers": "",
-      "limittoarea": "",
-      "more": "",
-      "nodescription": "",
-      "none": "",
-      "placeholder": "",
-      "places": "",
-      "providerselection": "",
-      "recent": "",
+      "circleradius": "Promień okręgu",
+      "coordinates": "Współrzędne",
+      "existinglayer": "Ta warstwa już istnieje na mapie",
+      "filter": "Doprecyzuj wyszukiwanie",
+      "layers": "Warstwy",
+      "limittoarea": "Ogranicz do obszaru",
+      "more": "{0} więcej wyników",
+      "nodescription": "Brak dostępnego opisu",
+      "none": "Brak",
+      "placeholder": "Wyszukaj miejsce lub dodaj mapę...",
+      "places": "Miejsca",
+      "providerselection": "Wybierz dostawcę",
+      "recent": "Ostatnie wyszukiwania",
       "search": "Szukaj",
-      "tasks": "",
-      "themelayers": "",
+      "tasks": "Menu zadań",
+      "themelayers": "Warstwy motywu",
       "themes": "Motywy",
-      "unknownmore": ""
+      "unknownmore": "Więcej wyników"
     },
     "sensorthingstool": {
-      "addDatastream": "",
-      "addLocation": "",
-      "addLocationAndDatastreams": "",
+      "addDatastream": "Dodaj strumień danych do wykresu",
+      "addLocation": "Dodaj miejsce",
+      "addLocationAndDatastreams": "Dodaj miejsce i pokaż jego wszystkie strumienie danych na wykresie",
       "datastreamInfo": {
-        "calibration": "",
-        "description": "",
-        "location": "",
-        "name": "",
+        "calibration": "Kalibracja",
+        "description": "Opis",
+        "location": "Miejsce",
+        "name": "Nazwa",
         "observedProperty": "",
-        "sensor": "",
+        "sensor": "Sensor",
         "thing": "",
         "title": "",
-        "unit": ""
+        "unit": "Jednostka"
       },
       "datastreamLabel": "",
       "datastreamNone": "",
@@ -732,39 +732,39 @@
         "thing": "",
         "title": ""
       },
-      "exportCSV": "",
-      "exportImage": "",
+      "exportCSV": "Eksportuj jako CSV",
+      "exportImage": "Eksportuj jako obraz",
       "graphOptions": {
-        "reverseAxis": "",
-        "threshold": "",
-        "thresholdLabel": "",
-        "thresholdValue": "",
-        "title": "",
-        "toggleGridLines": "",
-        "toggleSecondYAxis": "",
-        "xAxis": "",
-        "xAxisAtTop": "",
-        "yAuto": "",
-        "yAxis": "",
-        "yMax": "",
-        "yMin": ""
+        "reverseAxis": "Odwróć osie",
+        "threshold": "Próg",
+        "thresholdLabel": "Etykieta",
+        "thresholdValue": "Wartość",
+        "title": "Ustawienia",
+        "toggleGridLines": "Linie siatki",
+        "toggleSecondYAxis": "Druga oś X",
+        "xAxis": "oś X",
+        "xAxisAtTop": "Na górze",
+        "yAuto": "auto",
+        "yAxis": "oś Y",
+        "yMax": "Górny limit",
+        "yMin": "Dolny limit"
       },
       "intervalOptions": {
-        "custom": "",
-        "day": "",
-        "hour": "",
-        "month": "",
-        "week": "",
-        "year": ""
+        "custom": "Własny",
+        "day": "Dzień",
+        "hour": "Godzina",
+        "month": "Miesiąc",
+        "week": "Tydzień",
+        "year": "Rok"
       },
       "locationInfo": {
-        "description": "",
-        "inactive": "",
-        "name": "",
-        "platform": "",
-        "qompSensorId": "",
-        "serialNumber": "",
-        "title": ""
+        "description": "Opis",
+        "inactive": "Nieaktywna",
+        "name": "Nazwa",
+        "platform": "Platforma",
+        "qompSensorId": "QOMP Sensor ID",
+        "serialNumber": "Numer seryjny",
+        "title": "Informacjo o miejscu"
       },
       "locationLabel": "",
       "pickLocation": "",
@@ -784,53 +784,53 @@
         "arithmeticMean": "",
         "nthPercentile": ""
       },
-      "title": ""
+      "title": "SensorThings Query"
     },
     "serviceinfo": {
-      "abstract": "",
-      "contactEmail": "",
-      "contactOrganization": "",
-      "contactPerson": "",
-      "contactPhone": "",
-      "contactPosition": "",
-      "keywords": "",
-      "onlineResource": "",
-      "title": ""
+      "abstract": "Streszczenie",
+      "contactEmail": "E-mail",
+      "contactOrganization": "Organizacja",
+      "contactPerson": "Osoba kontaktowa",
+      "contactPhone": "Telefon",
+      "contactPosition": "Stanowisko",
+      "keywords": "Słowa kluczowe",
+      "onlineResource": "Zasób online",
+      "title": "Informacja o motywie"
     },
     "settings": {
-      "colorscheme": "",
-      "confirmlang": "",
-      "default": "",
-      "defaulttheme": "",
-      "defaultthemefailed": "",
-      "language": "",
-      "systemlang": "",
-      "themes": ""
+      "colorscheme": "Wygląd",
+      "confirmlang": "Aplikacja będzie przeładowana aby dokonać zmiany języka. Kontynuować?",
+      "default": "Domeyślny",
+      "defaulttheme": "Domyślny motyw",
+      "defaultthemefailed": "Nie udało się ustawić domyślnego motywu: {0}",
+      "language": "Język",
+      "systemlang": "Język systemu",
+      "themes": "Informacja o motywie"
     },
     "settings3d": {
-      "fov": "",
-      "pointSize": "",
-      "pointSizeAuto": "",
-      "quality": ""
+      "fov": "Pole widzenia",
+      "pointSize": "Wielkość punktu",
+      "pointSizeAuto": "Auto",
+      "quality": "Jakość"
     },
     "share": {
       "QRCodeLinkTitle": "QR code",
       "directLinkTitle": "Poprzez link bezpośredni",
-      "expires": "",
-      "norestriction": "",
-      "refresh": "",
-      "restricttogroup": "",
+      "expires": "Ten permalink jest wazny do {0}",
+      "norestriction": "Brak ograniczeń",
+      "refresh": "Wygeneruj permalink",
+      "restricttogroup": "Ogranicz do grupy",
       "shareTitle": "QWC2",
-      "showpin": "",
+      "showpin": "Pokaż pin",
       "socialIntro": "W twoich ulubionych mediach społecznościowych"
     },
     "snapping": {
-      "edge": "",
-      "intersection": "",
-      "loading": "",
-      "perpendicular": "",
-      "snappingenabled": "",
-      "vertex": ""
+      "edge": "Przyciągaj do krawędzi",
+      "intersection": "Przciągaj do przecięć",
+      "loading": "Wczytywanie geometrii przyciągania...",
+      "perpendicular": "Przyciąganie prostopadłe",
+      "snappingenabled": "Przyciąganie",
+      "vertex": "Przyciąganie do wierzchołków"
     },
     "sunexposure3d": {
       "end": "",
@@ -859,9 +859,9 @@
         "keywords": "",
         "title": ""
       },
-      "openintab": "",
-      "restrictedcontent": "",
-      "restrictedthemeinfo": ""
+      "openintab": "Otwórz w karcie",
+      "restrictedcontent": "Motyw z treścią dostępną tylko dla zalogowanych użytkowników",
+      "restrictedthemeinfo": "Nie masz uprawnień do wyświetlenia tego motywu lub nie jesteś zalogowany."
     },
     "timemanager": {
       "animationinterval": "",
@@ -909,15 +909,15 @@
       }
     },
     "tooltip": {
-      "background": "Zmień podkład map",
-      "fullscreendisable": "",
-      "fullscreenenable": "",
+      "background": "Zmień podkład",
+      "fullscreendisable": "Wyłącz tryb pełnoekranowy",
+      "fullscreenenable": "Włacz tryb pełnoekranowy",
       "home": "Pokaż całą mapę"
     },
     "tourguide": {
-      "done": "",
-      "next": "",
-      "previous": ""
+      "done": "Gotowe",
+      "next": "Następny",
+      "previous": "Poprzedni"
     },
     "valuetool": {
       "allbands": "",
@@ -938,8 +938,8 @@
       "ymin": ""
     },
     "vectorlayerpicker": {
-      "none": "",
-      "prompt": ""
+      "none": "Brak",
+      "prompt": "Wprowadź nazwę warstwy"
     },
     "view3d": {
       "storingstate": ""
@@ -948,11 +948,11 @@
       "cubemap": ""
     },
     "viewshed3d": {
-      "maxDistance": "",
-      "observerpos": "",
-      "occludedcolor": "",
-      "showgizmo": "",
-      "visiblecolor": ""
+      "maxDistance": "Maksymalna odległość",
+      "observerpos": "Pozycja obserwatora",
+      "occludedcolor": "Kolor przesłonięty",
+      "showgizmo": "Pokaż gizmo",
+      "visiblecolor": "Widoczny kolor"
     },
     "visibilitypreset": {
       "addfailed": "",
@@ -968,22 +968,22 @@
       "update": ""
     },
     "window": {
-      "detach": "",
-      "dock": "",
-      "embed": "",
-      "maximize": "",
-      "minimize": "",
-      "undock": "",
-      "unmaximize": "",
-      "unminimize": ""
+      "detach": "Odłącz",
+      "dock": "Zadokuj",
+      "embed": "Osadź",
+      "maximize": "Maksymalizuj",
+      "minimize": "Minimalizuj",
+      "undock": "Oddokuj",
+      "unmaximize": "Przywróć",
+      "unminimize": "Odminimalizuj"
     },
     "colorschemes": {
-      "default": "",
-      "default_rounded": "",
-      "dark": "",
-      "dark_rounded": "",
-      "highcontrast": "",
-      "highcontrast_rounded": ""
+      "default": "Domyślny",
+      "default_rounded": "Domyslny zaokrąglony",
+      "dark": "Ciemny",
+      "dark_rounded": "Ciemny zaokrąglony",
+      "highcontrast": "Wysoki kontrast",
+      "highcontrast_rounded": "Wysoki konrast zaokrąglony"
     },
     "plotdescr": {
       "title": "",
