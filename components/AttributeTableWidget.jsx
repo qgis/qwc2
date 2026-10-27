@@ -210,8 +210,8 @@ class AttributeTableWidget extends React.Component {
                                 {showIdColumn ? (
                                     <th onClick={() => this.sortBy(primaryKey)} onKeyDown={MiscUtils.checkKeyActivate} tabIndex={0} title={this.translateFieldName(primaryKey)}>
                                         <span>
-                                            <span className="attribtable-table-headername">{this.translateFieldName(primaryKey)}</span>
-                                            {this.renderSortIndicator(pkField?.name ?? primaryKey)}
+                                            <span className="attribtable-table-headername">{this.translateFieldName(pkField?.name ?? primaryKey)}</span>
+                                            {this.renderSortIndicator(primaryKey)}
                                             {this.renderColumnResizeHandle(1, 'r')}
                                         </span>
                                     </th>
