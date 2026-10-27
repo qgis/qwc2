@@ -7,7 +7,7 @@ div.searchbox-field {
     flex: 1 1 auto;
 }
 
-button.searchbox-filter-button {
+button.button.searchbox-filter-button {
     flex: 0 0 auto;
     border-left-width: 0;
     padding: 0 1em 0 0.5em;
