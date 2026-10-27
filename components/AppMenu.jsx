@@ -115,7 +115,22 @@ class AppMenu extends React.Component {
         this.setState((state) => ({menuVisible: !state.menuVisible, submenusVisible: [], filter: ""}));
     };
     checkCloseMenu = (ev) => {
-        if (this.menuEl && !this.menuEl.contains(ev.target) && this.props.menuDisplayMode === "normal" && !this.props.keepMenuOpen) {
+        if (!this.menuEl) {
+            return;
+        }
+        const rect = this.menuEl.getBoundingClientRect();
+        const x = rect.left + rect.width / 2;
+        const y = rect.top + rect.height / 2;
+        const stack = ev.view.document.elementsFromPoint(x, y);
+        const stackTargetParent = stack.find(el => el.contains(ev.target));
+        const menuStackPos = stack.indexOf(this.menuEl);
+        const targetStackPos = stack.indexOf(stackTargetParent);
+        // Don't close menu if clicked on a element which visually covers the menu (i.e. an overlay)
+        if (targetStackPos < menuStackPos && menuStackPos !== -1 && targetStackPos !== -1) {
+            return;
+        }
+
+        if (!this.menuEl.contains(ev.target) && this.props.menuDisplayMode === "normal" && !this.props.keepMenuOpen) {
             this.toggleMenu();
             MiscUtils.killEvent(ev);
             this.killClick = true;
