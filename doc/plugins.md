@@ -963,6 +963,7 @@ revision is published (specified via newsRev prop).
 |----------|------|-------------|---------------|
 | embedIframe | `bool` | Whether to embed the news document in an iframe instead of a div. | `true` |
 | newsDocument | `string` | URL to the news HTML document to display in the popup. Can contain `{lang}` as a placeholder which will be replaced with the current viewer language. | `undefined` |
+| newsDocumentBody | `string` | The news document HTML body, as alternative to specifying `newsDocument`. | `undefined` |
 | newsRev | `string` | Revision of the document. | `undefined` |
 | showInSidebar | `bool` | Whether to show the news in a sidebar instead of a popup. | `undefined` |
 | side | `string` | The side of the application on which to display the sidebar. | `undefined` |
