@@ -82,7 +82,7 @@ export default class NumberInput extends React.Component {
         return (
             <div className={className + " " + this.props.className}>
                 <input disabled={this.props.disabled}
-                    inputMode="numeric"
+                    inputMode={this.props.decimals > 0 ? "decimal" : "numeric"}
                     onBlur={this.commit} onChange={this.onChange}
                     onFocus={this.setupSelectionListener}
                     onKeyDown={this.onKeyDown} placeholder={this.props.placeholder}
@@ -106,7 +106,7 @@ export default class NumberInput extends React.Component {
         if (this.state.value === "") {
             return null;
         }
-        const floatValue = parseFloat(this.state.value);
+        const floatValue = parseFloat(this.state.value.replace(",", "."));
         return isNaN(floatValue) ? null : floatValue;
     };
     startStep = (delta) => {
