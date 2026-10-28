@@ -50,6 +50,9 @@ class Toolbar extends React.Component {
             }
         }
     }
+    componentWillUnmount() {
+        this.boundShortcuts.forEach(shortcut => Mousetrap.unbind(shortcut));
+    }
     renderToolbarItem = (item) => {
         const active = this.props.currentTask === (item.task || item.key) && this.props.currentTaskMode === (item.mode || null);
         const title = LocaleUtils.tr("appmenu.items." + item.key + (item.mode || ""));

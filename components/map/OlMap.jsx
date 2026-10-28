@@ -145,6 +145,8 @@ class OlMap extends React.Component {
     }
     componentWillUnmount() {
         this.map.un('change:size', this.recreateKeyboardInteractions);
+        clearTimeout(this.unpauseTimeout);
+        this.map.setTarget(null);
     }
     recreateKeyboardInteractions = () => {
         this.keyboardPanInteractions.forEach(interaction => {
