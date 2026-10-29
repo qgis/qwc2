@@ -333,6 +333,9 @@ class SearchBox extends React.Component {
                 } else if (group.resultCount === -1) {
                     moreLabel = LocaleUtils.tr("search.unknownmore");
                 }
+                if ((group.limit ?? null) !== null) {
+                    moreLabel = (<a href="#" onClick={() => this.loadMore(provider, group)}>{moreLabel}</a>);
+                }
                 if (group.items.length === 0) {
                     return null;
                 }
@@ -369,6 +372,37 @@ class SearchBox extends React.Component {
             }
         });
         return isEmpty(results) ? null : results.map(entry => entry.tree);
+    };
+    loadMore = (provider, group) => {
+        const searchText = this.state.searchResults.query_text;
+        const prov = this.props.searchProviders[provider];
+        const searchParams = {
+            mapcrs: this.props.map.projection,
+            displaycrs: this.props.map.displayCrs,
+            extracrs: (this.props.searchOptions.extraCoordinateSearchCrs === "mousecrs" ? this.props.theme.additionalMouseCrs : this.props.searchOptions.extraCoordinateSearchCrs) ?? [],
+            lang: LocaleUtils.lang(),
+            limit: group.limit + 10,
+            filterPoly: this.state.filterGeometry?.coordinates?.[0],
+            filterBBox: this.state.filterGeometry ? VectorLayerUtils.computeFeatureBBox(this.state.filterGeometry) : null,
+            filter: group.filter
+        };
+        prov.onSearch(searchText, {
+            cfgParams: prov.cfgParams,
+            ...prov.params,
+            ...searchParams
+        }, (response) => {
+            const newGroup = response.results.find(g => g.id === group.id);
+            const newResultCounts = Object.fromEntries(response.result_counts.map(rc => ([rc.dataproduct_id, rc])));
+            this.setState(state => ({
+                searchResults: {
+                    ...state.searchResults,
+                    [provider]: {
+                        results: state.searchResults[provider].results.map(g => g.id === group.id ? newGroup : g),
+                        result_counts: state.searchResults[provider].result_counts.map(rc => newResultCounts[rc.dataproduct_id] ?? rc)
+                    }
+                }
+            }));
+        });
     };
     renderPlaceResult = (provider, group, result) => {
         const key = provider + ":" + group.id + ":" + result.id;
