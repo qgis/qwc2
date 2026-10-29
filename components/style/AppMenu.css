@@ -67,7 +67,7 @@ div.AppMenu div.appmenu-menu-container {
     width: 100%;
     overflow-y: auto;
     overflow-x: hidden;
-    height: calc(var(--plugins-container-height) - var(--topbar-height) - var(--bottombar-height));
+    height: calc(var(--plugins-container-height) - var(--qwc-topbar-height) - var(--qwc-bottombar-height));
     pointer-events: none;
     opacity: 0;
     transform-origin: top;

@@ -6,7 +6,7 @@ iframe.windows-iframe-dialog-body {
 
 div.windows-notification-container {
     position: absolute;
-    top: var(--topbar-height);
+    top: var(--qwc-topbar-height);
     left: 50%;
     transform: translateX(-50%);
     display: inline-block;
