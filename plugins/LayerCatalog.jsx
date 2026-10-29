@@ -37,6 +37,7 @@ import './style/LayerCatalog.css';
  * You can set a default fallback value for `asGroup` via the  `defaultAsGroupValue` `LayerCatalog` configuration option.
  *
  * Example:
+ *
  * ```json
  * {
  *   "catalog": [
