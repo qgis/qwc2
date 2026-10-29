@@ -279,13 +279,13 @@ export class QgisSearch {
         Request.get(searchParams.theme.featureInfoUrl, {params}).then(response => {
             callback(QgisSearch.searchResults(
                 IdentifyUtils.parseResponse(response.data, searchParams.theme, 'text/xml', null, searchParams.mapcrs),
-                searchParams.cfgParams.title, searchParams.cfgParams.resultTitle
+                searchParams.cfgParams.title, searchParams.cfgParams.resultTitle, searchParams.cfgParams.priority
             ));
         }).catch(() => {
             callback({results: []});
         });
     }
-    static searchResults(features, title, resultTitle) {
+    static searchResults(features, title, resultTitle, priority) {
         const results = [];
         Object.entries(features).forEach(([layername, layerfeatures]) => {
             const items = layerfeatures.map(feature => {
@@ -309,12 +309,13 @@ export class QgisSearch {
                     geometry: feature.geometry,
                     layername: layername
                 };
-            }).filter(Boolean);
+            }).filter(Boolean).sort((a, b) => a.text.localeCompare(b.text));
             results.push(
                 {
                     id: "qgis." + layername,
                     title: title + ": " + layername,
                     type: SearchResultType.PLACE,
+                    priority: priority,
                     items: items
                 }
             );
