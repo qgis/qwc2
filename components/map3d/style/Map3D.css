@@ -22,16 +22,16 @@ div.map3d-map {
     position: absolute;
     left: 0;
     right: 0;
-    top: calc(-1 * var(--topbar-height));
-    bottom: calc(-1 * var(--bottombar-height));
+    top: calc(-1 * var(--qwc-topbar-height));
+    bottom: calc(-1 * var(--qwc-bottombar-height));
 }
 
 div.map3d-inspector {
     position: absolute;
     z-index: 1000;
     left: 0;
-    top: var(--topbar-height);
-    max-height: calc(100% - var(--topbar-height) - var(--bottombar-height));
+    top: var(--qwc-topbar-height);
+    max-height: calc(100% - var(--qwc-topbar-height) - var(--qwc-bottombar-height));
     overflow-y: auto;
 }
 
