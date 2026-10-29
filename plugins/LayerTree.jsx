@@ -36,6 +36,7 @@ import MapUtils from '../utils/MapUtils';
 import MiscUtils from '../utils/MiscUtils';
 import VectorLayerUtils from '../utils/VectorLayerUtils';
 
+import '../actions/bookmark';
 import './style/LayerTree.css';
 
 
