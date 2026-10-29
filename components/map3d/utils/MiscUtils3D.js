@@ -152,16 +152,19 @@ export function computeOBBXY(mesh) {
 export class TileMeshHelper {
     constructor(object) {
         this.object = object;
-        const {meshFeatures, structuralMetadata} = object.userData;
-        if (meshFeatures && structuralMetadata) {
-            // Get featureId via featureId attribute
-            const featureSetIndex = 0; // usually 0 unless multiple feature sets
-            const featureSet = meshFeatures.featureIds[featureSetIndex];
-            this.propertyTable = featureSet.propertyTable;
-            this.featureIdAttr = object.geometry.getAttribute(`_feature_id_${featureSet.attribute}`) || object.geometry.getAttribute(`_FEATURE_ID_${featureSet.attribute}`);
-        } else if (structuralMetadata) {
-            this.featureIdAttr = object.geometry.getAttribute(`_feature_id_0`) || object.geometry.getAttribute('_FEATURE_ID_0');
-            this.propertyTable = 0;
+        if (object.userData.structuralMetadata) {
+            const meshFeatures = object.userData.meshFeatures ?? object.userData.gltfExtensions?.EXT_instance_features;
+            if (meshFeatures) {
+                // Get featureId via featureId attribute
+                const featureSetIndex = 0; // usually 0 unless multiple feature sets
+                const featureSet = meshFeatures.featureIds[featureSetIndex];
+                this.propertyTable = featureSet.propertyTable;
+                this.featureIdAttr = object.geometry.getAttribute(`_feature_id_${featureSet.attribute}`) || object.geometry.getAttribute(`_FEATURE_ID_${featureSet.attribute}`);
+            } else {
+                // This fallback should probably not be neccessary!
+                this.propertyTable = 0;
+                this.featureIdAttr = object.geometry.getAttribute('_feature_id_0') || object.geometry.getAttribute('_FEATURE_ID_0');
+            }
         } else if ('_batchid' in object.geometry.attributes) {
             // Get featureId via batchId attribute
             this.propertyTable = null;
