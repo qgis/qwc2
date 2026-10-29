@@ -96,7 +96,7 @@ class AttributeTableWidget extends React.Component {
         selectedLayer: "",
         loadedLayer: "",
         curEditConfig: null,
-        curFields: null,
+        curFields: [],
         features: [],
         totFeatureCount: 0,
         selectedFeatures: {},
@@ -301,9 +301,6 @@ class AttributeTableWidget extends React.Component {
                             <div value="<">&lt;</div>
                         </ComboBox>
                         {valueInput}
-                        <button className={"button " + (this.state.selectedOnly ? "pressed" : "")} disabled={isEmpty(this.state.selectedFeatures)} onClick={() => this.setState(state => ({selectedOnly: !state.selectedOnly}))} title={LocaleUtils.tr("attribtable.selectedonly")} type="button">
-                            <Icon icon="checked" />
-                        </button>
                     </div>
                     {this.props.showLimitToExtent ? (
                         <div>
@@ -407,6 +404,9 @@ class AttributeTableWidget extends React.Component {
                             <span>{LocaleUtils.tr("attribtable.discard")}</span>
                         </button>
                     ) : null}
+                    <button className={"button " + (this.state.selectedOnly ? "pressed" : "")} disabled={isEmpty(this.state.selectedFeatures)} onClick={() => this.setState(state => ({selectedOnly: !state.selectedOnly}))} title={LocaleUtils.tr("attribtable.selectedonly")} type="button">
+                        <Icon icon="checked" />
+                    </button>
                     <MenuButton menuIcon="export" onActivate={this.export} tooltip={LocaleUtils.tr("common.export")}>
                         <div value="csv">CSV</div>
                         <div value="xlsx">XLSX</div>
@@ -896,7 +896,7 @@ class AttributeTableWidget extends React.Component {
             return;
         }
         const feature = Object.values(this.state.selectedFeatures)[0];
-        this.props.setCurrentTask("Editing", null, null, {layer: this.state.loadedLayer, feature: feature});
+        this.props.setCurrentTask("Editing", null, null, {layer: this.state.loadedLayer, featureId: feature.id});
     };
     export = (format) => {
         const primaryKey = this.state.curEditConfig.primaryKey ?? "id";

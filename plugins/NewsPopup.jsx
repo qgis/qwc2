@@ -33,6 +33,8 @@ class NewsPopup extends React.Component {
         embedIframe: PropTypes.bool,
         /** URL to the news HTML document to display in the popup. Can contain `{lang}` as a placeholder which will be replaced with the current viewer language.*/
         newsDocument: PropTypes.string,
+        /** The news document HTML body, as alternative to specifying `newsDocument`. */
+        newsDocumentBody: PropTypes.string,
         /** Revision of the document. */
         newsRev: PropTypes.string,
         setCurrentTask: PropTypes.func,
@@ -55,7 +57,7 @@ class NewsPopup extends React.Component {
     };
     constructor(props) {
         super(props);
-        const show = props.newsDocument && !!props.newsRev && !document.cookie.split(';').some((item) => item.includes('newsrev=' + props.newsRev));
+        const show = (props.newsDocument || props.newsDocumentBody) && !!props.newsRev && !document.cookie.split(';').some((item) => item.includes('newsrev=' + props.newsRev));
         if (show && !ConfigUtils.getSessionConfig("newsPopupShown")) {
             if (props.showInSidebar) {
                 props.setCurrentTask("NewsPopup");
@@ -68,10 +70,14 @@ class NewsPopup extends React.Component {
         this.componentDidUpdate({});
     }
     componentDidUpdate(prevProps) {
-        if (this.props.newsDocument && this.props.newsDocument !== prevProps.newsDocument) {
-            Request.get(this.props.newsDocument.replace('{lang}', LocaleUtils.lang())).then(response => {
-                this.setState({body: response.data});
-            }).catch(() => {});
+        if (this.props.newsDocument) {
+            if (!this.props.embedIframe) {
+                Request.get(this.props.newsDocument.replace('{lang}', LocaleUtils.lang())).then(response => {
+                    this.setState({body: response.data});
+                }).catch(() => {});
+            }
+        } else if (this.props.newsDocumentBody && this.props.newsDocumentBody !== prevProps.newsDocumentBody) {
+            this.setState({body: this.props.newsDocumentBody});
         }
     }
     render() {
@@ -97,13 +103,15 @@ class NewsPopup extends React.Component {
         }
     }
     renderBody = () => {
+        let body = "";
+        if (this.props.embedIframe) {
+            body = this.props.newsDocument ? (<iframe src={this.props.newsDocument} />) : (<iframe srcDoc={this.state.body} />);
+        } else {
+            body = (<div className="newspopup-dialog-popup-content" dangerouslySetInnerHTML={{__html: this.state.body}} />);
+        }
         return (
             <div className="newspopup-dialog-popup-body" role="body">
-                {this.props.embedIframe ? (
-                    <iframe src={this.props.newsDocument.replace('{lang}', LocaleUtils.lang())} />
-                ) : (
-                    <div className="newspopup-dialog-popup-content" dangerouslySetInnerHTML={{__html: this.state.body}} />
-                )}
+                {body}
                 <div className="newspopup-dialog-popup-buttonbar">
                     <button onClick={this.closeDialog}>{LocaleUtils.tr("common.close")}</button>
                     <label><input onChange={ev => this.setState({dontShowAgain: ev.target.checked})} type="checkbox" value={this.state.dontShowAgain} /> {LocaleUtils.tr("newspopup.dontshowagain")}</label>

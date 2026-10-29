@@ -9,9 +9,13 @@
             "type": "string",
             "description": "Name of the matching background layer definition in themes.backgroundLayers."
         },
-        "visibility": {
+        "omitFromCycle": {
             "type": "boolean",
-            "description": "Initial visibility of the layer when the theme is loaded."
+            "description": "Exclude the layer when cycling through the background layers."
+        },
+        "omitFromSelect": {
+            "type": "boolean",
+            "description": "Hide the layer from the background layer selection."
         },
         "overview": {
             "type": "boolean",
@@ -49,13 +53,9 @@
                 }
             ]
         },
-        "omitFromCycle": {
+        "visibility": {
             "type": "boolean",
-            "description": "Exclude the layer when cycling through the background layers."
-        },
-        "omitFromSelect": {
-            "type": "boolean",
-            "description": "Hide the layer from the background layer selection."
+            "description": "Initial visibility of the layer when the theme is loaded."
         }
     },
     "required": [

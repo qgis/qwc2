@@ -461,7 +461,7 @@ class IdentifyViewer extends React.Component {
         }
         let editButton = null;
         if (ConfigUtils.havePlugin("Editing") && this.props.editConfigs[feature.wms_name]?.[feature.layername]) {
-            editButton = (<Icon icon="editing" onClick={() => this.props.setCurrentTask("Editing", null, null, {layer: `${feature.wms_name}#${feature.layername}`, feature: feature.id})} title={LocaleUtils.tr("identify.editform")} />);
+            editButton = (<Icon icon="editing" onClick={() => this.props.setCurrentTask("Editing", null, null, {layer: `${feature.wms_name}#${feature.layername}`, featureId: feature.id})} title={LocaleUtils.tr("identify.editform")} />);
         }
         const key = layerid + "$" + feature.id;
         const expanded = this.state.expandedResults.has(key);
@@ -866,8 +866,8 @@ class IdentifyViewer extends React.Component {
         const serviceUrl = ConfigUtils.getConfigProp("documentServiceUrl").replace(/\/$/, "");
         const params = {
             feature: result.id,
-            x: result.clickPos[0],
-            y: result.clickPos[1],
+            x: result.clickPos?.[0],
+            y: result.clickPos?.[1],
             crs: this.props.map.projection,
             single_report: report.single_report || false
         };
@@ -882,8 +882,8 @@ class IdentifyViewer extends React.Component {
         const serviceUrl = ConfigUtils.getConfigProp("documentServiceUrl").replace(/\/$/, "");
         const params = {
             feature: results.map(result => result.id).join(","),
-            x: results[0].clickPos[0],
-            y: results[0].clickPos[1],
+            x: results[0].clickPos?.[0],
+            y: results[0].clickPos?.[1],
             crs: this.props.map.projection,
             single_report: report.single_report || false
         };

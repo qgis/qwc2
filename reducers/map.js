@@ -86,8 +86,8 @@ export default function map(state = defaultState, action) {
     }
     case ZOOM_TO_EXTENT: {
         // Ugh...
-        const topbarHeight = parseFloat(document.querySelector(':root').style.getPropertyValue('--topbar-height').replace(/px$/, ''));
-        const bottombarHeight = parseFloat(document.querySelector(':root').style.getPropertyValue('--bottombar-height').replace(/px$/, ''));
+        const topbarHeight = parseFloat(document.querySelector(':root').style.getPropertyValue('--qwc-topbar-height').replace(/px$/, ''));
+        const bottombarHeight = parseFloat(document.querySelector(':root').style.getPropertyValue('--qwc-bottombar-height').replace(/px$/, ''));
 
         const bounds = CoordinatesUtils.reprojectBbox(action.extent, action.crs || state.projection, state.projection);
         const padding = (topbarHeight + bottombarHeight) / state.size.height;

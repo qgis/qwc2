@@ -1,6 +1,6 @@
 {
     "name": "qwc2",
-    "version": "2026.10.18",
+    "version": "2026.10.26",
     "description": "QGIS Web Client",
     "author": "Sourcepole AG",
     "license": "BSD-2-Clause",
@@ -146,6 +146,7 @@
         "themesconfig": "node scripts/themesConfig.js || :",
         "tsupdate": "node scripts/updateTranslations.js",
         "plugindoc": "node scripts/gen-plugin-docs.js",
+        "schemasort": "node scripts/sortSchemaProperties.js",
         "dist": "./scripts/dist.sh",
         "build": "npm run prod",
         "analyze": "webpack --mode production --progress --env ANALYZE=1",

@@ -35,16 +35,30 @@ class Map extends React.Component {
         layers: PropTypes.array,
         loadingLayers: PropTypes.array,
         map: PropTypes.object,
-        /** Zoom duration in ms, rotation in degrees, panStepSize and panPageSize as fraction of map width/height. */
+        /** Map options. */
         mapOptions: PropTypes.shape({
-            zoomDuration: PropTypes.number,
-            enableRotation: PropTypes.bool,
-            rotation: PropTypes.number,
-            panStepSize: PropTypes.number,
-            panPageSize: PropTypes.number,
+            /** Whether to constrain the map extent to the theme extent. */
             constrainExtent: PropTypes.bool,
+            /** Whether to constrain only the map center to the theme extent. */
             constrainOnlyCenter: PropTypes.bool,
-            kineticPanParams: PropTypes.object
+            /** Whether to allow rotating the map. */
+            enableRotation: PropTypes.bool,
+            /** Whether to freeze map updates on pan */
+            freezeUpdatesOnPan: PropTypes.bool,
+            /** Kinetic pan paramters, see https://openlayers.org/en/latest/apidoc/module-ol_Kinetic-Kinetic.html. If unset, kinetic panning is disabled. */
+            kineticPanParams: PropTypes.shape({
+                decay: PropTypes.number,
+                delay: PropTypes.number,
+                minVelocity: PropTypes.number
+            }),
+            /** Pan step when pressing PageUp/Down keys, as a fraction of the map width/height. */
+            panPageSize: PropTypes.number,
+            /** Pan step when pressing the arrow keys, as a fraction of the map width/height. */
+            panStepSize: PropTypes.number,
+            /** Initial map rotation, in degrees. */
+            rotation: PropTypes.number,
+            /** Duration of the zoom animation, in ms. */
+            zoomDuration: PropTypes.number
         }),
         /** Whether to display the loading spinner when layers are loading. */
         showLoading: PropTypes.bool,
@@ -62,7 +76,17 @@ class Map extends React.Component {
         viewSwitcherPosition: PropTypes.number
     };
     static defaultProps = {
-        mapOptions: {},
+        mapOptions: {
+            constrainExtent: false,
+            constrainOnlyCenter: false,
+            enableRotation: true,
+            freezeUpdatesOnPan: true,
+            kineticPanParams: null,
+            panPageSize: 1,
+            panStepSize: 0.25,
+            rotation: 0,
+            zoomDuration: 250
+        },
         showLoading: true,
         swipeGeometryTypeBlacklist: [],
         swipeLayerNameBlacklist: [],
@@ -250,7 +274,7 @@ class Map extends React.Component {
         return ReactDOM.createPortal([
             (
                 <div className="map-contents" id="map" key="map" tabIndex="0">
-                    <OlMap id="map" key="map" mapOptions={this.props.mapOptions} {...this.props.map} fullExtent={this.props.theme?.bbox}>
+                    <OlMap id="map" key="map" mapOptions={{...Map.defaultProps.mapOptions, ...this.props.mapOptions}} {...this.props.map} fullExtent={this.props.theme?.bbox}>
                         {this.renderLayers()}
                         {this.renderSupportTools()}
                     </OlMap>

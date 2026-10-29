@@ -144,6 +144,8 @@ export default function windows(state = defaultState, action) {
         };
     }
     case SET_TOPBAR_HEIGHT: {
+        document.querySelector(':root').style.setProperty('--qwc-topbar-height', action.height + 'px');
+        // Unprefixed name kept for application stylesheets which still reference it
         document.querySelector(':root').style.setProperty('--topbar-height', action.height + 'px');
         if (action.height <= 0) {
             return state;
@@ -151,6 +153,8 @@ export default function windows(state = defaultState, action) {
         return {...state, topbarHeight: action.height};
     }
     case SET_BOTTOMBAR_HEIGHT: {
+        document.querySelector(':root').style.setProperty('--qwc-bottombar-height', action.height + 'px');
+        // Unprefixed name kept for application stylesheets which still reference it
         document.querySelector(':root').style.setProperty('--bottombar-height', action.height + 'px');
         if (action.height <= 0) {
             return state;

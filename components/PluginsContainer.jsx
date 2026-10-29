@@ -66,9 +66,9 @@ class PluginsContainer extends React.Component {
         const bottom = this.props.mapMargins.bottom;
         const mapContainerStyle = {
             left: 'calc(' + left + 'px)',
-            top: 'calc(var(--topbar-height) + ' + top + 'px)',
+            top: 'calc(var(--qwc-topbar-height) + ' + top + 'px)',
             right: 'calc(' + right + 'px)',
-            bottom: 'calc(var(--bottombar-height) + ' + bottom + 'px)'
+            bottom: 'calc(var(--qwc-bottombar-height) + ' + bottom + 'px)'
         };
         const haveRefs = this.state.rootRef && this.state.mapButtonsContainerRef && this.state.mapContainerRef && this.state.appInfosContainerRef && this.state.bottomToolContainerRef;
         return (

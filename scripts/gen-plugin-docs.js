@@ -60,15 +60,15 @@ fs.readdirSync(qwcExtraPluginDir).forEach(entry => {
 extraPluginData = extraPluginData.flat();
 
 
-function parsePropType(type) {
+function parsePropType(type, indent = "") {
     if (type.name === 'shape') {
         return '{\n' +
-                Object.entries(type.value).map(([key, value]) => { return '  ' + key + ": " + parsePropType(value) + ',\n'; }).join('') +
-                '}';
+                Object.entries(type.value).map(([key, value]) => { return indent + '  ' + key + ": " + parsePropType(value, "  ") + ',\n'; }).join('') +
+                indent + '}';
     } else if (type.name === 'arrayOf') {
         return '[' + parsePropType(type.value) + "]";
     } else if (type.name === 'union') {
-        return '{' + type.value.map(entry => parsePropType(entry)).join(", ") + '}';
+        return '{' + type.value.map(entry => parsePropType(entry, "  ")).join(", ") + indent + '}';
     } else if (type.name === 'enum') {
         return `{${type.value.map(x => x.value).join(", ")}}`;
     } else if (type.name === 'objectOf') {

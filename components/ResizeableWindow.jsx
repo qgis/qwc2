@@ -555,12 +555,11 @@ class ResizeableWindow extends React.Component {
                     externalWindow.document.head.appendChild(styleElement);
                 }
             });
-            externalWindow.document.querySelector(':root').style.setProperty('--topbar-height',
-                document.querySelector(':root').style.getPropertyValue('--topbar-height')
-            );
-            externalWindow.document.querySelector(':root').style.setProperty('--bottombar-height',
-                document.querySelector(':root').style.getPropertyValue('--bottombar-height')
-            );
+            // Unprefixed names kept for application stylesheets which still reference them
+            const rootStyle = document.querySelector(':root').style;
+            ['--qwc-topbar-height', '--qwc-bottombar-height', '--topbar-height', '--bottombar-height'].forEach(name => {
+                externalWindow.document.querySelector(':root').style.setProperty(name, rootStyle.getPropertyValue(name));
+            });
             if (this.props.colorScheme) {
                 externalWindow.document.querySelector(':root').classList.add(this.props.colorScheme);
             }

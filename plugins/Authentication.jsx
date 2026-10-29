@@ -54,6 +54,12 @@ class Authentication extends React.Component {
             window.addEventListener('wheel', this.resetIdleTimer, {passive: true});
         }
     }
+    componentWillUnmount() {
+        clearTimeout(this.idleTimer);
+        window.removeEventListener('keydown', this.resetIdleTimer, {passive: true});
+        window.removeEventListener('mousedown', this.resetIdleTimer, {passive: true});
+        window.removeEventListener('wheel', this.resetIdleTimer, {passive: true});
+    }
     componentDidUpdate(prevProps) {
         const task = this.props.task;
         if (task !== prevProps.task) {

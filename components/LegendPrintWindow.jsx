@@ -33,6 +33,9 @@ class LegendPrintWindow extends React.Component {
         scaleDependentLegend: PropTypes.bool,
         visibleOnly: PropTypes.bool
     };
+    static defaultProps = {
+        excludeLayers: []
+    };
     state = {
         template: null,
         srcdoc: null

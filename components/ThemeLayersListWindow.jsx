@@ -54,7 +54,7 @@ class ThemeLayersListWindow extends React.Component {
             <div className="layerlist-item" key={layer.name}>
                 <Icon className="layerlist-item-checkbox" icon={checkboxstate} onClick={() => this.itemSelectionToggled(layer)} />
                 <span className="layerlist-item-title" title={layer.title}>{layer.title}</span>
-                <Icon className="layerlist-item-add" icon="plus" onClick={() => this.addLayers([layer])} title={addLayerTitle} />
+                <Icon className="layerlist-item-add" icon="plus" onClick={() => this.addLayers([{...layer, visibility: true}])} title={addLayerTitle} />
             </div>
         );
     }

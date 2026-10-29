@@ -9,6 +9,7 @@
 import React from 'react';
 import {connect} from 'react-redux';
 
+import TileState from 'ol/TileState';
 import ol from 'openlayers';
 import PropTypes from 'prop-types';
 
@@ -40,7 +41,6 @@ class OlLayer extends React.Component {
         this.updateInterval = null;
     }
     componentDidMount() {
-        this.tilestoload = 0;
         this.createLayer(this.makeOptions(this.props.options));
     }
     componentDidUpdate(prevProps) {
@@ -193,24 +193,34 @@ class OlLayer extends React.Component {
                     this.props.setLayerLoading(id, false);
                 });
             } else if (sublayer.getSource() && sublayer.getSource().getTileLoadFunction) {
-                sublayer.getSource().on('tileloadstart', () => {
-                    if (this.tilestoload === 0) {
+                // Track the loading tiles themselves, per sublayer. A tile released while loading
+                // (cache expiry on zoom/pan, source refresh) becomes EMPTY, and OpenLayers then
+                // dispatches neither tileloadend nor tileloaderror for it (ol/source/UrlTile#handleTileChange).
+                const loadingTiles = new Set();
+                const tileDone = (tile) => {
+                    if (loadingTiles.delete(tile) && loadingTiles.size === 0) {
+                        this.props.setLayerLoading(id, false);
+                    }
+                };
+                sublayer.getSource().on('tileloadstart', (ev) => {
+                    const tile = ev.tile;
+                    if (loadingTiles.size === 0) {
                         this.props.setLayerLoading(id, true);
                     }
-                    this.tilestoload++;
+                    loadingTiles.add(tile);
+                    const onChange = () => {
+                        const state = tile.getState();
+                        if (state !== TileState.LOADING) {
+                            tile.removeEventListener('change', onChange);
+                            if (state === TileState.EMPTY) {
+                                tileDone(tile);
+                            }
+                        }
+                    };
+                    tile.addEventListener('change', onChange);
                 });
-                sublayer.getSource().on('tileloadend', () => {
-                    this.tilestoload--;
-                    if (this.tilestoload === 0) {
-                        this.props.setLayerLoading(id, false);
-                    }
-                });
-                sublayer.getSource().on('tileloaderror', () => {
-                    this.tilestoload--;
-                    if (this.tilestoload === 0) {
-                        this.props.setLayerLoading(id, false);
-                    }
-                });
+                sublayer.getSource().on('tileloadend', (ev) => tileDone(ev.tile));
+                sublayer.getSource().on('tileloaderror', (ev) => tileDone(ev.tile));
             } else if (sublayer.getSource() && sublayer.getSource() instanceof ol.source.Vector && sublayer.getSource().getUrl()) {
                 sublayer.getSource().on('featuresloadstart', () => {
                     this.props.setLayerLoading(id, true);

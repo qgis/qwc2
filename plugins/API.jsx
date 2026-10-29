@@ -373,6 +373,10 @@ class API extends React.Component {
             window.parent.postMessage("QWC2ApiReady", "*");
         }
     }
+    componentWillUnmount() {
+        window.removeEventListener("message", this.handleMessage);
+        delete window.qwc2;
+    }
     static propTypes = {
         addLayer: PropTypes.func,
         /* List of origins which are allowed to post messages via `qwcIframe.postMessage`. */

@@ -313,7 +313,7 @@ class MapExport extends React.Component {
             }
             scale = this.props.allowedScales[closestIdx];
         }
-        let availableFormats = [...this.props.theme.availableFormats || []];
+        let availableFormats = [...this.props.theme?.availableFormats || []];
         (this.props.forceAvailableFormats || []).forEach(format => {
             if (!availableFormats.includes(format)) {
                 availableFormats.push(format);

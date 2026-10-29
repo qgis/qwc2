@@ -10,6 +10,7 @@
 import isMobile from 'ismobilejs';
 import url from 'url';
 
+import LocaleUtils from './LocaleUtils';
 import PluginStore from './PluginStore';
 import Request from './Request';
 
@@ -47,7 +48,7 @@ export default {
     },
     loadConfiguration(configParams = {}, configPath = null) {
         const configFile = configPath || ((url.parse(window.location.href, true).query.localConfig || 'config') + '.json');
-        return Request.get(configFile, {params: configParams}).then(response => {
+        return Request.get(configFile, {params: {...configParams, lang: LocaleUtils.lang()}}).then(response => {
             if (typeof response.data === 'object') {
                 config = {...config, ...response.data};
             } else {

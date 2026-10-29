@@ -110,14 +110,15 @@ class AppContainerComponent extends React.Component {
                 // Compute initial view
                 let initialExtent = null;
                 if (params.c && params.s !== undefined) {
-                    const coords = params.c.split(/[;,]/g).map(x => parseFloat(x) || 0);
+                    const coords = params.c.split(/[;,]/g).map(x => parseFloat(x));
                     const scales = theme.scales || themes.defaultScales;
                     const zoom = MapUtils.computeZoom(scales, params.s);
-                    if (coords.length === 2) {
+                    if (coords.length === 2 && coords.every(Number.isFinite)) {
                         const p = CoordinatesUtils.reproject(coords, params.crs || theme.mapCrs, theme.bbox.crs);
                         const bounds = theme.bbox.bounds;
-                        // Only accept c if it is within the theme bounds
-                        if (bounds[0] <= p[0] && p[0] <= bounds[2] && bounds[1] <= p[1] && p[1] <= bounds[3]) {
+                        // If the map is constrained to the theme bounds, only accept c if it is within them
+                        const constrained = ConfigUtils.getPluginConfig("Map").cfg?.mapOptions?.constrainExtent === true;
+                        if (!constrained || (bounds[0] <= p[0] && p[0] <= bounds[2] && bounds[1] <= p[1] && p[1] <= bounds[3])) {
                             initialExtent = {
                                 center: coords,
                                 zoom: zoom,
@@ -166,7 +167,8 @@ class AppContainerComponent extends React.Component {
 
 const AppContainer = connect(state => ({
     locale: state.locale.current,
-    haveMapSize: state.map.size !== null,
+    // An embedded viewer may be mounted in a hidden container, wait until the map has a size
+    haveMapSize: state.map.size?.width > 0 && state.map.size?.height > 0,
     defaultUrlParams: state.localConfig.user_infos?.default_url_params || "",
     localConfig: state.localConfig
 }), {

@@ -279,13 +279,13 @@ export class QgisSearch {
         Request.get(searchParams.theme.featureInfoUrl, {params}).then(response => {
             callback(QgisSearch.searchResults(
                 IdentifyUtils.parseResponse(response.data, searchParams.theme, 'text/xml', null, searchParams.mapcrs),
-                searchParams.cfgParams.title, searchParams.cfgParams.resultTitle
+                searchParams.cfgParams.title, searchParams.cfgParams.resultTitle, searchParams.cfgParams.priority
             ));
         }).catch(() => {
             callback({results: []});
         });
     }
-    static searchResults(features, title, resultTitle) {
+    static searchResults(features, title, resultTitle, priority) {
         const results = [];
         Object.entries(features).forEach(([layername, layerfeatures]) => {
             const items = layerfeatures.map(feature => {
@@ -309,12 +309,13 @@ export class QgisSearch {
                     geometry: feature.geometry,
                     layername: layername
                 };
-            }).filter(Boolean);
+            }).filter(Boolean).sort((a, b) => a.text.localeCompare(b.text));
             results.push(
                 {
                     id: "qgis." + layername,
                     title: title + ": " + layername,
                     type: SearchResultType.PLACE,
+                    priority: priority,
                     items: items
                 }
             );
@@ -346,21 +347,26 @@ export class FulltextSearch {
         });
         const params = {
             searchtext: searchText,
-            filter: [...searchFilter].join(","),
+            filter: searchParams.filter ?? [...searchFilter].join(","),
             limit: searchParams.limit
         };
         const iconPath = ConfigUtils.getAssetsPath() + '/img/search/';
         Request.get(searchServiceUrl, {params}).then(response => {
             const data = FulltextSearch.filterFulltextResults(response.data, searchParams.filterPoly, searchParams.mapcrs);
-            const placeResultCount = (data.result_counts || []).reduce((res, entry) => {
-                if (entry.dataproduct_id === 'dataproduct') {
-                    return res;
-                } else if (res === -1 || entry.count === -1) {
-                    return -1;
+            const stats = (data.result_counts || []).reduce((res, entry) => {
+                const countKey = entry.dataproduct_id === 'dataproduct' ? 'layerResultCount' : 'placeResultCount';
+                if (res[countKey] === -1 || entry.count === -1) {
+                    res[countKey] = -1;
                 } else {
-                    return res + entry.count;
+                    res[countKey] += entry.count;
                 }
-            }, 0);
+                if (entry.dataproduct_id === 'dataproduct') {
+                    res.layerFilter.add(entry.dataproduct_id);
+                } else {
+                    res.placeFilter.add(entry.dataproduct_id);
+                }
+                return res;
+            }, {placeResultCount: 0, layerResultCount: 0, placeFilter: new Set(), layerFilter: new Set()});
             const results = [];
             // Layers
             const formatLayerEntry = (dataproduct => ({
@@ -374,6 +380,9 @@ export class FulltextSearch {
             results.push({
                 id: "fulltext.layers",
                 titlemsgid: LocaleUtils.trmsg("search.layers"),
+                resultCount: stats.layerResultCount,
+                limit: data.limit,
+                filter: [...stats.layerFilter].join(","),
                 type: SearchResultType.THEMELAYER,
                 items: data.results.filter(entry => entry.dataproduct).map(entry => formatLayerEntry(entry.dataproduct))
             });
@@ -381,7 +390,9 @@ export class FulltextSearch {
             results.push({
                 id: "fulltext.places",
                 titlemsgid: LocaleUtils.trmsg("search.places"),
-                resultCount: placeResultCount,
+                resultCount: stats.placeResultCount,
+                limit: data.limit,
+                filter: [...stats.placeFilter].join(","),
                 type: SearchResultType.PLACE,
                 items: data.results.filter(entry => entry.feature && entry.feature.bbox).map(entry => {
                     let center = entry.feature.center;
