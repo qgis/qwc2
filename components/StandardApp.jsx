@@ -166,7 +166,8 @@ class AppContainerComponent extends React.Component {
 
 const AppContainer = connect(state => ({
     locale: state.locale.current,
-    haveMapSize: state.map.size !== null,
+    // An embedded viewer may be mounted in a hidden container, wait until the map has a size
+    haveMapSize: state.map.size?.width > 0 && state.map.size?.height > 0,
     defaultUrlParams: state.localConfig.user_infos?.default_url_params || "",
     localConfig: state.localConfig
 }), {

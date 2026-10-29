@@ -137,6 +137,7 @@ class OlMap extends React.Component {
 
         // Keyboard pan steps are relative to the map size, which changes with the map container
         map.on('change:size', this.recreateKeyboardInteractions);
+        map.on('change:size', this.onMapSizeChanged);
         this.recreateKeyboardInteractions();
     }
     componentDidMount() {
@@ -145,9 +146,17 @@ class OlMap extends React.Component {
     }
     componentWillUnmount() {
         this.map.un('change:size', this.recreateKeyboardInteractions);
+        this.map.un('change:size', this.onMapSizeChanged);
         clearTimeout(this.unpauseTimeout);
         this.map.setTarget(null);
     }
+    onMapSizeChanged = (ev) => {
+        // The first frame after the map gets a size fires no moveend, so report it here
+        // Other size changes are reported on moveend
+        if (!(ev.oldValue?.[0] > 0 && ev.oldValue?.[1] > 0)) {
+            this.updateMapInfoState();
+        }
+    };
     recreateKeyboardInteractions = () => {
         this.keyboardPanInteractions.forEach(interaction => {
             this.map.removeInteraction(interaction);
