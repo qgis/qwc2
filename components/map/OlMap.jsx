@@ -51,14 +51,9 @@ class OlMap extends React.Component {
         zoom: PropTypes.number.isRequired
     };
     static defaultProps = {
-        id: 'map',
-        mapOptions: {
-            panPageSize: 1,
-            panStepSize: 0.25
-        }
+        id: 'map'
     };
     state = {
-        mapOptions: {},
         projection: null,
         resolutions: [],
         rebuildView: false
@@ -67,10 +62,6 @@ class OlMap extends React.Component {
         super(props);
         this.ignoreNextClick = false;
         this.callbackMap = {};
-        this.state.mapOptions = {
-            ...OlMap.defaultProps.mapOptions,
-            ...props.mapOptions
-        };
 
         const interactions = ol.interaction.defaults({
             // don't create these default interactions, but create them below with custom params
@@ -80,11 +71,11 @@ class OlMap extends React.Component {
         });
         this.keyboardPanInteractions = [];
         let kinetic = null;
-        if (this.state.mapOptions.kineticPanParams)  {
+        if (this.props.mapOptions.kineticPanParams)  {
             kinetic = new ol.Kinetic(
-                this.state.mapOptions.kineticPanParams.decay,
-                this.state.mapOptions.kineticPanParams.minVelocity,
-                this.state.mapOptions.kineticPanParams.delay
+                this.props.mapOptions.kineticPanParams.decay,
+                this.props.mapOptions.kineticPanParams.minVelocity,
+                this.props.mapOptions.kineticPanParams.delay
             );
         }
         interactions.extend([
@@ -100,7 +91,7 @@ class OlMap extends React.Component {
                 }
             }),
             new ol.interaction.MouseWheelZoom({
-                duration: this.state.mapOptions.zoomDuration || 250,
+                duration: this.props.mapOptions.zoomDuration,
                 constrainResolution: ConfigUtils.getConfigProp('allowFractionalZoom') === true ? false : true
             }),
             new ol.interaction.KeyboardZoom()
@@ -114,16 +105,20 @@ class OlMap extends React.Component {
             layers: [],
             controls: controls,
             interactions: interactions,
-            view: this.createView(props.center, props.zoom, props.projection, props.resolutions, this.state.mapOptions.enableRotation, this.state.mapOptions.rotation)
+            view: this.createView(props.center, props.zoom, props.projection, props.resolutions, this.props.mapOptions.enableRotation, this.props.mapOptions.rotation)
         });
         this.unpauseTimeout = null;
         this.moving = false;
         map.on('movestart', () => {
             this.moving = true;
-            this.map.setRequestsPaused(true);
+            if (this.props.mapOptions.freezeUpdatesOnPan) {
+                this.map.setRequestsPaused(true);
+            }
         });
         map.on('moveend', () => {
-            this.unblockRequests();
+            if (this.props.mapOptions.freezeUpdatesOnPan) {
+                this.unblockRequests();
+            }
         });
         map.on('singleclick', (event) => this.onClick(0, event.originalEvent, event.pixel));
         map.getViewport().addEventListener('contextmenu', (event) => this.onClick(2, event, this.map.getEventPixel(event)));
@@ -154,10 +149,10 @@ class OlMap extends React.Component {
         });
         const [width, height] = this.map.getSize() ?? [0, 0];
         this.keyboardPanInteractions = [
-            new ol.interaction.KeyboardPan({pixelDelta: this.state.mapOptions.panStepSize * width, condition: this.panHStepCondition}),
-            new ol.interaction.KeyboardPan({pixelDelta: this.state.mapOptions.panStepSize * height, condition: this.panVStepCondition}),
-            new ol.interaction.KeyboardPan({pixelDelta: this.state.mapOptions.panPageSize * width, condition: this.panHPageCondition}),
-            new ol.interaction.KeyboardPan({pixelDelta: this.state.mapOptions.panPageSize * height, condition: this.panVPageCondition})
+            new ol.interaction.KeyboardPan({pixelDelta: this.props.mapOptions.panStepSize * width, condition: this.panHStepCondition}),
+            new ol.interaction.KeyboardPan({pixelDelta: this.props.mapOptions.panStepSize * height, condition: this.panVStepCondition}),
+            new ol.interaction.KeyboardPan({pixelDelta: this.props.mapOptions.panPageSize * width, condition: this.panHPageCondition}),
+            new ol.interaction.KeyboardPan({pixelDelta: this.props.mapOptions.panPageSize * height, condition: this.panVPageCondition})
         ];
         this.keyboardPanInteractions.forEach(interaction => {
             this.map.addInteraction(interaction);
@@ -224,7 +219,7 @@ class OlMap extends React.Component {
     };
     render() {
         if (this.state.rebuildView) {
-            const view = this.createView(this.props.center, this.props.zoom, this.props.projection, this.props.resolutions, this.state.mapOptions.enableRotation, this.state.mapOptions.rotation);
+            const view = this.createView(this.props.center, this.props.zoom, this.props.projection, this.props.resolutions, this.props.mapOptions.enableRotation, this.props.mapOptions.rotation);
             this.map.setView(view);
             // We have to force ol to drop tile and reload
             this.map.getLayers().forEach((l) => {
