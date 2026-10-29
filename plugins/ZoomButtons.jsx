@@ -50,17 +50,7 @@ class ZoomButton extends React.Component {
         super(props);
         this.task = props.direction > 0 ? "ZoomIn" : "ZoomOut";
     }
-    state = {
-        disabled: false
-    };
     componentDidUpdate(prevProps) {
-        if (prevProps.currentZoom !== this.props.currentZoom || prevProps.maxZoom !== this.props.maxZoom) {
-            if (this.props.direction > 0) {
-                this.setState({disabled: this.props.currentZoom >= this.props.maxZoom});
-            } else if (this.props.direction < 0) {
-                this.setState({disabled: this.props.currentZoom <= 0});
-            }
-        }
         if (this.props.currentTask === this.task && this.props.click !== prevProps.click) {
             const point = this.props.click?.coordinate;
             if (point) {
@@ -79,7 +69,7 @@ class ZoomButton extends React.Component {
         const active = this.props.enableZoomByBoxSelection && this.props.currentTask === this.task;
         return [(
             <MapButton
-                active={active} disabled={this.state.disabled}
+                active={active} disabled={this.isDisabled()}
                 icon={this.props.direction > 0 ? "plus" : "minus"}
                 key={this.task + "Button"}
                 onClick={this.buttonClicked}
@@ -97,10 +87,13 @@ class ZoomButton extends React.Component {
             ) : null
         )];
     }
+    isDisabled = () => {
+        return this.props.direction > 0 ? this.props.currentZoom >= this.props.maxZoom : this.props.currentZoom <= 0;
+    };
     buttonClicked = () => {
         if (this.props.enableZoomByBoxSelection) {
             this.props.setCurrentTask(this.props.currentTask === this.task ? null : this.task);
-        } else if (!this.state.disabled) {
+        } else if (!this.isDisabled()) {
             this.props.changeZoomLevel(this.props.currentZoom + this.props.direction);
         }
     };
