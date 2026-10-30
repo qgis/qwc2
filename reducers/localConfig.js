@@ -11,7 +11,8 @@ import {
     LOCAL_CONFIG_LOADED, SET_STARTUP_PARAMETERS,
     SET_COLOR_SCHEME, SET_USER_INFO_FIELDS,
     REGISTER_CUSTOM_PLUGIN,
-    UNREGISTER_CUSTOM_PLUGIN
+    UNREGISTER_CUSTOM_PLUGIN,
+    UPDATE_CONFIG
 } from '../actions/localConfig';
 import {UrlParams} from '../utils/PermaLinkUtils';
 
@@ -21,6 +22,9 @@ export default function localConfig(state = defaultState, action) {
     switch (action.type) {
     case LOCAL_CONFIG_LOADED: {
         return {...state, ...action.config};
+    }
+    case UPDATE_CONFIG: {
+        return {...state, [action.key]: action.value};
     }
     case SET_STARTUP_PARAMETERS: {
         return {...state, startupParams: action.params, startupState: action.state};

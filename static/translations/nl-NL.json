@@ -804,6 +804,7 @@
       "defaulttheme": "Default kaart",
       "defaultthemefailed": "Instellen van de default kaart niet gelukt: {0}",
       "language": "Taal",
+      "measurementPrecision": "",
       "systemlang": "Systeemtaal",
       "themes": "Kaarten"
     },

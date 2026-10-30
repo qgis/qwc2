@@ -804,6 +804,7 @@
       "defaulttheme": "Tema Padrão",
       "defaultthemefailed": "Falha no Tema Padrão",
       "language": "Idioma",
+      "measurementPrecision": "",
       "systemlang": "Idioma do Sistema",
       "themes": "Temas"
     },

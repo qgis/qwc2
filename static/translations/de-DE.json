@@ -804,6 +804,7 @@
       "defaulttheme": "Standardthema",
       "defaultthemefailed": "Konnte das Standardthema nicht ändern: {0}",
       "language": "Sprache",
+      "measurementPrecision": "Messgenauigkeit",
       "systemlang": "Systemsprache",
       "themes": "Themen"
     },

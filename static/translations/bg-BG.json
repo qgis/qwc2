@@ -804,6 +804,7 @@
       "defaulttheme": "Тема по подразбиране",
       "defaultthemefailed": "Неуспешно задаване на темата по подразбиране: {0}",
       "language": "Език",
+      "measurementPrecision": "",
       "systemlang": "Език на системата",
       "themes": "Теми"
     },

@@ -98,7 +98,7 @@ class NumericInputWindow extends React.Component {
         );
     };
     renderMeasureInput = (measure, onChange, decimals = null) => {
-        decimals = decimals ?? ConfigUtils.getConfigProp("measurementPrecision", null, 2);
+        decimals = decimals ?? ConfigUtils.getConfigProp("measurementPrecision");
         const value = measure.toFixed(decimals);
         return (
             <TextInput onChange={(text) => this.onValueChanged(text, decimals, onChange)} showClear={false} value={value} />

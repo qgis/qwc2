@@ -804,6 +804,7 @@
       "defaulttheme": "Thème par défaut",
       "defaultthemefailed": "Impossible de modifier le thème par défaut : {0}",
       "language": "Langue",
+      "measurementPrecision": "Précision de mesure",
       "systemlang": "Langue du système",
       "themes": "Thèmes"
     },

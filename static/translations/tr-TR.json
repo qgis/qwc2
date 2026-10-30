@@ -804,6 +804,7 @@
       "defaulttheme": "Varsayılan tema",
       "defaultthemefailed": "Varsayılan tema yüklenemedi: {0}",
       "language": "Dil",
+      "measurementPrecision": "",
       "systemlang": "Sistem dili",
       "themes": "Temalar"
     },

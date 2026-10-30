@@ -804,6 +804,7 @@
       "defaulttheme": "デフォルト・テーマ",
       "defaultthemefailed": "デフォルト・テーマを設定出来ませんでした: {0}",
       "language": "言語",
+      "measurementPrecision": "",
       "systemlang": "システム言語",
       "themes": "テーマ"
     },
