@@ -8,7 +8,7 @@
 
 import React from 'react';
 
-import mime from 'mime-to-extensions';
+import mime from 'mime';
 import PropTypes from 'prop-types';
 import {v4 as uuidv4} from 'uuid';
 
@@ -55,11 +55,11 @@ export default class EditUploadField extends React.Component {
     render() {
         const isAttachment = this.props.value.startsWith("attachment:");
         const fileValue = isAttachment ? this.props.value.replace(/attachment:\/\//, '') : this.props.value;
-        const fileType = mime.lookup(fileValue);
+        const fileType = mime.getType(fileValue);
         const fileUrl = isAttachment ? this.props.iface.resolveAttachmentUrl(this.props.dataset, fileValue) : fileValue;
         const constraints = {
             required: this.props.constraints?.required,
-            accept: (this.props.constraints?.accept || "").split(",").map(ext => mime.lookup(ext)).join(",")
+            accept: (this.props.constraints?.accept || "").split(",").map(ext => mime.getType(ext)).join(",")
         };
         const mediaSupport = 'mediaDevices' in navigator && constraints.accept.split(",").includes("image/jpeg");
         const imageData = this.state.imageData ?? (fileType?.startsWith?.('image/') ? fileUrl : null);
@@ -163,7 +163,7 @@ export default class EditUploadField extends React.Component {
     imageButtonClicked = (action) => {
         if (action === "Draw") {
             const fileValue = this.props.value.startsWith("attachment:") ? this.props.value.replace(/attachment:\/\//, '') : (this.state.imageFilename ?? "");
-            const fileType = mime.lookup(fileValue);
+            const fileType = mime.getType(fileValue);
             const fileUrl = this.props.iface.resolveAttachmentUrl(this.props.dataset, fileValue);
             const imageData = this.state.imageData ?? (fileType?.startsWith?.('image/') ? fileUrl : null);
             import('../utils/ImageEditor').then(({showImageEditor}) => {
