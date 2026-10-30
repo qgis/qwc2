@@ -26,6 +26,7 @@ import LocaleUtils from '../utils/LocaleUtils';
 import MapUtils from '../utils/MapUtils';
 import {VisibilityPresetsInterface} from "../utils/PermaLinkUtils";
 
+import '../actions/bookmark';
 import './style/BottomBar.css';
 
 
