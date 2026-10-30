@@ -13,16 +13,9 @@ import {
     REGISTER_CUSTOM_PLUGIN,
     UNREGISTER_CUSTOM_PLUGIN
 } from '../actions/localConfig';
-import ConfigUtils from '../utils/ConfigUtils';
 import {UrlParams} from '../utils/PermaLinkUtils';
 
-const defaultState = {
-    ...ConfigUtils.getDefaults(),
-    customPlugins: [],
-    startupParams: {},
-    startupState: {},
-    colorScheme: 'default'
-};
+const defaultState = {};
 
 export default function localConfig(state = defaultState, action) {
     switch (action.type) {
