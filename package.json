@@ -24,7 +24,7 @@
         "@loaders.gl/zip": "^4.3.4",
         "@mapbox/shp-write": "^0.4.3",
         "@norbulcz/num-parse": "^0.1.0",
-        "@panoramax/web-viewer": "^4.3.1",
+        "@panoramax/web-viewer": "^5.3.1",
         "@reduxjs/toolkit": "^2.11.2",
         "@turf/buffer": "^7.3.3",
         "@turf/clean-coords": "^7.3.3",
