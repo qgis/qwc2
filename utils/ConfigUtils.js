@@ -7,77 +7,68 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import isMobile from 'ismobilejs';
-import url from 'url';
+import React from 'react';
+import {connect} from 'react-redux';
 
-import LocaleUtils from './LocaleUtils';
+import PropTypes from 'prop-types';
+
 import PluginStore from './PluginStore';
-import Request from './Request';
 
-const defaultConfig = () => ({
-    assetsPath: "assets",
-    translationsPath: "translations",
-    defaultFeatureStyle: {
-        strokeColor: [0, 0, 255, 1],
-        strokeWidth: 2,
-        strokeDash: [4],
-        fillColor: [0, 0, 255, 0.33],
-        circleRadius: 10,
-        textFill: 'black',
-        textStroke: 'white'
+class ConfigUtils extends React.Component {
+    static defaultConfig = {
+        assetsPath: "assets",
+        translationsPath: "translations",
+        measurementPrecision: 2,
+        defaultFeatureStyle: {
+            strokeColor: [0, 0, 255, 1],
+            strokeWidth: 2,
+            strokeDash: [4],
+            fillColor: [0, 0, 255, 0.33],
+            circleRadius: 10,
+            textFill: 'black',
+            textStroke: 'white'
+        },
+        customPlugins: [],
+        startupParams: {},
+        startupState: {},
+        colorScheme: 'default'
+    };
+    static config = {};
+    static sessionConfig = {};
+    static propTypes = {
+        config: PropTypes.object
+    };
+    componentDidUpdate() {
+        ConfigUtils.config = this.props.config;
     }
-});
-
-let config = defaultConfig();
-
-const sessionConfig = {
-
-};
-
-export default {
-    getDefaults() {
-        return config;
-    },
-    /**
-     * Resets the configuration to its defaults, so that a subsequent loadConfiguration
-     * does not merge onto the configuration of a previous application instance.
-     */
-    reset() {
-        config = defaultConfig();
-        Object.keys(sessionConfig).forEach(key => delete sessionConfig[key]);
-    },
-    loadConfiguration(configParams = {}, configPath = null) {
-        const configFile = configPath || ((url.parse(window.location.href, true).query.localConfig || 'config') + '.json');
-        return Request.get(configFile, {params: {...configParams, lang: LocaleUtils.lang()}}).then(response => {
-            if (typeof response.data === 'object') {
-                config = {...config, ...response.data};
-            } else {
-                /* eslint-disable-next-line */
-                console.warn("Broken configuration file " + configFile + "!");
-            }
-            // Set isMobile
-            config.isMobile = isMobile(window.navigator).any;
-            return config;
-        });
-    },
-    isMobile() {
-        return config.isMobile;
-    },
-    getConfigProp(prop, theme, defval = undefined) {
+    static setConfig(config) {
+        ConfigUtils.config = config;
+    }
+    static reset() {
+        ConfigUtils.config = {};
+        ConfigUtils.sessionConfig = {};
+    }
+    static isMobile() {
+        return ConfigUtils.config.isMobile;
+    }
+    static getConfigProp(prop, theme, defval = undefined) {
+        const config = ConfigUtils.config;
         const section = config.isMobile ? "mobile" : "desktop";
         const themeProp = theme?.config?.[section]?.[prop] ?? theme?.config?.[prop];
         return themeProp ?? config[section]?.[prop] ?? config[prop] ?? defval;
-    },
-    getAssetsPath() {
-        return config.assetsPath.replace(/\/$/g, "");
-    },
-    getTranslationsPath() {
-        return config.translationsPath.replace(/\/$/g, "");
-    },
-    havePlugin(name) {
+    }
+    static getAssetsPath() {
+        return ConfigUtils.config.assetsPath.replace(/\/$/g, "");
+    }
+    static getTranslationsPath() {
+        return ConfigUtils.config.translationsPath.replace(/\/$/g, "");
+    }
+    static havePlugin(name) {
+        const config = ConfigUtils.config;
         return config.plugins[config.isMobile ? "mobile" : "desktop"].find(entry => entry.name === name);
-    },
-    getPluginConfig(name) {
+    }
+    static getPluginConfig(name) {
+        const config = ConfigUtils.config;
         const pluginConfig = {
             ...config.plugins[config.isMobile ? "mobile" : "desktop"].find(entry => entry.name === name) || {}
         };
@@ -86,11 +77,18 @@ export default {
             ...pluginConfig.cfg
         };
         return pluginConfig;
-    },
-    setSessionConfig(name, value) {
-        sessionConfig[name] = value;
-    },
-    getSessionConfig(name) {
-        return sessionConfig[name];
     }
-};
+    static setSessionConfig(name, value) {
+        ConfigUtils.sessionConfig[name] = value;
+    }
+    static getSessionConfig(name) {
+        return ConfigUtils.sessionConfig[name];
+    }
+    render() {
+        return null;
+    }
+}
+
+export default connect(state => ({
+    config: state.localConfig
+}))(ConfigUtils);

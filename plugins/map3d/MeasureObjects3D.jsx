@@ -312,7 +312,7 @@ class MeasureObjects3D extends React.Component {
         const boxmesh = new LineSegments(geometry, material);
         boxmesh.position.copy(obox.center);
         boxmesh.updateMatrixWorld(true);
-        const decimals = ConfigUtils.getConfigProp("measurementPrecision", null, 2);
+        const decimals = ConfigUtils.getConfigProp("measurementPrecision");
         const dim1 = LocaleUtils.toLocaleFixed(2 * obox.halfSizes.x, decimals);
         const dim2 = LocaleUtils.toLocaleFixed(2 * obox.halfSizes.y, decimals);
         const dim3 = LocaleUtils.toLocaleFixed(2 * obox.halfSizes.z, decimals);

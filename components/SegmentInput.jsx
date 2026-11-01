@@ -34,7 +34,7 @@ export default class SegmentInput extends React.Component {
         }
     }
     render() {
-        const decimals = ConfigUtils.getConfigProp("measurementPrecision", null, 2);
+        const decimals = ConfigUtils.getConfigProp("measurementPrecision");
         const label = LocaleUtils.tr("redlining.segmentdistance");
         return ReactDOM.createPortal((
             <div className="segment-input">

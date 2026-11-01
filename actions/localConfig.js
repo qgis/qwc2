@@ -10,6 +10,7 @@ import ReducerIndex from '../reducers/index';
 import localConfigReducer from '../reducers/localConfig';
 ReducerIndex.register("localConfig", localConfigReducer);
 
+export const UPDATE_CONFIG = 'UPDATE_CONFIG';
 export const LOCAL_CONFIG_LOADED = 'LOCAL_CONFIG_LOADED';
 export const SET_STARTUP_PARAMETERS = 'SET_STARTUP_PARAMETERS';
 export const SET_COLOR_SCHEME = 'SET_COLOR_SCHEME';
@@ -21,6 +22,14 @@ export function localConfigLoaded(config) {
     return {
         type: LOCAL_CONFIG_LOADED,
         config
+    };
+}
+
+export function updateConfig(key, value) {
+    return {
+        type: UPDATE_CONFIG,
+        key: key,
+        value: value
     };
 }
 

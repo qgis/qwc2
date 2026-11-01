@@ -804,6 +804,7 @@
       "defaulttheme": "Tema implicită",
       "defaultthemefailed": "Setarea temei implicite a eșuat: {0}",
       "language": "Limba",
+      "measurementPrecision": "",
       "systemlang": "Liba sistemului",
       "themes": "Teme"
     },

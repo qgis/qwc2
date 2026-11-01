@@ -804,6 +804,7 @@
       "defaulttheme": "Domyślny motyw",
       "defaultthemefailed": "Nie udało się ustawić domyślnego motywu: {0}",
       "language": "Język",
+      "measurementPrecision": "",
       "systemlang": "Język systemu",
       "themes": "Informacja o motywie"
     },

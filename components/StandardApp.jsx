@@ -10,6 +10,7 @@ import React from 'react';
 import {Provider, connect} from 'react-redux';
 
 import deepmerge from 'deepmerge';
+import isMobile from 'ismobilejs';
 import {register as olProj4Register} from 'ol/proj/proj4';
 import Proj4js from 'proj4';
 import PropTypes from 'prop-types';
@@ -226,6 +227,7 @@ export default class StandardApp extends React.Component {
         }
         return (
             <Provider store={getStore()}>
+                <ConfigUtils />
                 <AppContainer appConfig={this.props.appConfig} embedded={this.props.embedded} startupConfig={this.state.startupConfig}/>
             </Provider>
         );
@@ -245,7 +247,11 @@ export default class StandardApp extends React.Component {
             }
             return res;
         }, {});
-        ConfigUtils.loadConfiguration(configParams, this.props.appConfig.configPath).then((config) => {
+        configParams.lang = this.props.appConfig.getDefaultLocale?.() ?? initialParams.lang;
+        const configFile = this.props.appConfig.configPath || (new URLSearchParams(window.location.search).get('localConfig') || 'config') + '.json';
+        Request.get(configFile, {params: configParams}).then(response => {
+            const config = {...ConfigUtils.defaultConfig, ...response.data};
+
             // Merge common config into mobile/desktop config, merge config from appConfig
             const renameTaskButtons = (res, entry) => {
                 const key = entry.name + (entry.name === "TaskButton" ? "#" + (entry.cfg?.task ?? "") : "");
@@ -281,12 +287,8 @@ export default class StandardApp extends React.Component {
             config.plugins.mobile = completePluginConfig(deepmerge(commonConfig, mobileConfig));
             delete config.plugins.common;
 
-            // Redirect to login before rendering, so the viewer never flashes
-            const authConfig = ConfigUtils.getPluginConfig("Authentication").cfg;
-            if (authConfig?.requireLogin && !ConfigUtils.getConfigProp("username")) {
-                window.location.href = MiscUtils.loginUrl(authConfig.clearLayerParam);
-                return;
-            }
+            // Set isMobile
+            config.isMobile = isMobile(window.navigator).any;
 
             // Add projections from config
             for (const proj of config.projections || []) {
@@ -296,8 +298,20 @@ export default class StandardApp extends React.Component {
                 CoordinatesUtils.setCrsLabels({[proj.code]: proj.label});
             }
             olProj4Register(Proj4js);
+
+            // Store config in store
             getStore().dispatch(localConfigLoaded(config));
+            // Ensure config is immediately available
+            ConfigUtils.setConfig(config);
+
             this.setState({haveConfig: true});
+
+            // Redirect to login before rendering, so the viewer never flashes
+            const authConfig = ConfigUtils.getPluginConfig("Authentication").cfg;
+            if (authConfig?.requireLogin && !ConfigUtils.getConfigProp("username")) {
+                window.location.href = MiscUtils.loginUrl(authConfig.clearLayerParam);
+                return;
+            }
 
             // Load locale
             const lang = this.props.appConfig.getDefaultLocale?.() ?? initialParams.lang ?? config.defaultLocale ?? navigator.language;
@@ -318,6 +332,10 @@ export default class StandardApp extends React.Component {
                     params, state, permalinkInvalid: !success
                 }});
             });
+
+        }).catch(() => {
+            /* eslint-disable-next-line */
+            console.warn("Broken configuration file " + configFile + "!");
         });
     };
 }

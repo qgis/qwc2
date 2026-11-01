@@ -60,7 +60,7 @@ const MeasureUtils = {
     },
     formatMeasurement(valueMetric, isArea, unit = 'metric', decimals = -1, withUnit = true) {
         if (decimals < 0) {
-            decimals = ConfigUtils.getConfigProp("measurementPrecision", null, 2);
+            decimals = ConfigUtils.getConfigProp("measurementPrecision");
         }
         let result = '';
         let unitlabel = unit;

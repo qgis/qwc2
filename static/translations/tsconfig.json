@@ -696,6 +696,7 @@
     "settings.defaulttheme",
     "settings.defaultthemefailed",
     "settings.language",
+    "settings.measurementPrecision",
     "settings.systemlang",
     "settings.themes",
     "settings3d.fov",

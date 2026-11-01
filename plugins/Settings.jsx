@@ -13,9 +13,10 @@ import isEmpty from 'lodash.isempty';
 import PropTypes from 'prop-types';
 import url from 'url';
 
-import {setColorScheme, setUserInfoFields} from '../actions/localConfig';
+import {setColorScheme, setUserInfoFields, updateConfig} from '../actions/localConfig';
 import SideBar from '../components/SideBar';
 import GroupSelect from "../components/widgets/GroupSelect";
+import NumberInput from '../components/widgets/NumberInput';
 import ConfigUtils from '../utils/ConfigUtils';
 import LocaleUtils from '../utils/LocaleUtils';
 import Request from '../utils/Request';
@@ -46,6 +47,7 @@ class Settings extends React.Component {
             titleMsgId: PropTypes.string,
             value: PropTypes.string
         })),
+        measurementPrecision: PropTypes.number,
         setColorScheme: PropTypes.func,
         setUserInfoFields: PropTypes.func,
         /** Whether to show a selector to set the default theme/bookmark (of a logged in user). */
@@ -53,6 +55,7 @@ class Settings extends React.Component {
         /** The side of the application on which to display the sidebar. */
         side: PropTypes.string,
         themes: PropTypes.object,
+        updateConfig: PropTypes.func,
         visibilityPresets: PropTypes.array
     };
     static defaultProps = {
@@ -78,6 +81,7 @@ class Settings extends React.Component {
                         {this.renderLanguageSelector()}
                         {this.renderColorSchemeSelector()}
                         {this.renderDefaultThemeSelector()}
+                        {this.renderConfigSettings()}
                     </tbody>
                 </table>
             </div>
@@ -152,6 +156,14 @@ class Settings extends React.Component {
             </tr>
         );
     };
+    renderConfigSettings = () => {
+        return (
+            <tr>
+                <td>{LocaleUtils.tr("settings.measurementPrecision")}</td>
+                <td><NumberInput min={0} onChange={this.updateMeasurementPrecision} value={this.props.measurementPrecision} /></td>
+            </tr>
+        );
+    };
     changeDefaultUrlParams = (value) => {
         const params = {
             default_url_params: value
@@ -189,6 +201,9 @@ class Settings extends React.Component {
     changeColorScheme = (ev) => {
         this.props.setColorScheme(ev.target.value, true);
     };
+    updateMeasurementPrecision = (value) => {
+        this.props.updateConfig("measurementPrecision", value);
+    };
 }
 
 export default connect((state) => ({
@@ -196,8 +211,10 @@ export default connect((state) => ({
     colorScheme: state.localConfig.colorScheme,
     defaultUrlParams: state.localConfig.user_infos?.default_url_params || "",
     themes: state.theme.themes,
-    visibilityPresets: state.bookmark?.visibilityPresets
+    visibilityPresets: state.bookmark?.visibilityPresets,
+    measurementPrecision: state.localConfig.measurementPrecision
 }), {
     setColorScheme: setColorScheme,
-    setUserInfoFields: setUserInfoFields
+    setUserInfoFields: setUserInfoFields,
+    updateConfig: updateConfig
 })(Settings);

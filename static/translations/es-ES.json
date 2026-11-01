@@ -804,6 +804,7 @@
       "defaulttheme": "Tema predeterminado",
       "defaultthemefailed": "No se pudo establecer el tema predeterminado: {0}",
       "language": "Idioma",
+      "measurementPrecision": "",
       "systemlang": "Idioma del sistema",
       "themes": "Temas"
     },
