@@ -58,7 +58,7 @@
         "jszip": "^3.10.1",
         "lodash.isempty": "^4.4.0",
         "lodash.isequal": "^4.5.0",
-        "mime-to-extensions": "^1.0.2",
+        "mime": "^4.1.2",
         "mkdirp": "^3.0.1",
         "mousetrap": "^1.6.5",
         "nearley": "^2.20.1",
