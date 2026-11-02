@@ -82,18 +82,18 @@
       "deleting": "Usuwanie właściwości...",
       "discard": "Odrzuć zmieniony wiersz",
       "formeditmode": "Otwórz formularz edycji dla wybranej właściwości",
-      "geomnoadd": "",
+      "geomnoadd": "Użyj formularza edycji aby dodać nową właściwość do tej warstwy",
       "limittoextent": "",
-      "loadfailed": "",
+      "loadfailed": "Nieudane wczytywanie danych właściwości",
       "nodelete": "Nie kasuj",
-      "nogeomnoform": "",
-      "pleasereload": "",
+      "nogeomnoform": "Formularz edycji nie jest dostępny dla warstw bez geometrii",
+      "pleasereload": "Naciśnij 'Przeładuj' aby wczytać tabelę atrybutów...",
       "reload": "Przeładuj",
-      "selectatpoint": "",
-      "selectedonly": "",
-      "selectinregion": "",
+      "selectatpoint": "Wybierz właściwość w punkcie",
+      "selectedonly": "Pokaż tylko wybrane właściwości",
+      "selectinregion": "Wybierz właściwości w regionie",
       "title": "Tabela atrybutów",
-      "zoomtoselection": ""
+      "zoomtoselection": "Powieksz do wybranych właściwości"
     },
     "bgswitcher": {
       "nobg": "Bez tła"
@@ -216,7 +216,7 @@
       "scale": "Skala",
       "snap_2dedge": "",
       "snap_2dvertex": "",
-      "snap_3dbody": "",
+      "snap_3dbody": "Przyciągaj do obiektów 3D",
       "sphere": "Sfera",
       "subtract": "Odejmij",
       "thescale": "Skala",
@@ -224,10 +224,10 @@
       "translate": "Translacja",
       "undoBool": "Cofnij operację",
       "union": "Unia",
-      "wedge": ""
+      "wedge": "Klin"
     },
     "editdataset3d": {
-      "moveobj": "",
+      "moveobj": "Przenieś obiekt w widoku",
       "zoomto": "Powiększ do obiektu"
     },
     "editing": {
@@ -260,13 +260,13 @@
     },
     "featureattributes": {
       "name": "Nazwa",
-      "nofeatureormultiple": "",
+      "nofeatureormultiple": "Brak lub wiele aktywnych właściwości",
       "value": "Wartość",
       "windowtitle": "Artybuty właściwości"
     },
     "featureform": {
       "feature": "Właściwość",
-      "querying": "",
+      "querying": "Zapytanie...",
       "title": "Formularz właściwości"
     },
     "featuresearch": {
@@ -278,17 +278,17 @@
       "placeholder": "Wybierz plik..."
     },
     "geomdigitizer": {
-      "applink": "",
-      "bufferlayername": "",
-      "chooselink": "",
-      "clear": "",
+      "applink": "Aplikacja",
+      "bufferlayername": "Bufor digitalizacji",
+      "chooselink": "Wybierz...",
+      "clear": "Wyczyść warstwę",
       "identifypick": "",
       "identifypickregion": "",
-      "layername": "",
+      "layername": "Digitalizacja",
       "line_buffer": "",
       "point_buffer": "",
       "selfinter": "",
-      "send": ""
+      "send": "Wyślij"
     },
     "heightprofile": {
       "asl": "a.s.l.",
@@ -310,35 +310,35 @@
       "restoreall": "Przywróć wszystko"
     },
     "identify": {
-      "aggregatedreport": "",
-      "clipboard": "",
-      "compare": "",
-      "comparing": "",
-      "ctrlhint": "",
-      "editform": "",
-      "exportobjects": "",
-      "exportselection": "",
-      "featureReport": "Feature report",
-      "featurecount": "",
+      "aggregatedreport": "Raport zbiorczy",
+      "clipboard": "Skopiuj do schowka",
+      "compare": "Porównaj wybrane obiekty",
+      "comparing": "Porównywanie {0} właściwości",
+      "ctrlhint": "Naciśnij Ctrl aby wybrać kilka...",
+      "editform": "Otwórz w formularzu edycji",
+      "exportobjects": "Eksport obiektów",
+      "exportselection": "Eksport/import wyboru",
+      "featureReport": "Raport właściwości",
+      "featurecount": "{0} właściwości",
       "featuresmissing": "",
       "importerrors": "",
-      "layerall": "",
-      "layerinfo": "",
+      "layerall": "Wszystkie warstwy",
+      "layerinfo": "Pokaż informacje o warstwie",
       "link": "Link",
       "missinglayer": "",
-      "multiview": "",
+      "multiview": "Multi-view",
       "noattributes": "Brak atrybutów",
-      "nothingtoimport": "",
+      "nothingtoimport": "Wybór nie może zostać wczytany",
       "querying": "Przetwarzam zapytanie...",
-      "removeresult": "",
-      "removeresults": "",
-      "reportfail": "",
-      "results": "",
-      "selectforcompare": "",
-      "selectreport": "",
-      "title": "Feature Info",
-      "zoom": "",
-      "zoomtofeature": ""
+      "removeresult": "Usuń wynik",
+      "removeresults": "Usuń wyniki",
+      "reportfail": "Nieudane generowanie raportu",
+      "results": "Wyniki",
+      "selectforcompare": "Wybierz do porównania",
+      "selectreport": "Wybierz raport...",
+      "title": "Informacja o właściwości",
+      "zoom": "Powiększ do właściwości",
+      "zoomtofeature": "Powiększ do właściwości"
     },
     "imageeditor": {
       "confirmclose": "Zamknąć bez zapisu?",
@@ -349,24 +349,24 @@
       "noprocessesserver": "Brak skonfigurowanych usług importu"
     },
     "importlayer": {
-      "addfailed": "",
+      "addfailed": "Nieudane dodawanie warstwy",
       "addlayer": "Dodaj warstwę",
-      "asgroup": "",
+      "asgroup": "Dodaj jako grupę",
       "connect": "Połącz",
-      "dxflarge": "",
-      "dxfparsefailed": "",
-      "dxfsymbolscollapsed": "",
-      "dxftoolarge": "",
-      "filecrs": "",
-      "filecrshint": "",
+      "dxflarge": "Ten plik DXF ma rozmiar {size} MB. Jego importowanie może chwilę potrwać i zużyć znaczną ilość pamięci. Kontynuować?",
+      "dxfparsefailed": "Nie udało się przeanalizować pliku DXF.",
+      "dxfsymbolscollapsed": "Zaimportowano {count} symboli punktowych jako proste znaczniki, zamiast odwzorowywać ich kontury. Eksport do formatu DXF z poziomu serwera QGIS zapisuje symbole punktowe w postaci gęsto wypełnionych obszarów, składających się z setek punktów – jest to poziom szczegółowości znacznie przekraczający możliwości wyświetlania, który dodatkowo znacząco spowolniłby działanie mapy.",
+      "dxftoolarge": "Ten plik DXF ma rozmiar {size} MB i jest zbyt duży, aby można go było otworzyć w przeglądarce. Najpierw przekonwertuj go na mniejszy fragment lub na inny format.",
+      "filecrs": "System współrzędnych",
+      "filecrshint": "Pliki DXF nie zawierają informacji o układzie współrzędnych. Współrzędne zawarte w pliku muszą zostać odniesione do wybranego układu, a następnie przeliczone na odpowiednie odwzorowanie kartograficzne.",
       "localfile": "Plik lokalny",
       "nofeatures": "Elementy nie mogły zostać zaimportowane",
       "noresults": "Brak wyników lub błędny adres URL",
-      "notgeopdf": "",
-      "shpreprojectionerror": "",
-      "supportedformats": "",
-      "unknownproj": "",
-      "unsupportedfile": "",
+      "notgeopdf": "Wybrany plik prawdopodobnie nie jest plikiem GeoPDF.",
+      "shpreprojectionerror": "Geometrii pliku shapefile nie udało się przekształcić do innego układu współrzędnych, przez co może ona znajdować się w niewłaściwym miejscu.",
+      "supportedformats": "Obsługiwane formaty: KML, GeoJSON, GeoPDF, DXF, SHP (jako zip)",
+      "unknownproj": "Wybrany plik GeoPDF wykorzystuje nieznany układ odwzorowania: {0}.",
+      "unsupportedfile": "Nieobsługiwany format pliku.",
       "url": "URL",
       "urlplaceholder": "Podaj URL do WMS, WFS, WMTS..."
     },
@@ -374,7 +374,7 @@
       "clickhelpArea": "",
       "clickhelpPoint": "",
       "clickhelpRadius": "",
-      "radius": ""
+      "radius": "Promień"
     },
     "layercatalog": {
       "openlink": "Link informacyjny",
@@ -446,24 +446,24 @@
       "title": "Widok 3D"
     },
     "mapdropimport": {
-      "dropfiles": ""
+      "dropfiles": "Upuść pliki, aby zaimportować je jako warstwy mapy"
     },
     "mapexport": {
-      "configuration": "",
-      "projection": "",
-      "scale": "",
-      "size": "",
-      "usersize": ""
+      "configuration": "Konfiguracja",
+      "projection": "Odwzorowanie",
+      "scale": "Skala",
+      "size": "Wielkość",
+      "usersize": "Wybierz na mapie..."
     },
     "mapfilter": {
-      "addcustomfilter": "",
-      "brokenrendering": "",
-      "geomfilter": "",
-      "hidefiltergeom": "",
-      "invalidfilter": "",
-      "timefilter": "",
-      "timefrom": "",
-      "timeto": ""
+      "addcustomfilter": "Dodaj własny filtr",
+      "brokenrendering": "Renderowanie mapy może nie działać z powodu nieprawidłowego wyrażenia filtrującego",
+      "geomfilter": "Geometria",
+      "hidefiltergeom": "Ukryj filtr geometrii",
+      "invalidfilter": "Nieprawidłowe wyrażenie filtrujące",
+      "timefilter": "Czas",
+      "timefrom": "Od",
+      "timeto": "Do"
     },
     "mapinfotooltip": {
       "elevation": "Wysokość",
@@ -471,9 +471,9 @@
     },
     "maplegend": {
       "bboxdependent": "",
-      "onlyvisible": "",
-      "scaledependent": "",
-      "windowtitle": ""
+      "onlyvisible": "Tylko widoczne warstwy",
+      "scaledependent": "Legenda zależna od skali mapy",
+      "windowtitle": "Legenda"
     },
     "maplight3d": {
       "animationstep": "",
@@ -497,16 +497,16 @@
       "zFactor": ""
     },
     "measureComponent": {
-      "absolute": "",
+      "absolute": "m n.p.m.",
       "areaLabel": "Obszar",
-      "bearingLabel": "Bearing",
-      "ground": "",
-      "heightDiffLabel": "",
-      "imperial": "",
+      "bearingLabel": "Kierunek",
+      "ground": "m n.p.t.",
+      "heightDiffLabel": "Różnica wysokości",
+      "imperial": "Imperialne",
       "lengthLabel": "Odległość",
-      "metric": "",
+      "metric": "Metryczne",
       "pointLabel": "Pozycja",
-      "showmeasurements": ""
+      "showmeasurements": "Pokaż pomiary"
     },
     "measureobjects3d": {
       "clickonmap": "Kliknij obiekty, aby je zmierzyć...",
@@ -531,21 +531,21 @@
       "title": "Wiadomości"
     },
     "numericinput": {
-      "angle": "",
-      "featureunsupported": "",
-      "height": "",
-      "nofeatureormultiple": "",
-      "side": "",
-      "width": "",
-      "windowtitle": ""
+      "angle": "Kąt",
+      "featureunsupported": "Wprowadzanie wartości liczbowych jest niedostępne dla tej geometrii",
+      "height": "Wysokość",
+      "nofeatureormultiple": "Brak lub wiele aktywnych właściwości",
+      "side": "Strona",
+      "width": "Szerokość",
+      "windowtitle": "Wprowadzanie numeryczne"
     },
     "obliqueview": {
       "directionEast": "E",
       "directionNorth": "N",
       "directionSouth": "S",
       "directionWest": "W",
-      "nodataset": "",
-      "title": ""
+      "nodataset": "Brak dostępnych zdjęć ukośnych",
+      "title": "Widok zdjęć ukośnych"
     },
     "oereb": {
       "concernedThemes": "",
@@ -570,19 +570,19 @@
       "failed": ""
     },
     "panoramax": {
-      "notfound": "",
-      "title": ""
+      "notfound": "Dla tej lokalizacji nie jest dostępny żaden obraz.",
+      "title": "Przeglądarka Panoramax"
     },
     "pickfeature": {
-      "querying": ""
+      "querying": "Zapytanie..."
     },
     "plotinfotool": {
-      "loading": ""
+      "loading": "Wczytywanie danych..."
     },
     "portal": {
-      "close": "",
-      "filter": "",
-      "menulabel": ""
+      "close": "Zamknij portal",
+      "filter": "Filtruj motywy...",
+      "menulabel": "Menu"
     },
     "print": {
       "atlasfeature": "Właściwość atlasu",
@@ -630,46 +630,46 @@
       "selectlayer": "Wybierz warstwę raportu..."
     },
     "routing": {
-      "add": "",
-      "addlayer": "",
-      "addviapoint": "",
-      "arriveat": "",
-      "computefailed": "",
-      "computing": "",
-      "excludepolygons": "",
-      "fastest": "",
-      "fromhere": "",
-      "importerror": "",
-      "importhint": "",
-      "importpoints": "",
-      "iso_intervals": "",
-      "iso_mode": "",
-      "iso_mode_distance": "",
-      "iso_mode_time": "",
+      "add": "Dodaj punkt",
+      "addlayer": "Eksportuj jako warstwę",
+      "addviapoint": "Dodaj 'przez'",
+      "arriveat": "Dotrzyj",
+      "computefailed": "Obliczanie nieudane",
+      "computing": "Obliczanie...",
+      "excludepolygons": "Wyklucz obszary",
+      "fastest": "Najszybsza",
+      "fromhere": "Stąd",
+      "importerror": "Import nie powiódł się. Zawartość pliku musi stanowić obiekt GeoJSON typu FeatureCollection zawierający elementy typu Point.",
+      "importhint": "Plik zawierający obiekt GeoJSON typu FeatureCollection z elementami typu Point",
+      "importpoints": "Import",
+      "iso_intervals": "Interwały",
+      "iso_mode": "Tryb",
+      "iso_mode_distance": "Odległość",
+      "iso_mode_time": "Czas",
       "isocenter": "",
       "isoextracenter": "",
       "leaveat": "",
       "leavenow": "",
-      "maxspeed": "",
-      "method": "",
-      "mode_auto": "",
-      "mode_bicycle": "",
-      "mode_heavyvehicle": "",
-      "mode_transit": "",
-      "mode_walking": "",
-      "optimized_route": "",
-      "reachability": "",
-      "roundtrip": "",
-      "route": "",
-      "shortest": "",
-      "tohere": "",
-      "useferries": "",
-      "usehighways": "",
-      "usetollways": "",
-      "windowtitle": ""
+      "maxspeed": "Maks. szybkość",
+      "method": "Metoda",
+      "mode_auto": "Samochód",
+      "mode_bicycle": "Rower",
+      "mode_heavyvehicle": "Ciężki pojazd",
+      "mode_transit": "Tranzyt",
+      "mode_walking": "Pieszo",
+      "optimized_route": "Trasa zoptymalizowana",
+      "reachability": "Osiągalność",
+      "roundtrip": "W obie strony",
+      "route": "Trasa",
+      "shortest": "Najkrótsza",
+      "tohere": "Do tego miejsca",
+      "useferries": "Użyj promów",
+      "usehighways": "Użyj autostrad",
+      "usetollways": "Użyj dróg płatnych",
+      "windowtitle": "Wyznaczanie trasy"
     },
     "scratchdrawing": {
-      "finish": ""
+      "finish": "Zakończ"
     },
     "search": {
       "circleradius": "Promień okręgu",
