@@ -345,8 +345,8 @@ class AttributeTableWidget extends React.Component {
             })
         )).flat().filter(Boolean).sort((a, b) => a.title.localeCompare(b.title));
         const pickButtons = [
-            {key: 'Point', icon: 'pick_point', title: LocaleUtils.tr("attribtable.selectatpoint")},
-            {key: 'Polygon', icon: 'pick_region', title: LocaleUtils.tr("attribtable.selectinregion")}
+            {key: 'Point', icon: 'pick_point', tooltip: LocaleUtils.tr("attribtable.selectatpoint")},
+            {key: 'Polygon', icon: 'pick_region', tooltip: LocaleUtils.tr("attribtable.selectinregion")}
         ];
         return (
             <div className="AttributeTable">
