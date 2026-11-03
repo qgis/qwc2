@@ -35,7 +35,7 @@ function coordinatesSearch(text, searchParams, callback) {
     if (matches && matches.length >= 3) {
         const x = parseFloat(matches[1]);
         const y = parseFloat(matches[2]);
-        const searchCrs = [displaycrs, ...searchParams.extracrs.filter(crs => !['EPSG:4326', displaycrs].includes(crs))];
+        const searchCrs = [displaycrs, ...(searchParams.extracrs || []).filter(crs => !['EPSG:4326', displaycrs].includes(crs))];
         searchCrs.forEach(crs => {
             items.push({
                 id: "coord" + items.length,
