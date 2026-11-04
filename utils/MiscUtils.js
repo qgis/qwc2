@@ -25,9 +25,8 @@ const MiscUtils = {
         return ConfigUtils.getConfigProp("authServiceUrl") + "login?url=" + encodeURIComponent(target.href);
     },
     addLinkAnchors(text) {
-        // If text already contains tags, do nothing
-        const tagRegEx = /(<.[^(><.)]+>)/;
-        if (tagRegEx.exec(text)) {
+        // If text starts with a tag, do nothing
+        if (/^<\w[^>]*>/.test(text)) {
             return text;
         }
         const urlRegEx = new RegExp(
