@@ -16,6 +16,7 @@ import Icon from '../components/Icon';
 import SideBar from '../components/SideBar';
 import ConfigUtils from '../utils/ConfigUtils';
 import LocaleUtils from '../utils/LocaleUtils';
+import MiscUtils from '../utils/MiscUtils';
 import Request from '../utils/Request';
 
 import './style/NewsPopup.css';
@@ -72,7 +73,8 @@ class NewsPopup extends React.Component {
     componentDidUpdate(prevProps) {
         if (this.props.newsDocument) {
             if (!this.props.embedIframe) {
-                Request.get(this.props.newsDocument.replace('{lang}', LocaleUtils.lang())).then(response => {
+                const newsUrl = MiscUtils.resolveAssetsPath(this.props.newsDocument).replace('{lang}', LocaleUtils.lang());
+                Request.get(newsUrl).then(response => {
                     this.setState({body: response.data});
                 }).catch(() => {});
             }
@@ -105,7 +107,11 @@ class NewsPopup extends React.Component {
     renderBody = () => {
         let body = "";
         if (this.props.embedIframe) {
-            body = this.props.newsDocument ? (<iframe src={this.props.newsDocument} />) : (<iframe srcDoc={this.state.body} />);
+            body = this.props.newsDocument ? (
+                <iframe src={MiscUtils.resolveAssetsPath(this.props.newsDocument).replace('{lang}', LocaleUtils.lang())} />
+            ) : (
+                <iframe srcDoc={this.state.body} />
+            );
         } else {
             body = (<div className="newspopup-dialog-popup-content" dangerouslySetInnerHTML={{__html: this.state.body}} />);
         }
