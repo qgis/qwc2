@@ -66,10 +66,10 @@ const ServiceLayerUtils = {
         return layers;
     },
     getWMTSLayerStyles(capabilities, capabilitiesUrl, layer, tileMatrices) {
-        if (layer.Style.length === 1) {
+        if (layer.Style?.length === 1) {
             return this.getWMTSLayerTileMatrixSetLinks(capabilities, capabilitiesUrl, layer, tileMatrices, layer.Style[0].Identifier);
         } else {
-            return layer.Style.map(style => {
+            return layer.Style?.map(style => {
                 return {
                     title: style.Identifier,
                     sublayers: this.getWMTSLayerTileMatrixSetLinks(capabilities, capabilitiesUrl, layer, tileMatrices, style.Identifier)
