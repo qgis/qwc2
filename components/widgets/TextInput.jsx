@@ -35,6 +35,7 @@ export default class TextInput extends React.Component {
         required: PropTypes.bool,
         showClear: PropTypes.bool,
         style: PropTypes.object,
+        title: PropTypes.string,
         value: PropTypes.string
     };
     static defaultProps = {
@@ -99,7 +100,7 @@ export default class TextInput extends React.Component {
             style.marginRight = '1.5em';
         }
         return (
-            <div className={wrapperClassName + " " + (this.props.className || "")} onClick={MiscUtils.killEvent}>
+            <div className={wrapperClassName + " " + (this.props.className || "")} onClick={MiscUtils.killEvent} title={this.props.title}>
                 {this.props.name ? (
                     <textarea
                         className="text-input-form-el"

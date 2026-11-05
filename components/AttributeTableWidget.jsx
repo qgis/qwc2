@@ -497,7 +497,7 @@ class AttributeTableWidget extends React.Component {
             input = (
                 <NumberInput decimals={precision} disabled={disabled} fitParent max={constraints.max} min={constraints.min}
                     name={field.id} onChange={v => updateField(field.id, v, true)}
-                    readOnly={constraints.readOnly} required={constraints.required} step={step} value={value} />
+                    readOnly={constraints.readOnly} required={constraints.required} step={step} title={value} value={value} />
             );
         } else if (field.type === "date") {
             // Truncate time portion of ISO date string
@@ -505,7 +505,7 @@ class AttributeTableWidget extends React.Component {
             input = (
                 <input disabled={disabled} name={field.id} type={field.type} {...constraints}
                     onChange={(ev) => updateField(field.id, ev.target.value, true)}
-                    value={value} />
+                    title={value} value={value} />
             );
         } else if (field.type === "file") {
             return (<EditUploadField constraints={constraints} dataset={editConfig.editDataset} disabled={disabled} fieldId={field.id} iface={this.props.iface} name={field.id} showThumbnails={false} updateField={updateField} updateFile={(fieldId, data) => {this.changedFiles[fieldId] = data; }} value={value} />);
@@ -523,7 +523,7 @@ class AttributeTableWidget extends React.Component {
             const editTextNullValue = ConfigUtils.getConfigProp("editTextNullValue");
             input = (
                 <TextInput addLinkAnchors={addLinkAnchors} clearValue={editTextNullValue} disabled={disabled} multiline={constraints.multiline} name={field.id}
-                    onChange={updateTextField} required={constraints.required} value={String(value)} />
+                    onChange={updateTextField} required={constraints.required} title={String(value)} value={String(value)} />
             );
         } else {
             input = (

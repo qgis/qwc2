@@ -36,6 +36,7 @@ export default class NumberInput extends React.Component {
         step: PropTypes.number,
         style: PropTypes.object,
         suffix: PropTypes.string,
+        title: PropTypes.string,
         value: PropTypes.number
     };
     static defaultProps = {
@@ -80,14 +81,15 @@ export default class NumberInput extends React.Component {
         const plusIcon = this.props.mobile ? "plus" : "chevron-up";
         const minusIcon = this.props.mobile ? "minus" : "chevron-down";
         return (
-            <div className={className + " " + this.props.className}>
+            <div className={className + " " + this.props.className} title={this.props.title}>
                 <input disabled={this.props.disabled}
                     inputMode={this.props.decimals > 0 ? "decimal" : "numeric"}
                     onBlur={this.commit} onChange={this.onChange}
                     onFocus={this.setupSelectionListener}
                     onKeyDown={this.onKeyDown} placeholder={this.props.placeholder}
                     readOnly={this.props.readOnly} required={this.props.required}
-                    style={style} type="text" value={this.props.prefix + this.state.value + this.props.suffix} />
+                    style={style} type="text"
+                    value={this.props.prefix + this.state.value + this.props.suffix}  />
                 <input name={this.props.name} required={this.props.required} type="hidden" value={this.state.value} />
                 {!this.props.hideArrows ? [(
                     <Icon icon={plusIcon} key="ArrowPlus" onPointerDown={() => this.startStep(+step)} />
