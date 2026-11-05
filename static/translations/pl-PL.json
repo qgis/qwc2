@@ -505,7 +505,9 @@
       "imperial": "Imperialne",
       "lengthLabel": "Odległość",
       "metric": "Metryczne",
+      "perimeter_length": "",
       "pointLabel": "Pozycja",
+      "segment_lengths": "",
       "showmeasurements": "Pokaż pomiary"
     },
     "measureobjects3d": {

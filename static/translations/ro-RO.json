@@ -505,7 +505,9 @@
       "imperial": "Mărimi imperiale",
       "lengthLabel": "Lungime",
       "metric": "Mărimi metrice",
+      "perimeter_length": "",
       "pointLabel": "Poziție",
+      "segment_lengths": "",
       "showmeasurements": "Afișare dimensiuni"
     },
     "measureobjects3d": {

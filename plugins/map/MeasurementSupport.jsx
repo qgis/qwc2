@@ -64,6 +64,8 @@ class MeasurementSupport extends React.Component {
             this.measureLayer && (
                 this.props.measurement.lenUnit !== prevProps.measurement.lenUnit ||
                 this.props.measurement.areaUnit !== prevProps.measurement.areaUnit ||
+                this.props.measurement.showPerimeterLength !== prevProps.measurement.showPerimeterLength ||
+                this.props.measurement.showSegmentLengths !== prevProps.measurement.showSegmentLengths ||
                 this.props.displayCrs !== prevProps.displayCrs
             )
         ) {
@@ -263,6 +265,7 @@ class MeasurementSupport extends React.Component {
             lenUnit: this.props.measurement.lenUnit,
             areaUnit: this.props.measurement.areaUnit,
             displayCrs: this.props.displayCrs,
+            showSegmentLengths: this.props.measurement.showSegmentLengths,
             showPerimeterLength: this.props.measurement.showPerimeterLength
         };
         MeasureUtils.updateFeatureMeasurements(feature, measureMode, this.props.projection, settings);

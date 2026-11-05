@@ -505,7 +505,9 @@
       "imperial": "Imperial",
       "lengthLabel": "Länge",
       "metric": "Metrisch",
+      "perimeter_length": "Beschriftung Permitererlänge anzeigen",
       "pointLabel": "Position",
+      "segment_lengths": "Beschriftung Segmente anzeigen",
       "showmeasurements": "Messungen anzeigen"
     },
     "measureobjects3d": {

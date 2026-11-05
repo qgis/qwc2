@@ -505,7 +505,9 @@
       "imperial": "",
       "lengthLabel": "Hossz",
       "metric": "",
+      "perimeter_length": "",
       "pointLabel": "Pozíció",
+      "segment_lengths": "",
       "showmeasurements": ""
     },
     "measureobjects3d": {

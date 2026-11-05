@@ -505,7 +505,9 @@
       "imperial": "Imperiaal",
       "lengthLabel": "Lengte",
       "metric": "Metrisch",
+      "perimeter_length": "",
       "pointLabel": "Positie",
+      "segment_lengths": "",
       "showmeasurements": "Metingen tonen"
     },
     "measureobjects3d": {

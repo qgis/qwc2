@@ -505,7 +505,9 @@
       "imperial": "Imperial",
       "lengthLabel": "Uzunluk",
       "metric": "Metrik",
+      "perimeter_length": "",
       "pointLabel": "Konum",
+      "segment_lengths": "",
       "showmeasurements": "Ölçüleri göster"
     },
     "measureobjects3d": {

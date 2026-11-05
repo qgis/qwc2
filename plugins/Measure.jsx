@@ -13,6 +13,7 @@ import PropTypes from 'prop-types';
 
 import {setSnappingConfig} from '../actions/map.js';
 import {changeMeasurementState} from '../actions/measurement.js';
+import Icon from '../components/Icon.jsx';
 import TaskBar from '../components/TaskBar';
 import ButtonBar from '../components/widgets/ButtonBar';
 import CopyButton from '../components/widgets/CopyButton';
@@ -49,8 +50,10 @@ class Measure extends React.Component {
         setSnappingConfig: PropTypes.func,
         /** Whether to show the widget to switch between measure modes. */
         showMeasureModeSwitcher: PropTypes.bool,
-        /** Whether to show the perimeter length of area measurements. */
+        /** Whether to show the perimeter length of area measurements by default. */
         showPerimeterLength: PropTypes.bool,
+        /** Whether to show the segment lengths of line measurements by default. */
+        showSegmentLengths: PropTypes.bool,
         /** Whether snapping is available when editing. */
         snapping: PropTypes.bool,
         /** Whether snapping is enabled by default when editing.
@@ -62,6 +65,7 @@ class Measure extends React.Component {
         clearMeasurementsOnModeChange: true,
         markerScale: 1,
         showMeasureModeSwitcher: true,
+        showSegmentLengths: true,
         snapping: true,
         snappingActive: true
     };
@@ -73,6 +77,7 @@ class Measure extends React.Component {
             lineHeadMarker: this.props.lineHeadMarker,
             lineTailMarker: this.props.lineTailMarker,
             showPerimeterLength: this.props.showPerimeterLength,
+            showSegmentLengths: this.props.showSegmentLengths,
             markerScale: this.props.markerScale
         });
         this.props.setSnappingConfig(this.props.snapping, this.props.snappingActive);
@@ -98,6 +103,12 @@ class Measure extends React.Component {
     };
     changeAreaUnit = (ev) => {
         this.props.changeMeasurementState({areaUnit: ev.target.value});
+    };
+    toggleSegmentLengths = () => {
+        this.props.changeMeasurementState({showSegmentLengths: !this.props.measureState.showSegmentLengths});
+    };
+    togglePerimeterLength = () => {
+        this.props.changeMeasurementState({showPerimeterLength: !this.props.measureState.showPerimeterLength});
     };
     renderModeSwitcher = () => {
         if (!this.props.showMeasureModeSwitcher) {
@@ -156,6 +167,24 @@ class Measure extends React.Component {
             <div className="measure-result controlgroup">
                 <input className="measure-result-field" readOnly type="text" value={text} />
                 {unitSelector}
+                {this.props.measureState.mode === "LineString" && (
+                    <button
+                        className={"button" + (this.props.measureState.showSegmentLengths ? " pressed" : "")}
+                        onClick={this.toggleSegmentLengths}
+                        title={LocaleUtils.tr("measureComponent.segment_lengths")} type="button"
+                    >
+                        <Icon icon="text" />
+                    </button>
+                )}
+                {this.props.measureState.mode === "Polygon" && (
+                    <button
+                        className={"button" + (this.props.measureState.showPerimeterLength ? " pressed" : "")}
+                        onClick={this.togglePerimeterLength}
+                        title={LocaleUtils.tr("measureComponent.perimeter_length")} type="button"
+                    >
+                        <Icon icon="text" />
+                    </button>
+                )}
                 <CopyButton text={text} />
             </div>
         );

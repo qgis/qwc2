@@ -505,7 +505,9 @@
       "imperial": "",
       "lengthLabel": "Längd",
       "metric": "",
+      "perimeter_length": "",
       "pointLabel": "Position",
+      "segment_lengths": "",
       "showmeasurements": ""
     },
     "measureobjects3d": {

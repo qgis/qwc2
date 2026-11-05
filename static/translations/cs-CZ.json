@@ -505,7 +505,9 @@
       "imperial": "Imperiálně",
       "lengthLabel": "Délka",
       "metric": "Metricky",
+      "perimeter_length": "",
       "pointLabel": "Poloha",
+      "segment_lengths": "",
       "showmeasurements": ""
     },
     "measureobjects3d": {

@@ -505,7 +505,9 @@
       "imperial": "",
       "lengthLabel": "Pituus",
       "metric": "",
+      "perimeter_length": "",
       "pointLabel": "Sijainti",
+      "segment_lengths": "",
       "showmeasurements": ""
     },
     "measureobjects3d": {

@@ -505,7 +505,9 @@
       "imperial": "ヤード・ポンド法",
       "lengthLabel": "長さ",
       "metric": "メートル法",
+      "perimeter_length": "",
       "pointLabel": "位置",
+      "segment_lengths": "",
       "showmeasurements": "計測結果を表示"
     },
     "measureobjects3d": {

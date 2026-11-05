@@ -22,6 +22,7 @@ const defaultState = {
     bearingTailMarker: null,
     lineHeadMarker: null,
     lineTailMarker: null,
+    showSegmentLengths: true,
     showPerimeterLength: false,
     markerScale: 1
 };
@@ -38,6 +39,7 @@ export default function measurement(state = defaultState, action) {
             bearingTailMarker: state.bearingTailMarker,
             lineHeadMarker: state.lineHeadMarker,
             lineTailMarker: state.lineTailMarker,
+            showSegmentLengths: state.showSegmentLengths,
             showPerimeterLength: state.showPerimeterLength,
             markerScale: state.markerScale,
             ...action.data

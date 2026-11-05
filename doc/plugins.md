@@ -950,7 +950,8 @@ Allows measuring points/lines/areas on the map.
 | lineTailMarker | `string` | Tail marker of distance line measurement geometry. Can be one of `OUTARROW`, `INARROW`, `LINE`. | `undefined` |
 | markerScale | `number` | Scale factor for all heade/tail markers. | `1` |
 | showMeasureModeSwitcher | `bool` | Whether to show the widget to switch between measure modes. | `true` |
-| showPerimeterLength | `bool` | Whether to show the perimeter length of area measurements. | `undefined` |
+| showPerimeterLength | `bool` | Whether to show the perimeter length of area measurements by default. | `undefined` |
+| showSegmentLengths | `bool` | Whether to show the segment lengths of line measurements by default. | `true` |
 | snapping | `bool` | Whether snapping is available when editing. | `true` |
 | snappingActive | `{bool, string, array}` | Whether snapping is enabled by default when editing.<br /> Either `edge`, `vertex`, `intersection`, `perpendicular`, a combination of these as an array, or `false` or `true` (i.e. all snapping modes disabled or enabled). | `true` |
 

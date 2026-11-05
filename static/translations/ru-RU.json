@@ -505,7 +505,9 @@
       "imperial": "",
       "lengthLabel": "Длина",
       "metric": "",
+      "perimeter_length": "",
       "pointLabel": "Позиция",
+      "segment_lengths": "",
       "showmeasurements": ""
     },
     "measureobjects3d": {
