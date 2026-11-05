@@ -50,6 +50,8 @@ class AttributeTableWidget extends React.Component {
         addLayerFeatures: PropTypes.func,
         /** Whether to allow adding records for datasets which have a geometry column. */
         allowAddForGeometryLayers: PropTypes.bool,
+        /** Whether to use the automatic table layout algorithm (slower). */
+        autoTableLayout: PropTypes.bool,
         editConfigs: PropTypes.object,
         filter: PropTypes.object,
         /** Whether to hide the id (primary key) column. */
@@ -196,6 +198,7 @@ class AttributeTableWidget extends React.Component {
         const editing = this.state.changedFeatureIdx !== null;
         const selectionEmpty = isEmpty(this.state.selectedFeatures);
         const showIdColumn = !this.props.showDisplayFieldOnly && !this.props.hideIdColumn;
+        const tableLayoutStyle = {tableLayout: this.props.autoTableLayout ? 'auto' : 'fixed'};
 
         let loadOverlay = null;
         if (loading) {
@@ -233,6 +236,7 @@ class AttributeTableWidget extends React.Component {
                     selection={this.state.selectedFeatures}
                     selectionChanged={this.setSelectedFeatures}
                     showColumnFilters={!this.state.selectedOnly && this.props.showColumnFilters}
+                    style={tableLayoutStyle}
                 />
             );
             const npages = Math.ceil(this.state.totFeatureCount / this.state.pageSize);

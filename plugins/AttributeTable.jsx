@@ -33,6 +33,8 @@ class AttributeTable extends React.Component {
         active: PropTypes.bool,
         /** Whether to allow adding records for datasets which have a geometry column. */
         allowAddForGeometryLayers: PropTypes.bool,
+        /** Whether to use the automatic table layout algorithm (slower). */
+        autoTableLayout: PropTypes.bool,
         blocked: PropTypes.bool,
         /** Default window geometry with size, position and docking status. Positive position values (including '0') are related to top (InitialY) and left (InitialX), negative values (including '-0') to bottom (InitialY) and right (InitialX). */
         geometry: PropTypes.shape({
@@ -85,10 +87,11 @@ class AttributeTable extends React.Component {
                 initialWidth={this.props.geometry.initialWidth} initialX={this.props.geometry.initialX} initialY={this.props.geometry.initialY}
                 initiallyDocked={this.props.geometry.initiallyDocked} onClose={this.onClose} splitScreenWhenDocked title={LocaleUtils.tr("attribtable.title")}
             >
-                <AttributeTableWidget allowAddForGeometryLayers={this.props.allowAddForGeometryLayers} hideIdColumn={this.props.hideIdColumn}
-                    iface={this.props.iface} initialLayer={this.props.taskData} limitToExtent={this.props.limitToExtent}
-                    showColumnFilters={this.props.showColumnFilters} showEditFormButton={this.props.showEditFormButton}
-                    showHiddenFields={this.props.showHiddenFields} showLimitToExtent={this.props.showLimitToExtent} zoomLevel={this.props.zoomLevel}
+                <AttributeTableWidget allowAddForGeometryLayers={this.props.allowAddForGeometryLayers} autoTableLayout={this.props.autoTableLayout}
+                    hideIdColumn={this.props.hideIdColumn} iface={this.props.iface} initialLayer={this.props.taskData}
+                    limitToExtent={this.props.limitToExtent} showColumnFilters={this.props.showColumnFilters}
+                    showEditFormButton={this.props.showEditFormButton} showHiddenFields={this.props.showHiddenFields}
+                    showLimitToExtent={this.props.showLimitToExtent} zoomLevel={this.props.zoomLevel}
                 />
             </ResizeableWindow>
         );
