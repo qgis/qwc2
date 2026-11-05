@@ -309,7 +309,7 @@ export default class StandardApp extends React.Component {
             // Redirect to login before rendering, so the viewer never flashes
             const authConfig = ConfigUtils.getPluginConfig("Authentication").cfg;
             if (authConfig?.requireLogin && !ConfigUtils.getConfigProp("username")) {
-                window.location.href = MiscUtils.loginUrl(authConfig.clearLayerParam);
+                window.location.href = MiscUtils.loginUrl(authConfig.clearLayerParam, authConfig.clearUrlParams);
                 return;
             }
 

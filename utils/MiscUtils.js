@@ -17,9 +17,11 @@ const MiscUtils = {
     appContainer(el) {
         return el?.closest?.('.plugins-container') ?? el?.ownerDocument?.body ?? document.body;
     },
-    loginUrl(clearLayerParam = false) {
+    loginUrl(clearLayerParam = false, clearUrlParams = false) {
         const target = new URL(window.location.href);
-        if (clearLayerParam) {
+        if (clearUrlParams) {
+            target.search = "";
+        } else if (clearLayerParam) {
             target.searchParams.delete('l');
         }
         return ConfigUtils.getConfigProp("authServiceUrl") + "login?url=" + encodeURIComponent(target.href);

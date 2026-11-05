@@ -381,6 +381,7 @@ Invokes the the authentication service specified by `authServiceUrl` in `config.
 | Property | Type | Description | Default value |
 |----------|------|-------------|---------------|
 | clearLayerParam | `bool` | Whether to clear the layer parameter from the URL on login. | `undefined` |
+| clearUrlParams | `bool` | Whether to clear all URL parameters on login. | `undefined` |
 | idleTimeout | `number` | An idle timeout in seconds after which the user is automatically logged of. | `undefined` |
 | logoutTargetUrl | `string` | An URL to redirect to on logout, instead of the viewer URL. | `undefined` |
 | requireLogin | `bool` | Whether authentication is required, i.e. the viewer automatically redirects to the login page if no user is authenticated. | `undefined` |

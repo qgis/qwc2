@@ -31,6 +31,8 @@ class Authentication extends React.Component {
     static propTypes = {
         /** Whether to clear the layer parameter from the URL on login. */
         clearLayerParam: PropTypes.bool,
+        /** Whether to clear all URL parameters on login. */
+        clearUrlParams: PropTypes.bool,
         /** An idle timeout in seconds after which the user is automatically logged of. */
         idleTimeout: PropTypes.number,
         /** An URL to redirect to on logout, instead of the viewer URL. */
@@ -73,7 +75,7 @@ class Authentication extends React.Component {
         }
     }
     showLogin = () => {
-        window.location.href = MiscUtils.loginUrl(this.props.clearLayerParam);
+        window.location.href = MiscUtils.loginUrl(this.props.clearLayerParam, this.props.clearUrlParams);
     };
     resetIdleTimer = () => {
         if (this.idleTimer) {
