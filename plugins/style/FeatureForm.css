@@ -15,7 +15,12 @@ div.feature-query-body div.feature-query-selection > select {
     width: 100%;
 }
 
-div.feature-query-body div.AttributeForm {
+div.feature-query-body > div.AttributeForm {
+    flex: 1 1 auto;
+    overflow: auto;
+}
+
+div.feature-query-body > div.identify-result-frame {
     flex: 1 1 auto;
     overflow: auto;
 }

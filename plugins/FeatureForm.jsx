@@ -11,15 +11,19 @@ import {connect} from 'react-redux';
 
 import isEmpty from 'lodash.isempty';
 import PropTypes from 'prop-types';
+import {v4 as uuidv4} from 'uuid';
 
 import {setEditContext, clearEditContext} from '../actions/editing';
+import {addLayerFeatures, LayerRole, removeLayer} from '../actions/layers';
 import {setCurrentTask} from '../actions/task';
 import AttributeForm from '../components/AttributeForm';
+import IdentifyResult from '../components/IdentifyResult';
 import ResizeableWindow from '../components/ResizeableWindow';
 import TaskBar from '../components/TaskBar';
 import ConfigUtils from '../utils/ConfigUtils';
 import CoordinatesUtils from '../utils/CoordinatesUtils';
 import EditingInterface from '../utils/EditingInterface';
+import IdentifyUtils from '../utils/IdentifyUtils';
 import LayerUtils from '../utils/LayerUtils';
 import LocaleUtils from '../utils/LocaleUtils';
 
@@ -42,6 +46,7 @@ import './style/FeatureForm.css';
  */
 class FeatureForm extends React.Component {
     static propTypes = {
+        addLayerFeatures: PropTypes.func,
         clearEditContext: PropTypes.func,
         click: PropTypes.object,
         currentEditContext: PropTypes.string,
@@ -63,8 +68,8 @@ class FeatureForm extends React.Component {
         }),
         iface: PropTypes.object,
         layers: PropTypes.array,
-        mapCrs: PropTypes.string,
-        mapScale: PropTypes.number,
+        map: PropTypes.object,
+        removeLayer: PropTypes.func,
         setCurrentTask: PropTypes.func,
         setEditContext: PropTypes.func,
         startupParams: PropTypes.object,
@@ -82,13 +87,14 @@ class FeatureForm extends React.Component {
         }
     };
     static defaultState = {
-        pendingRequests: 0,
+        pendingRequests: [],
         pickedFeatures: null,
         selectedFeature: ""
     };
     constructor(props) {
         super(props);
         this.state = FeatureForm.defaultState;
+        this.selectionLayerId = uuidv4();
     }
     componentDidMount() {
         if (this.props.enabled) {
@@ -106,15 +112,16 @@ class FeatureForm extends React.Component {
             }
         } else if (this.props.theme !== prevProps.theme || !this.props.enabled && prevProps.enabled) {
             this.clearResults();
+            this.props.removeLayer(this.selectionLayerId);
         }
 
-        if (this.props.enabled && this.state.pendingRequests === 0 && !this.props.editContext.changed) {
+        if (this.props.enabled && isEmpty(this.state.pendingRequests) && !this.props.editContext.changed) {
             const clickPoint = this.queryPoint(prevProps);
             if (clickPoint) {
                 this.queryFeatures(clickPoint);
             }
         }
-        if (this.state.pendingRequests === 0 && prevState.pendingRequests > 0) {
+        if (isEmpty(this.state.pendingRequests) && !isEmpty(prevState.pendingRequests)) {
             // Select first result
             this.setSelectedFeature(Object.keys(this.state.pickedFeatures)[0]);
         }
@@ -130,7 +137,8 @@ class FeatureForm extends React.Component {
         return this.props.click.coordinate;
     };
     queryFeatures = (pos) => {
-        let pendingRequests = 0;
+        const pendingRequests = [];
+        // Query all layers with an editConfig
         Object.entries(this.props.editConfigs).forEach(([mapName, editConfigs]) => {
             Object.entries(editConfigs).forEach(([layerName, editConfig]) => {
                 if (!editConfig.geomType) {
@@ -138,20 +146,27 @@ class FeatureForm extends React.Component {
                     return;
                 }
                 const match = LayerUtils.searchLayer(this.props.layers, 'wms_name', mapName, 'name', layerName);
-                if (!match || !LayerUtils.sublayerVisible(match.layer, match.path) || !LayerUtils.layerScaleInRange(match.sublayer, this.props.mapScale)) {
+                if (!match || !LayerUtils.sublayerVisible(match.layer, match.path) || !LayerUtils.layerScaleInRange(match.sublayer, this.props.map.scale)) {
                     return;
                 }
                 const layerOrder = match.layer.params.LAYERS.split(",");
-                ++pendingRequests;
-                this.props.iface.getFeature(editConfig, pos, this.props.mapCrs, this.props.mapScale, 96, (featureCollection) => {
+                const reqId = uuidv4();
+                pendingRequests.push(reqId);
+                this.props.iface.getFeature(editConfig, pos, this.props.map.projection, this.props.map.scale, 96, (featureCollection) => {
                     this.setState((state) => {
+                        if (!state.pendingRequests.includes(reqId)) {
+                            return {};
+                        }
                         let pickedFeatures = state.pickedFeatures;
                         if (!isEmpty(featureCollection?.features)) {
                             pickedFeatures = Object.fromEntries(Object.entries({
                                 ...state.pickedFeatures,
                                 ...featureCollection.features.reduce((res, feature) => ({
                                     ...res,
-                                    [mapName + "#" + layerName + "#" + feature.id]: feature
+                                    [mapName + "#" + layerName + "#" + feature.id]: {
+                                        ...feature,
+                                        title: this.resultTitle(feature, editConfig.displayField, match.layer, match.sublayer)
+                                    }
                                 }), {})
                             }).sort((a, b) => {
                                 const partsA = a[0].split("#");
@@ -162,19 +177,59 @@ class FeatureForm extends React.Component {
                         }
                         return {
                             pickedFeatures: pickedFeatures,
-                            pendingRequests: state.pendingRequests - 1
+                            pendingRequests: state.pendingRequests.filter(x => x !== reqId)
                         };
                     });
                 }, this.props.filter.filterParams?.[match.sublayer.name], this.props.filter.filterGeom);
             });
         });
+        // Query all other layers
+        const identifyParams = ConfigUtils.getConfigProp("Identify")?.cfg?.params ?? {};
+        const queryableLayers = IdentifyUtils.getQueryLayers(this.props.layers, this.props.map);
+        queryableLayers.forEach(layer => {
+            // Filter layers which have an editConfig
+            const editConfig = this.props.editConfigs[layer.wms_name] ?? {};
+            const queryLayers = layer.queryLayers.filter(layerName => !(layerName in editConfig));
+            if (isEmpty(queryLayers)) {
+                return;
+            }
+            const request = IdentifyUtils.buildRequest(layer, queryLayers.join(","), pos, this.props.map, identifyParams);
+            pendingRequests.push(request.id);
+            IdentifyUtils.sendRequest(request, (response) => {
+                this.setState(state => {
+                    if (!state.pendingRequests.includes(request.id)) {
+                        return {};
+                    }
+                    const results = IdentifyUtils.parseResponse(response, layer, request.params.info_format, pos, this.props.map.projection);
+                    const pickedFeatures = Object.entries(results).reduce((res, [layerId, features]) => ({
+                        ...res,
+                        ...features.reduce((res2, feature) => ({
+                            ...res2,
+                            [layerId + "#" + feature.id]: {
+                                ...feature,
+                                title: this.resultTitle(feature, feature.displayfield, layer, {name: feature.layername, title: feature.layertitle})
+                            }
+                        }), {})
+                    }), state.pickedFeatures);
+                    return {
+                        pickedFeatures: pickedFeatures,
+                        pendingRequests: state.pendingRequests.filter(x => x !== request.id)
+                    };
+                });
+            });
+        });
         this.setState({pendingRequests: pendingRequests, pickedFeatures: {}, selectedFeature: ""});
+    };
+    resultTitle = (feature, displayField, layer, sublayer) => {
+        const layerTitle = layer.translations?.layertree?.[sublayer.name] ?? sublayer?.title;
+        const featureName = feature.properties[displayField] ?? LocaleUtils.tr("featureform.feature") + " " + feature.id;
+        return layerTitle + ": " + featureName;
     };
     render() {
         let resultWindow = null;
         if (this.state.pickedFeatures !== null) {
             let body = null;
-            if (this.state.pendingRequests > 0) {
+            if (!isEmpty(this.state.pendingRequests)) {
                 body = (
                     <div className="feature-query-body"><span className="identify-body-message">{LocaleUtils.tr("featureform.querying")}</span></div>
                 );
@@ -183,36 +238,38 @@ class FeatureForm extends React.Component {
                     <div className="feature-query-body"><span className="identify-body-message">{LocaleUtils.tr("common.noresults")}</span></div>
                 );
             } else {
-                const featureText = LocaleUtils.tr("featureform.feature");
-                let attributeForm = null;
+                let resultContents = null;
                 if (this.props.editContext.feature) {
                     const translations = this.props.layers.find(layer => layer.wms_name === this.props.editContext.mapPrefix)?.translations;
-                    attributeForm = (
+                    resultContents = (
                         <AttributeForm
                             editContext={this.props.editContext} iface={this.props.iface}
                             onCommit={this.updatePickedFeatures} translations={translations} />
                     );
+                } else if (this.state.selectedFeature) {
+                    const identifyCfg = ConfigUtils.getPluginConfig("Identify")?.cfg ?? {};
+                    resultContents = (
+                        <IdentifyResult
+                            feature={this.state.pickedFeatures[this.state.selectedFeature]}
+                            layerid={this.state.selectedFeature.replace(/#[^#]+$/, '')}
+                            longAttributesDisplay={identifyCfg.longAttributesDisplay}
+                            setHighlightedFeatures={() => {}}
+                            skipEmptyFeatureAttributes={identifyCfg.skipEmptyFeatureAttributes}
+                        />
+                    );
                 }
-                const results = Object.entries(this.state.pickedFeatures).map(([id, feature]) => {
-                    const [mapName, layerName, featureId] = id.split("#");
-                    const editConfig = this.props.editConfigs[mapName][layerName];
-                    const match = LayerUtils.searchLayer(this.props.layers, 'wms_name', mapName, 'name', layerName);
-                    const layerTitle = match.layer.translations?.layertree?.[layerName] ?? editConfig.layerTitle ?? match?.sublayer?.title ?? layerName;
-                    const featureName = editConfig.displayField ? feature.properties[editConfig.displayField] : featureText + " " + featureId;
-                    return {value: id, title: layerTitle + ": " + featureName};
-                }).sort((a, b) => a.title.localeCompare(b.title));
                 body = (
                     <div className="feature-query-body">
                         {Object.keys(this.state.pickedFeatures).length > 1 ? (
                             <div className="feature-query-selection">
                                 <select onChange={ev => this.setSelectedFeature(ev.target.value)} value={this.state.selectedFeature}>
-                                    {results.map(entry => (
-                                        <option key={entry.value} value={entry.value}>{entry.title}</option>
+                                    {Object.entries(this.state.pickedFeatures).map(([id, feature]) => (
+                                        <option key={id} value={id}>{feature.title}</option>
                                     ))}
                                 </select>
                             </div>
                         ) : null}
-                        {attributeForm}
+                        {resultContents}
                     </div>
                 );
             }
@@ -238,15 +295,27 @@ class FeatureForm extends React.Component {
     setSelectedFeature = (selectedFeature) => {
         if (selectedFeature) {
             const [mapName, layerName] = selectedFeature.split("#", 2);
-            const editConfig = this.props.editConfigs[mapName][layerName];
-            this.props.setEditContext('FeatureForm', {
-                action: 'Pick',
-                feature: this.state.pickedFeatures[selectedFeature],
-                changed: false,
-                mapPrefix: mapName,
-                editConfig: editConfig
-            });
+            const editConfig = this.props.editConfigs[mapName]?.[layerName];
+            if (editConfig) {
+                // This is an editable result, set edit context
+                this.props.setEditContext('FeatureForm', {
+                    action: 'Pick',
+                    feature: this.state.pickedFeatures[selectedFeature],
+                    changed: false,
+                    mapPrefix: mapName,
+                    editConfig: editConfig
+                });
+            } else {
+                // This is a GetFeatureInfo result, highlight
+                this.props.clearEditContext('FeatureForm');
+                const layer = {
+                    id: this.selectionLayerId,
+                    role: LayerRole.SELECTION
+                };
+                this.props.addLayerFeatures(layer, [this.state.pickedFeatures[selectedFeature]], true);
+            }
         } else {
+            this.props.removeLayer(this.selectionLayerId);
             this.props.clearEditContext('FeatureForm');
         }
         this.setState({selectedFeature: selectedFeature});
@@ -287,8 +356,7 @@ export default (iface = EditingInterface) => connect((state) => {
         iface: iface,
         layers: state.layers.flat,
         filter: state.layers.filter,
-        mapScale: state.map.scale,
-        mapCrs: state.map.projection,
+        map: state.map,
         editConfigs: state.layers.editConfigs,
         theme: state.theme.current,
         startupParams: state.localConfig.startupParams
@@ -297,5 +365,7 @@ export default (iface = EditingInterface) => connect((state) => {
 {
     setCurrentTask: setCurrentTask,
     clearEditContext: clearEditContext,
-    setEditContext: setEditContext
+    setEditContext: setEditContext,
+    addLayerFeatures: addLayerFeatures,
+    removeLayer: removeLayer
 })(FeatureForm);
