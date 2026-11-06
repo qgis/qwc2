@@ -82,6 +82,7 @@ class QtDesignerForm extends React.Component {
         updateRelationField: PropTypes.func
     };
     static defaultState = {
+        loadedform: null,
         activetabs: {},
         formdata: null,
         loading: false,
@@ -114,11 +115,16 @@ class QtDesignerForm extends React.Component {
             let url = MiscUtils.resolveAssetsPath(this.props.editConfig.form);
             url += (url.includes('?') ? '&' : '?') + "lang=" + this.props.locale;
 
+            const loadingReqId = uuidv4();
+            this.setState({formData: null, loadedform: null, loading: true, loadingReqId: loadingReqId});
             Request.get(url).then(response => {
-                this.parseForm(response.data);
+                this.parseForm(this.props.editConfig.form, response.data, loadingReqId);
             }).catch(e => {
                 // eslint-disable-next-line
                 console.log(e);
+                if (this.state.loadingReqId === loadingReqId) {
+                    this.setState({loading: false, loadingReqId: null});
+                }
             });
         }
         // As soon as relation value is added, scroll to bottom of list
@@ -139,7 +145,7 @@ class QtDesignerForm extends React.Component {
                     <Spinner /><span>{LocaleUtils.tr("qtdesignerform.loading")}</span>
                 </div>
             );
-        } else if (this.state.formData) {
+        } else if (this.state.formData && this.state.loadedform === this.props.editConfig.form) {
             const root = this.state.formData.ui.widget;
             return (
                 <div className={this.props.report ? "qt-designer-report" : "qt-designer-form"} ref={el => {this.form = el;}}>
@@ -743,44 +749,44 @@ class QtDesignerForm extends React.Component {
     dateConstraint = (constr) => {
         return (constr.year + "-" + ("0" + constr.month).slice(-2) + "-" + ("0" + constr.day).slice(-2));
     };
-    parseForm = (data) => {
-        const loadingReqId = uuidv4();
-        this.setState({loading: true, loadingReqId: loadingReqId}, () => {
-            const parserOpts = {
-                isArray: () => false,
-                ignoreAttributes: false,
-                attributeNamePrefix: ""
-            };
-            const json = (new XMLParser(parserOpts)).parse(data);
-            const relationTables = {};
-            const externalFields = {};
-            const widgets = {};
-            const fields = {};
-            const buttons = {};
-            const nrels = {};
-            const counters = {
-                widget: 0,
-                layout: 0
-            };
-            this.reformatWidget(json.ui.widget, relationTables, fields, buttons, nrels, externalFields, widgets, counters);
-            // console.log(json);
-            json.externalFields = externalFields;
-            json.widgets = widgets;
-            json.fields = fields;
-            json.buttons = buttons;
-            json.nrels = nrels;
-            json.relationTables = relationTables;
-            if (FormPreprocessors[this.props.editConfig.editDataset]) {
-                FormPreprocessors[this.props.editConfig.editDataset](json, this.props.feature, (formData) => {
-                    if (this.state.loadingReqId === loadingReqId) {
-                        this.setState({formData: formData, loading: false, loadingReqId: null});
-                    }
-                });
-            } else {
-                this.setState({formData: json, loading: false, loadingReqId: null});
+    parseForm = (url, data, loadingReqId) => {
+        const parserOpts = {
+            isArray: () => false,
+            ignoreAttributes: false,
+            attributeNamePrefix: ""
+        };
+        const json = (new XMLParser(parserOpts)).parse(data);
+        const relationTables = {};
+        const externalFields = {};
+        const widgets = {};
+        const fields = {};
+        const buttons = {};
+        const nrels = {};
+        const counters = {
+            widget: 0,
+            layout: 0
+        };
+        this.reformatWidget(json.ui.widget, relationTables, fields, buttons, nrels, externalFields, widgets, counters);
+        // console.log(json);
+        json.externalFields = externalFields;
+        json.widgets = widgets;
+        json.fields = fields;
+        json.buttons = buttons;
+        json.nrels = nrels;
+        json.relationTables = relationTables;
+        if (FormPreprocessors[this.props.editConfig.editDataset]) {
+            FormPreprocessors[this.props.editConfig.editDataset](json, this.props.feature, (formData) => {
+                if (this.state.loadingReqId === loadingReqId) {
+                    this.setState({formData: formData, loadedform: url, loading: false, loadingReqId: null});
+                    this.props.setRelationTables(formData.relationTables);
+                }
+            });
+        } else {
+            if (this.state.loadingReqId === loadingReqId) {
+                this.setState({formData: json, loadedform: url, loading: false, loadingReqId: null});
+                this.props.setRelationTables(json.relationTables);
             }
-            this.props.setRelationTables(json.relationTables);
-        });
+        }
     };
     reformatWidget = (widget, relationTables, fields, buttons, nrels, externalFields, widgets, counters) => {
         if (widget.property) {
