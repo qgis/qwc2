@@ -9,6 +9,15 @@ span.identify-body-message {
     padding: 0.25em;
 }
 
+div.identify-body div.identify-tree-results,
+div.identify-body div.identify-flat-results {
+    overflow: auto;
+    flex: 1 1 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 0.25em;
+}
+
 div.identify-body div.identify-results-tree {
     overflow-y: auto;
     flex: 1 1 50%;
@@ -16,7 +25,6 @@ div.identify-body div.identify-results-tree {
     background-color: var(--list-bg-color);
     border: 1px solid var(--border-color);
     padding: 0.25em;
-    margin-bottom: 0.25em;
     font-size: small;
 }
 
@@ -52,65 +60,15 @@ div.identify-results-tree-entries {
     padding: 0.25em 0.25em 0.25em 1em;
 }
 
-div.identify-body div.identify-flat-results-list {
-    overflow: auto;
-    flex: 1 1 auto;
-}
-
-div.identify-body div.identify-result-tree-frame {
+div.identify-tree-results > div.identify-result-frame {
     flex: 1 1 50%;
     min-height: 0;
-    display: flex;
-    flex-direction: column;
-    border: 1px solid var(--border-color);
-    background-color: var(--list-bg-color);
 }
 
-div.identify-body div.identify-result-frame {
-    margin-bottom: 0.25em;
-    border: 1px solid var(--border-color);
-}
 
-div.identify-body div.identify-result-frame:hover,
-div.identify-body div.identify-result-tree-frame:hover {
+div.identify-flat-results > div.identify-result-frame:hover,
+div.identify-compare-results > div.identify-result-frame:hover {
     border: 1px solid var(--color-active);
-}
-
-div.identify-body .identify-result-title {
-    background-color: var(--list-section-bg-color);
-    color: var(--list-section-text-color);
-    padding: 0.25em;
-    font-weight: bold;
-    flex: 0 0 auto;
-    font-size: small;
-    display: flex;
-    align-items: center;
-}
-
-div.identify-body .identify-result-title > span:not(.icon) {
-    flex: 1 1 auto;
-    overflow: hidden;
-    text-overflow: ellipsis;
-}
-
-div.identify-body .identify-result-title > span.icon {
-    flex: 0 0 auto;
-}
-
-span.identify-result-checkbox {
-    background-color: white;
-}
-
-div.identify-body .identify-result-title > span:not(:first-child) {
-    margin-left: 0.5em;
-}
-
-div.identify-body .identify-result-title > span.icon:hover {
-    color: var(--text-color-hover);
-}
-
-div.identify-body .identify-result-tree-frame > div.identify-result-container {
-    overflow-y: auto;
 }
 
 div.identify-compare-results {
@@ -125,60 +83,7 @@ div.identify-compare-results > div {
     overflow: auto;
 }
 
-div.identify-body .identify-result-box {
-    border: 0;
-    background-color: var(--list-bg-color);
-    font-size: small;
-    width: 100%;
-    flex: 1 1 auto;
-    min-width: 0;
-    min-height: 0;
-    margin: 0;
-    overflow: auto;
-}
-
-div.identify-body table.attribute-list {
-    width: 100%;
-    table-layout: fixed;
-}
-
-div.identify-body table.attribute-list > tbody > tr:nth-child(even) {
-    background-color: var(--list-item-bg-color-even);
-}
-
-div.identify-body table.attribute-list td {
-    overflow: hidden;
-    vertical-align: top;
-    text-overflow: ellipsis;
-}
-
-div.identify-body table.attribute-list td:first-child {
-    padding-left: 0.25em;
-}
-
-div.identify-body table.attribute-list td:last-child {
-    padding-right: 0.25em;
-}
-
-div.identify-body table.attribute-list td.ellipsis {
-    white-space: nowrap;
-}
-
-div.identify-body td.identify-attr-title {
-    min-width: 10ch;
-    width: 40%;
-    padding-right: 1em;
-}
-
-div.identify-body td.identify-attr-value {
-    width: 60%;
-}
-
-div.identify-body td.identify-attr-value > a > img {
-    max-width: 100%;
-}
-
-div.identify-body div.identify-toolbar {
+div.identify-toolbar {
     background-color: var(--container-bg-color);
     margin-top: -0.25em;
     flex: 0 0 auto;
@@ -208,20 +113,7 @@ div.identify-settings-menu table td > div.controlgroup {
     width: 100%;
 }
 
-div.identify-body table.identify-attr-subtable {
-    width: 100%;
-}
-
-div.identify-body table.identify-attr-subtable > tbody > tr:nth-child(even) {
-    background-color: #F0F0F0;
-}
-
-div.identify-body td.identify-attr-spacer {
-    height: 2px;
-    background-color: var(--list-section-bg-color);
-}
-
-div.identify-body div.identify-results-tables {
+div.identify-results-tables {
     flex: 1 1 auto;
     overflow-y: auto;
 }

@@ -80,7 +80,7 @@ class Identify3D extends React.Component {
                         <span><i>{LocaleUtils.tr("identify.noattributes")}</i></span>
                     ) : (
                         <div className="identify-result-box">
-                            <table className="attribute-list">
+                            <table className="identify-attribute-list">
                                 <tbody>
                                     {Object.entries(this.state.pickAttrs).map(([key, value]) => (
                                         <tr key={key}>

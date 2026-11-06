@@ -1,0 +1,102 @@
+div.identify-result-frame {
+    border: 1px solid var(--border-color);
+}
+
+.identify-result-box {
+    border: 0;
+    background-color: var(--list-bg-color);
+    font-size: small;
+    width: 100%;
+    flex: 1 1 auto;
+    min-width: 0;
+    min-height: 0;
+    margin: 0;
+    overflow: auto;
+}
+
+div.identify-result-title {
+    background-color: var(--list-section-bg-color);
+    color: var(--list-section-text-color);
+    padding: 0.25em;
+    font-weight: bold;
+    flex: 0 0 auto;
+    font-size: small;
+    display: flex;
+    align-items: center;
+}
+
+div.identify-result-title > span:not(.icon) {
+    flex: 1 1 auto;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+div.identify-result-title > span.icon {
+    flex: 0 0 auto;
+}
+
+div.identify-result-title > span.identify-result-checkbox {
+    background-color: white;
+}
+
+div.identify-result-title > span:not(:first-child) {
+    margin-left: 0.5em;
+}
+
+div.identify-result-title > span.icon:hover {
+    color: var(--text-color-hover);
+}
+
+table.identify-attribute-list {
+    width: 100%;
+    table-layout: fixed;
+}
+
+table.identify-attribute-list > tbody > tr:nth-child(even) {
+    background-color: var(--list-item-bg-color-even);
+}
+
+table.identify-attribute-list td {
+    overflow: hidden;
+    vertical-align: top;
+    text-overflow: ellipsis;
+}
+
+table.identify-attribute-list td.ellipsis {
+    white-space: nowrap;
+}
+
+table.identify-attribute-list td:first-child {
+    padding-left: 0.25em;
+}
+
+table.identify-attribute-list td:last-child {
+    padding-right: 0.25em;
+}
+
+table.identify-attribute-list td.identify-attr-title {
+    min-width: 10ch;
+    width: 40%;
+    padding-right: 1em;
+}
+
+table.identify-attribute-list td.identify-attr-value {
+    width: 60%;
+}
+
+table.identify-attribute-list td.identify-attr-value > a > img {
+    max-width: 100%;
+}
+
+table.identify-attribute-list td.identify-attr-spacer {
+    height: 2px;
+    background-color: var(--list-section-bg-color);
+}
+
+table.identify-attribute-list table.identify-attr-subtable {
+    width: 100%;
+}
+
+table.identify-attribute-list table.identify-attr-subtable > tbody > tr:nth-child(even) {
+    background-color: #F0F0F0;
+}
