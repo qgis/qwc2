@@ -79,7 +79,6 @@ class IdentifyTool extends React.Component {
         highlightAllResults: PropTypes.bool,
         /** Whether to trigger an identify when selecting a search result. */
         identifySearchResults: PropTypes.bool,
-        iframeDialogsInitiallyDocked: PropTypes.bool,
         /** The initial radius units of the identify dialog in radius mode. One of 'm', 'ft', 'km', 'mi'. */
         initialRadiusUnits: PropTypes.string,
         layerFilter: PropTypes.object,
@@ -655,7 +654,6 @@ class IdentifyTool extends React.Component {
                         exportGeometry={this.props.exportGeometry}
                         highlightAllResults={this.props.highlightAllResults}
                         identifyResults={this.state.identifyResults}
-                        iframeDialogsInitiallyDocked={this.props.iframeDialogsInitiallyDocked}
                         longAttributesDisplay={this.props.longAttributesDisplay}
                         replaceImageUrls={this.props.replaceImageUrls}
                         resultDisplayMode={this.props.resultDisplayMode}

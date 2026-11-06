@@ -52,7 +52,6 @@ class IdentifyViewer extends React.Component {
         exportGeometry: PropTypes.bool,
         highlightAllResults: PropTypes.bool,
         identifyResults: PropTypes.object,
-        iframeDialogsInitiallyDocked: PropTypes.bool,
         layers: PropTypes.array,
         longAttributesDisplay: PropTypes.oneOf(['ellipsis', 'wrap']),
         map: PropTypes.object,

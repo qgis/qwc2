@@ -37,7 +37,6 @@ class MapTip extends React.Component {
 
     static propTypes = {
         addLayerFeatures: PropTypes.func,
-        iframeDialogsInitiallyDocked: PropTypes.bool,
         /** The maximum number of feature maptips to display for a single layer. */
         layerFeatureCount: PropTypes.number,
         layers: PropTypes.array,
@@ -223,7 +222,7 @@ class MapTip extends React.Component {
         map.dispatchEvent(event);
     };
     attributeLinkClicked = (ev) => {
-        this.props.openExternalUrl(ev.currentTarget.href, ev.currentTarget.target, {docked: this.props.iframeDialogsInitiallyDocked});
+        this.props.openExternalUrl(ev.currentTarget.href, ev.currentTarget.target);
         ev.preventDefault();
     };
     positionMapTip = (el) => {
