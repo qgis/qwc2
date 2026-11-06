@@ -270,7 +270,7 @@ const IdentifyUtils = {
                 }
                 item.clickPos = clickPoint;
                 item.displayname = IdentifyUtils.determineDisplayName(layer, layername, item);
-                item.layertitle = item.layertitle ?? layername;
+                item.layertitle = item.layertitle ?? LayerUtils.searchSubLayer(layer, 'name', item.layername)?.title ?? item.layername;
                 item.wms_name = layer.wms_name;
             }
         }
