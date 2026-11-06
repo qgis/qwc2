@@ -292,8 +292,9 @@ const IdentifyUtils = {
         const fallbackDisplayFields = ConfigUtils.getConfigProp("fallbackDisplayFields", null, ["name", "id"]).map(field => field.toLowerCase());
         const propertyCaseMap = Object.keys(properties).reduce((res, key) => ({...res, [key.toLowerCase()]: key}), {});
         for (const field of fallbackDisplayFields) {
-            if (field in propertyCaseMap) {
-                return properties[propertyCaseMap[field]];
+            const value = properties[propertyCaseMap[field]];
+            if (value) {
+                return value;
             }
         }
         return item.id ?? "";
