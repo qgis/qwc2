@@ -194,7 +194,10 @@ const defaultStyle = (feature, options) => {
     }
     if (feature.getProperties().segment_labels) {
         const segmentLabels = feature.getProperties().segment_labels;
-        const coo = feature.getGeometry().getCoordinates();
+        let coo = feature.getGeometry().getCoordinates();
+        if (feature.getGeometry().getType() === "Polygon") {
+            coo = coo[0];
+        }
         for (let i = 0; i < coo.length - 1; ++i) {
             const p1 = coo[i];
             const p2 = coo[i + 1];

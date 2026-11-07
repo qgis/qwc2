@@ -249,8 +249,10 @@ const MeasureUtils = {
             measurements.area = area;
             feature.set('label', MeasureUtils.formatMeasurement(area, true, settings.areaUnit));
             if (settings.showPerimeterLength) {
+                feature.set('segment_labels', lengths.map(length => MeasureUtils.formatMeasurement(length, false, settings.lenUnit)));
                 feature.set('end_label', MeasureUtils.formatMeasurement(lengths.reduce((sum, len) => sum + len, 0), false, settings.lenUnit));
             } else {
+                feature.unset('segment_labels');
                 feature.unset('end_label');
             }
         } else if (geomType === 'Circle') {
