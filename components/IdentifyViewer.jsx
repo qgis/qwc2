@@ -25,7 +25,7 @@ import {IdentifyExporters} from '../utils/IdentifyExporters';
 import LayerUtils from '../utils/LayerUtils';
 import LocaleUtils from '../utils/LocaleUtils';
 import MapUtils from '../utils/MapUtils';
-import MiscUtils, {ToggleSet} from '../utils/MiscUtils';
+import MiscUtils, {Memoizer, ToggleSet} from '../utils/MiscUtils';
 import Request from '../utils/Request';
 import VectorLayerUtils from '../utils/VectorLayerUtils';
 import Icon from './Icon';
@@ -112,6 +112,7 @@ class IdentifyViewer extends React.Component {
         this.state.multiViewEnabled = props.resultMultiDisplay;
         this.selectionLayerId = uuidv4();
         this.highlightLayerId = uuidv4();
+        this.memoizer = new Memoizer();
     }
     componentDidMount() {
         this.onResultsUpdated({});
@@ -358,47 +359,55 @@ class IdentifyViewer extends React.Component {
         const expanded = this.state.expandedResults.has(key);
         const selected = this.state.selectedResults.has(key);
         const editable = ConfigUtils.havePlugin("Editing") && this.props.editConfigs[feature.wms_name]?.[feature.layername];
-        const beforeTitleControls = [
-            this.props.collapsible && {
-                icon: expanded ? "triangle-down" : "triangle-right",
-                onClick: () => this.setState(state => ({expandedResults: state.expandedResults.toggle(key)}))
-            },
-            this.props.enableCompare && {
-                icon: selected ? "checked" : "unchecked",
-                onClick: () => this.toggleSelectedResult(key),
-                className: "identify-result-checkbox",
-                title: LocaleUtils.tr("identify.selectforcompare")
-            }
-        ].filter(Boolean);
-        const afterTitleControls = [
-            (feature.bbox && feature.crs) && {
-                icon: "zoom",
-                onClick: () => this.zoomTo({[layerid]: [feature]}),
-                title: LocaleUtils.tr("identify.zoomtofeature")
-            },
-            editable && {
-                icon: "editing",
-                onClick: () => this.props.setCurrentTask("Editing", null, null, {layer: `${feature.wms_name}#${feature.layername}`, featureId: feature.id}),
-                title: LocaleUtils.tr("identify.editform")
-            },
-            {
-                icon: "info-sign",
-                onClick: () => this.showLayerInfo(layerid, feature.layerinfo),
-                title: LocaleUtils.tr("identify.layerinfo")
-            },
-            {
-                icon: "trash",
-                onClick: () => this.removeResult(layerid, feature),
-                title: LocaleUtils.tr("identify.removeresult")
-            }
-        ].filter(Boolean);
+        const beforeTitleControls = this.memoizer.memoize(
+            "beforeTitleControls:" + key,
+            {expanded, selected},
+            () => ([
+                this.props.collapsible && {
+                    icon: expanded ? "triangle-down" : "triangle-right",
+                    onClick: this.toggleExpandedResult
+                },
+                this.props.enableCompare && {
+                    icon: selected ? "checked" : "unchecked",
+                    onClick: this.toggleSelectedResult,
+                    className: "identify-result-checkbox",
+                    title: LocaleUtils.tr("identify.selectforcompare")
+                }
+            ].filter(Boolean))
+        );
+        const afterTitleControls = this.memoizer.memoize(
+            "afterTitleControls: " + key,
+            {feature, editable},
+            () => ([
+                (feature.bbox && feature.crs) && {
+                    icon: "zoom",
+                    onClick: (layerid_, feature_) => this.zoomTo({[layerid_]: [feature_]}),
+                    title: LocaleUtils.tr("identify.zoomtofeature")
+                },
+                editable && {
+                    icon: "editing",
+                    onClick: this.editLayer,
+                    title: LocaleUtils.tr("identify.editform")
+                },
+                {
+                    icon: "info-sign",
+                    onClick: this.showLayerInfo,
+                    title: LocaleUtils.tr("identify.layerinfo")
+                },
+                {
+                    icon: "trash",
+                    onClick: this.removeResult,
+                    title: LocaleUtils.tr("identify.removeresult")
+                }
+            ].filter(Boolean))
+        );
         return (
             <IdentifyResult
                 afterTitleControls={afterTitleControls}
                 beforeTitleControls={beforeTitleControls}
                 collapsed={this.props.collapsible && !expanded}
                 feature={feature}
-                featureReports={this.state.reports[layerid] ?? []}
+                featureReports={this.state.reports[layerid]}
                 key={key}
                 layerid={layerid}
                 longAttributesDisplay={this.props.longAttributesDisplay}
@@ -407,7 +416,12 @@ class IdentifyViewer extends React.Component {
             />
         );
     };
-    toggleSelectedResult = (key) => {
+    toggleExpandedResult = (layerid, feature) => {
+        const key = layerid + "$" + feature.id;
+        this.setState(state => ({expandedResults: state.expandedResults.toggle(key)}));
+    };
+    toggleSelectedResult = (layerid, feature) => {
+        const key = layerid + "$" + feature.id;
         this.setState(state => {
             const selectedResults = state.selectedResults.toggle(key);
             return {
@@ -787,11 +801,12 @@ class IdentifyViewer extends React.Component {
             this.setState({generatingReport: false});
         });
     };
-    showLayerInfo = (layer, infolayer) => {
-        const [layerUrl, layerName] = layer.split('#');
-        if (!infolayer) {
-            infolayer = layerName;
-        }
+    editLayer = (layerId, feature) => {
+        this.props.setCurrentTask("Editing", null, null, {layer: `${feature.wms_name}#${feature.layername}`, featureId: feature.id});
+    };
+    showLayerInfo = (layerId, feature) => {
+        const [layerUrl, layerName] = layerId.split('#');
+        const infolayer = feature.layerinfo ?? layerName;
         const match = LayerUtils.searchLayer(this.props.layers, 'url', layerUrl, 'name', infolayer);
         if (match) {
             this.props.setActiveLayerInfo(match.layer, match.sublayer);

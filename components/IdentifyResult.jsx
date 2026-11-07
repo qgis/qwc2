@@ -169,11 +169,11 @@ class IdentifyResult extends React.PureComponent {
             >
                 <div className="identify-result-title">
                     {this.props.beforeTitleControls.map(entry => (
-                        <Icon className={entry.className} icon={entry.icon} key={entry.icon} onClick={entry.onClick} title={entry.title} />
+                        <Icon className={entry.className} icon={entry.icon} key={entry.icon} onClick={() => entry.onClick(this.props.layerid, this.props.feature)} title={entry.title} />
                     ))}
                     <span>{[this.props.showLayerTitles ? feature.layertitle : "", feature.displayname].filter(Boolean).join(": ")}</span>
                     {this.props.afterTitleControls.map(entry => (
-                        <Icon className={entry.className} icon={entry.icon} key={entry.icon} onClick={entry.onClick} title={entry.title} />
+                        <Icon className={entry.className} icon={entry.icon} key={entry.icon} onClick={() => entry.onClick(this.props.layerid, this.props.feature)} title={entry.title} />
                     ))}
                 </div>
                 {!this.props.collapsed && (
