@@ -360,4 +360,23 @@ export class ToggleSet {
     };
 }
 
+export class Memoizer {
+    constructor() {
+        this.cache = {};
+    }
+    memoize(key, params, objectBuilder) {
+        const cached = this.cache[key];
+        if (
+            cached &&
+            Object.keys(params).length === Object.keys(cached.params).length &&
+            Object.entries(params).every(([pkey, pval]) => cached.params[pkey] === pval)
+        ) {
+            return cached.object;
+        }
+
+        this.cache[key] = {params, object: objectBuilder()};
+        return this.cache[key].object;
+    }
+}
+
 export default MiscUtils;
