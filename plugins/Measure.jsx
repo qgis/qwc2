@@ -13,7 +13,7 @@ import PropTypes from 'prop-types';
 
 import {setSnappingConfig} from '../actions/map.js';
 import {changeMeasurementState} from '../actions/measurement.js';
-import Icon from '../components/Icon.jsx';
+import Icon from '../components/Icon';
 import TaskBar from '../components/TaskBar';
 import ButtonBar from '../components/widgets/ButtonBar';
 import CopyButton from '../components/widgets/CopyButton';
