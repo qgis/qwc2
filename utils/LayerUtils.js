@@ -23,6 +23,7 @@ import VectorLayerUtils from './VectorLayerUtils';
 const LayerUtils = {
     restoreLayerParams(themeLayer, layerConfigs, permalinkLayers, externalLayers) {
         let exploded = LayerUtils.explodeLayers([themeLayer]);
+        const haveWildcard = layerConfigs.find(entry => entry.type === 'wildcard');
         // Restore theme layer configuration
         for (const entry of exploded) {
             const layerConfig = layerConfigs.find(layer => layer.type === 'theme' && layer.name === entry.sublayer.name);
@@ -32,7 +33,7 @@ const LayerUtils = {
                 entry.sublayer.tristate = layerConfig.tristate;
                 entry.sublayer.style = layerConfig.style || entry.sublayer.style;
                 entry.sublayer.omitFromQueryLayers = layerConfig.omitFromQueryLayers;
-            } else {
+            } else if (!haveWildcard) {
                 entry.sublayer.visibility = false;
             }
         }
@@ -41,7 +42,7 @@ const LayerUtils = {
         for (const layerConfig of layerConfigs) {
             if (layerConfig.type === 'separator') {
                 // No point restoring separators
-            } else if (layerConfig.type !== 'theme') {
+            } else if (layerConfig.type !== 'theme' && layerConfig.type !== 'wildcard') {
                 external = external.concat(LayerUtils.createExternalLayerPlaceholder(layerConfig, externalLayers, layerConfig.id));
             }
         }
@@ -52,6 +53,11 @@ const LayerUtils = {
         return layers;
     },
     restoreOrderedLayerParams(themeLayer, layerConfigs, permalinkLayers, externalLayers) {
+        const haveWildcard = layerConfigs.find(entry => entry.type === 'wildcard');
+        if (haveWildcard) {
+            // Restoring ordered layer params with wildcards is somewhat undefined
+            return LayerUtils.restoreLayerParams(themeLayer, layerConfigs, permalinkLayers, externalLayers);
+        }
         const exploded = LayerUtils.explodeLayers([themeLayer]);
         let reordered = [];
         let haveThemeLayer = false;
@@ -307,7 +313,9 @@ const LayerUtils = {
         let visibility = true;
         let tristate = false;
         let omitFromQueryLayers = false;
-        if (entry.endsWith('-')) {
+        if (entry === '*') {
+            return {type: 'wildcard'};
+        } else if (entry.endsWith('-')) {
             omitFromQueryLayers = true;
             entry = entry.slice(0, -1);
         } else if (entry.endsWith('!')) {
