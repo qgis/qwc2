@@ -57,6 +57,8 @@ class Redlining extends React.Component {
         defaultFillColor: PropTypes.array,
         /** Default length unit. Options: `metric`, `imperial`, `m`, `km`, `ft`, `mi` */
         defaultLengthUnit: PropTypes.string,
+        /** Whether to show measurements on redlining drawings by default. */
+        defaultShowMeasurements: PropTypes.bool,
         /** Default text fill color. In format `[r, g, b, a]`. */
         defaultTextFillColor: PropTypes.array,
         /** Default text outline color. In format `[r, g, b, a]`. */
@@ -94,6 +96,7 @@ class Redlining extends React.Component {
         defaultTextOutlineColor: [255, 255, 255, 1],
         defaultAreaUnit: 'metric',
         defaultLengthUnit: 'metric',
+        defaultShowMeasurements: false,
         predefinedDashPatterns: [[], [4], [8, 8], [1, 8], [8, 8, 1, 8]]
     };
     state = {
@@ -118,7 +121,8 @@ class Redlining extends React.Component {
             this.props.defaultLengthUnit !== prevProps.defaultLengthUnit ||
             this.props.defaultAreaUnit !== prevProps.defaultAreaUnit ||
             this.props.defaultTextFillColor !== prevProps.defaultTextFillColor ||
-            this.props.defaultTextOutlineColor !== prevProps.defaultTextOutlineColor
+            this.props.defaultTextOutlineColor !== prevProps.defaultTextOutlineColor ||
+            this.props.defaultShowMeasurements !== prevProps.defaultShowMeasurements
         ) {
             this.props.changeRedliningState(this.redliningStateDefaults());
         }
@@ -163,7 +167,8 @@ class Redlining extends React.Component {
                 textFillColor: this.props.defaultTextFillColor
             },
             lenUnit: this.props.defaultLengthUnit,
-            areaUnit: this.props.defaultAreaUnit
+            areaUnit: this.props.defaultAreaUnit,
+            showmeasurements: this.props.defaultShowMeasurements
         };
     };
     generateDashIcons = () => {
@@ -200,7 +205,7 @@ class Redlining extends React.Component {
                 toolEnabled("Square") ? {key: "Square", tooltip: LocaleUtils.tr("common.square"), icon: "box", data: {action: "Draw", geomType: "Square"}} : null,
                 toolEnabled("Box") ? {key: "Box", tooltip: LocaleUtils.tr("common.rectangle"), icon: "rect", data: {action: "Draw", geomType: "Box"}} : null
             ].filter(Boolean),
-            {key: "Text", tooltip: LocaleUtils.tr("common.text"), icon: "text", data: {action: "Draw", geomType: "Text", showmeasurements: false}}
+            {key: "Text", tooltip: LocaleUtils.tr("common.text"), icon: "text", data: {action: "Draw", geomType: "Text"}}
         ];
         if (ConfigUtils.isMobile()) {
             drawButtons = [drawButtons.flat()];
@@ -426,7 +431,8 @@ class Redlining extends React.Component {
     };
     actionChanged = (data) => {
         const text = (data.action === "Draw" && data.geomType === "Text") ? LocaleUtils.tr("common.text") : "";
-        this.props.changeRedliningState({...data, style: {...this.props.redlining.style, ...data.style, text: text}});
+        const showmeasurements = this.props.defaultShowMeasurements && data.action === "Draw" && data.geomType !== "Text";
+        this.props.changeRedliningState({...data, showmeasurements, style: {...this.props.redlining.style, ...data.style, text}});
     };
     changeRedliningLayer = (layer) => {
         const action = ["Draw", "Pick", "Transform"].includes(this.props.redlining.action) ? this.props.redlining.action : "Pick";

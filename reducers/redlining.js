@@ -27,7 +27,7 @@ const defaultState = {
     selectedFeature: null,
     drawMultiple: true,
     freehand: false,
-    measurements: false,
+    showmeasurements: false,
     extraAction: null,
     lenUnit: 'metric',
     areaUnit: 'metric'
