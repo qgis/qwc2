@@ -206,17 +206,3 @@ div.ThemeList div.theme-item-restricted-content {
     opacity: .5;
     padding: 0.25em;
 }
-
-div.theme-item-tooltip {
-    inset: auto;
-    margin: 0;
-    max-width: 16em;
-    background-color: var(--tooltip-bg-color);
-    border: 1px solid var(--tooltip-border-color);
-    color: var(--tooltip-text-color);
-    font-weight: normal;
-    padding: 0 0.5em;
-    border-radius: 0.5em;
-    white-space: normal;
-    transform: translateX(-50%);
-}

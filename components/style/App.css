@@ -280,3 +280,19 @@ div.plugins-container.qwc-root-embedded {
     cursor: ns-resize!important;
     user-select: none;
 }
+
+:where(.qwc-root) div.tooltip {
+    inset: auto;
+    width: max-content;
+    height: auto;
+    margin: 0;
+    max-width: 16rem;
+    background-color: var(--tooltip-bg-color);
+    border: 1px solid var(--tooltip-border-color);
+    color: var(--tooltip-text-color);
+    font-weight: normal;
+    padding: 0.25rem 0.5rem;
+    border-radius: 0.5rem;
+    white-space: normal;
+    font-size: .8rem;
+}

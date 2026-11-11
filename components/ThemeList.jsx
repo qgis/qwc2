@@ -23,6 +23,7 @@ import LocaleUtils from '../utils/LocaleUtils';
 import MiscUtils from '../utils/MiscUtils';
 import Request from '../utils/Request';
 import ThemeUtils from '../utils/ThemeUtils';
+import withTooltip from '../utils/Tooltip';
 import Icon from './Icon';
 
 import './style/ThemeList.css';
@@ -124,7 +125,7 @@ class ThemeList extends React.Component {
                                 return null;
                             }
                         }
-                        let tooltip = `<p><b>${item.title}</b></p>`;
+                        let tooltip = `<h4><b>${item.title}</b></h4>`;
                         if (item.abstract) {
                             tooltip += `<p>${item.abstract}</p>`;
                         }
@@ -135,8 +136,7 @@ class ThemeList extends React.Component {
                             <div className={activeThemeId === item.id ? "theme-item theme-item-active" : "theme-item"}
                                 key={item.id}
                                 onClick={() => this.setTheme(item)}
-                                onMouseEnter={(ev) => this.showTooltip(ev, tooltip)}
-                                onMouseLeave={(ev) => this.hideTooltip(ev)}
+                                {...withTooltip(tooltip)}
                             >
                                 <div className="theme-item-title">
                                     <span>{item.title}</span>
@@ -285,42 +285,6 @@ class ThemeList extends React.Component {
             /* eslint-disable-next-line */
             alert(LocaleUtils.tr("settings.defaultthemefailed", String(e)));
         });
-    };
-    showTooltip = (ev, content) => {
-        const target = ev.currentTarget;
-        target.tooltipTimeout = setTimeout(() => {
-            if (target.isConnected) {
-                const appRect = MiscUtils.appContainer(target).getBoundingClientRect();
-                const tooltip = ev.view.document.createElement("div");
-                tooltip.className = "theme-item-tooltip";
-                tooltip.popover = "hint";
-                tooltip.innerHTML = MiscUtils.sanitizeHtml(content);
-                target.popoverTargetElement = tooltip;
-                target.appendChild(tooltip);
-                tooltip.showPopover();
-                const height = tooltip.getBoundingClientRect().height;
-                tooltip.hidePopover();
-                const rect = target.getBoundingClientRect();
-                tooltip.style.left = `${0.5 * (rect.left + rect.right)}px`;
-                if (rect.bottom + height > appRect.bottom && rect.top > window.innerHeight - rect.bottom) {
-                    tooltip.style.bottom = `${Math.round(window.innerHeight - rect.top)}px`;
-                    tooltip.style.maxHeight = `${rect.top}px`;
-                } else {
-                    tooltip.style.top = `${Math.round(rect.bottom)}px`;
-                    tooltip.style.maxHeight = `${window.innerHeight - rect.bottom}px`;
-                }
-                tooltip.showPopover();
-            }
-            target.tooltipTimeout = null;
-        }, 500);
-    };
-    hideTooltip = (ev) => {
-        clearTimeout(ev.currentTarget.tooltipTimeout);
-        const tooltip = ev.currentTarget.popoverTargetElement;
-        if (tooltip) {
-            tooltip.hidePopover();
-            tooltip.remove();
-        }
     };
 }
 

@@ -93,7 +93,7 @@ class EditingSupport extends React.Component {
                 {key: "Transform", tooltip: LocaleUtils.tr("redlining.transform"), icon: "transformtool"}
             ];
             toolbar = ReactDOM.createPortal((
-                <ButtonBar active={this.state.activeEditTool} buttons={editButtons} key="ButtonBar" onClick={this.setEditMode} tooltipPos="top" />
+                <ButtonBar active={this.state.activeEditTool} buttons={editButtons} key="ButtonBar" onClick={this.setEditMode} />
             ), this.context);
         }
         if (this.state.showRecordLocation) {

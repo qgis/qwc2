@@ -4,6 +4,16 @@ div.ButtonBar {
     flex-wrap: wrap;
 }
 
+div.ButtonBar > * {
+    height: 2em;
+    flex: 1 1 auto;
+}
+
+div.ButtonBar.buttonbar-disabled > * {
+    background-color: var(--button-bg-color-disabled);
+    color: var(--button-text-color-disabled);
+}
+
 div.ButtonBar.buttonbar-disabled:before {
     position: absolute;
     top: 0;
@@ -11,54 +21,6 @@ div.ButtonBar.buttonbar-disabled:before {
     right: 0;
     bottom: 0;
     content: '';
-}
-
-div.ButtonBar.buttonbar-disabled div.buttonbar-button-container > button {
-    background-color: var(--button-bg-color-disabled);
-    color: var(--button-text-color-disabled);
-}
-
-div.ButtonBar div.buttonbar-button-container {
-    position: relative;
-    flex: 1 1 auto;
-}
-
-div.ButtonBar div.buttonbar-button-container > button {
-    width: 100%;
-}
-
-span.buttonbar-button-tooltip {
-    position: absolute;
-    display: none;
-    background-color: var(--tooltip-bg-color);
-    border: 1px solid var(--tooltip-border-color);
-    color: var(--tooltip-text-color);
-    font-size: 75%;
-    font-weight: normal;
-    padding: 0.5em;
-    border-radius: 0.5em;
-    white-space: nowrap;
-    left: 50%;
-    transform: translateX(-50%);
-    z-index: 1000;
-}
-
-span.buttonbar-button-tooltip-top {
-    bottom: 110%;
-}
-
-span.buttonbar-button-tooltip-bottom {
-    top: 110%;
-}
-
-div.ButtonBar div.menubutton {
-    height: 2em;
-    flex: 1 1 auto;
-}
-
-div.buttonbar-button-container:hover span.buttonbar-button-tooltip,
-div.ButtonBar div.menubutton-button:hover span.buttonbar-button-tooltip {
-    display: inline;
 }
 
 div.buttonbar-combo-entry {

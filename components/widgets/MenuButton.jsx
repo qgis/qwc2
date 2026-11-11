@@ -4,6 +4,7 @@ import classnames from 'classnames';
 import PropTypes from 'prop-types';
 
 import MiscUtils from '../../utils/MiscUtils';
+import withTooltip from '../../utils/Tooltip';
 import Icon from '../Icon';
 import PopupMenu from './PopupMenu';
 
@@ -20,11 +21,7 @@ export default class MenuButton extends React.Component {
         menuIcon: PropTypes.string,
         menuLabel: PropTypes.string,
         onActivate: PropTypes.func,
-        tooltip: PropTypes.string,
-        tooltipPos: PropTypes.string
-    };
-    static defaultProps = {
-        tooltipPos: 'bottom'
+        tooltip: PropTypes.string
     };
     state = {
         popup: false,
@@ -68,18 +65,17 @@ export default class MenuButton extends React.Component {
         const menuClassnames = "menubutton-menu" + (this.props.menuClassName ? " " + this.props.menuClassName : "");
         return (
             <div className={classes}>
-                <div className={buttonClassnames} onClick={this.onMenuClicked} onKeyDown={MiscUtils.checkKeyActivate} ref={el => { this.el = el; }} tabIndex={0}>
-                    <span className="menubutton-button-content" onClick={this.onButtonClicked}>
+                <div
+                    className={buttonClassnames} onClick={this.onMenuClicked}
+                    onKeyDown={MiscUtils.checkKeyActivate} tabIndex={0}
+                    {...withTooltip(this.props.tooltip, {ref: el => { this.el = el; }})}
+                >
+                    <div className="menubutton-button-content" onClick={this.onButtonClicked}>
                         {buttonContents}
-                    </span>
+                    </div>
                     <span className="menubotton-button-arrow">
                         <Icon icon="chevron-down" />
                     </span>
-                    {this.props.tooltip ? (
-                        <span className={"menubutton-tooltip " + ("menubutton-tooltip-" + this.props.tooltipPos)}>
-                            {this.props.tooltip}
-                        </span>
-                    ) : null}
                 </div>
                 {this.el && this.state.popup ? (
                     <PopupMenu align={this.props.menuAlign} anchor={this.el} className={menuClassnames} onClose={() => this.setState({popup: false})}>

@@ -13,6 +13,7 @@ import isEmpty from 'lodash.isempty';
 import PropTypes from 'prop-types';
 
 import ConfigUtils from '../../utils/ConfigUtils';
+import withTooltip from '../../utils/Tooltip';
 import Icon from '../Icon';
 import MenuButton from './MenuButton';
 
@@ -37,12 +38,10 @@ export default class ButtonBar extends React.Component {
         className: PropTypes.string,
         disabled: PropTypes.bool,
         forceLabel: PropTypes.bool,
-        onClick: PropTypes.func,
-        tooltipPos: PropTypes.string
+        onClick: PropTypes.func
     };
     static defaultProps = {
-        className: "",
-        tooltipPos: 'bottom'
+        className: ""
     };
     render() {
         const isMobile = ConfigUtils.isMobile();
@@ -52,17 +51,16 @@ export default class ButtonBar extends React.Component {
                     if (Array.isArray(entry) && entry.length > 1) {
                         const active = entry.find(e => e.key === this.props.active) !== undefined ? this.props.active : null;
                         return (
-                            <MenuButton active={active} className="buttonbar-combo" key={"combo" + idx} onActivate={(value) => this.props.onClick(value, entry.find(e => e.key === value).data)}>
+                            <MenuButton active={active} key={"combo" + idx} onActivate={(value) => this.props.onClick(value, entry.find(e => e.key === value).data)}>
                                 {entry.map(comboentry => (
-                                    <div className="buttonbar-combo-entry" key={comboentry.key} onClick={() => this.props.onClick(comboentry.key, comboentry.data)} value={comboentry.key}>
+                                    <div
+                                        className="buttonbar-combo-entry" key={comboentry.key}
+                                        onClick={() => this.props.onClick(comboentry.key, comboentry.data)}
+                                        value={comboentry.key} {...withTooltip(comboentry.tooltip)}
+                                    >
                                         {comboentry.icon ? (<Icon icon={comboentry.icon} />) : null}
                                         {comboentry.label && (!isMobile || !comboentry.icon || this.props.forceLabel || comboentry.forceLabel) ? (
                                             <span className="buttonbar-combo-entry-label">{comboentry.label}</span>
-                                        ) : null}
-                                        {comboentry.tooltip ? (
-                                            <span className={"buttonbar-button-tooltip " + ("buttonbar-button-tooltip-" + this.props.tooltipPos)}>
-                                                {comboentry.tooltip}
-                                            </span>
                                         ) : null}
                                     </div>
                                 ))}
@@ -78,21 +76,15 @@ export default class ButtonBar extends React.Component {
                         });
                         classes += entry.extraClasses ? ' ' + entry.extraClasses : '';
                         return (
-                            <div className="buttonbar-button-container" key={entry.key}>
-                                <button
-                                    className={classes} disabled={entry.disabled || this.props.disabled}
-                                    onClick={entry.type !== "submit" ? () => this.props.onClick(entry.key, entry.data) : null}
-                                    type={entry.type || "button"}
-                                >
-                                    {entry.icon ? (<Icon icon={entry.icon} />) : null}
-                                    {entry.label && (!isMobile || !entry.icon || this.props.forceLabel || entry.forceLabel) ? (<span>{entry.label}</span>) : null}
-                                </button>
-                                {entry.tooltip ? (
-                                    <span className={"buttonbar-button-tooltip " + ("buttonbar-button-tooltip-" + this.props.tooltipPos)}>
-                                        {entry.tooltip}
-                                    </span>
-                                ) : null}
-                            </div>
+                            <button className={classes}
+                                disabled={entry.disabled || this.props.disabled} key={entry.key}
+                                onClick={entry.type !== "submit" ? () => this.props.onClick(entry.key, entry.data) : null}
+                                type={entry.type || "button"}
+                                {...withTooltip(entry.tooltip)}
+                            >
+                                {entry.icon ? (<Icon icon={entry.icon} />) : null}
+                                {entry.label && (!isMobile || !entry.icon || this.props.forceLabel || entry.forceLabel) ? (<span>{entry.label}</span>) : null}
+                            </button>
                         );
                     } else {
                         return null;
