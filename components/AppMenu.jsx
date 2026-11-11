@@ -229,7 +229,7 @@ class AppMenu extends React.Component {
             <div className={className}>
                 <div
                     className="appmenu-button" onClick={this.toggleMenu} onKeyDown={this.btnKeyNav}
-                    ref={el => { this.menuBtn = el; }} tabIndex={0} title={this.props.buttonLabel}
+                    ref={el => { this.menuBtn = el; }} tabIndex={0}
                 >
                     {this.props.buttonContents ?? [
                         showLabel ? (<span className="appmenu-label" key="AppMenuLabel">{this.props.buttonLabel}</span>) : null,
