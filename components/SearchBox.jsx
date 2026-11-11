@@ -334,7 +334,7 @@ class SearchBox extends React.Component {
                 } else if (group.resultCount === -1) {
                     moreLabel = LocaleUtils.tr("search.unknownmore");
                 }
-                if ((group.limit ?? null) !== null) {
+                if (moreLabel && (group.limit ?? null) !== null) {
                     moreLabel = (<a href="#" onClick={() => this.loadMore(provider, group)}>{moreLabel}</a>);
                 }
                 if (group.items.length === 0) {
