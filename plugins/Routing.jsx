@@ -20,6 +20,7 @@ import {zoomToExtent} from '../actions/map';
 import {setCurrentTask} from '../actions/task';
 import Icon from '../components/Icon';
 import ResizeableWindow from '../components/ResizeableWindow';
+import Button from '../components/widgets/Button';
 import ButtonBar from '../components/widgets/ButtonBar';
 import DateTimeInput from '../components/widgets/DateTimeInput';
 import NumberInput from '../components/widgets/NumberInput';
@@ -279,9 +280,9 @@ class Routing extends React.Component {
                     <div className="routing-frame">
                         <div className="routing-buttons controlgroup">
                             <ButtonBar active={this.state.mode} buttons={enabledButtons} onClick={key => this.setState({mode: key})} />
-                            <button className={"button" + (this.state.settingsPopup ? " pressed" : "")} onClick={() => this.setState((state) => ({settingsPopup: !state.settingsPopup}))}>
+                            <Button onClick={() => this.setState((state) => ({settingsPopup: !state.settingsPopup}))} pressed={this.state.settingsPopup}>
                                 <Icon icon="cog" />
-                            </button>
+                            </Button>
                             {this.state.settingsPopup ? this.renderSettings() : null}
                         </div>
                         {tabRenderers[this.state.currentTab]()}
@@ -402,7 +403,7 @@ class Routing extends React.Component {
                             <VectorLayerPicker
                                 layers={vectorLayers} onChange={layer => this.updateRouteConfig({excludeLayer: (layer || {}).id})}
                                 showNone value={routeConfig.excludeLayer || ""} />
-                            <button className="button" onClick={this.setRedliningTool}><Icon icon="draw" /></button>
+                            <Button onClick={this.setRedliningTool}><Icon icon="draw" /></Button>
                         </div>
                     ) : null}
                 </div>
@@ -573,14 +574,14 @@ class Routing extends React.Component {
             <div className="routing-search-field controlgroup" key={"field" + idx}>
                 <SearchWidget placeholder={placeholder} resultSelected={(result) => this.searchResultSelected(config, idx, result)} role="input" searchParams={this.state.searchParams} searchProviders={this.state.searchProviders} value={entry.text} />
                 {idx === 0 ? (
-                    <button className="button" disabled={!this.props.locatePos} onClick={() => this.updatePoint(config, 0, this.locatePos())} role="suffix">
+                    <Button disabled={!this.props.locatePos} onClick={() => this.updatePoint(config, 0, this.locatePos())} role="suffix">
                         <Icon icon="screenshot" />
-                    </button>
+                    </Button>
                 ) : null}
                 {removeable ? (
-                    <button className="button" onClick={() => this.removePoint(config, idx)} role="suffix">
+                    <Button onClick={() => this.removePoint(config, idx)} role="suffix">
                         <Icon icon="remove" />
-                    </button>
+                    </Button>
                 ) : null}
             </div>
         );

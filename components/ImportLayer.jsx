@@ -20,6 +20,7 @@ import LocaleUtils from '../utils/LocaleUtils';
 import MiscUtils from '../utils/MiscUtils';
 import Request from '../utils/Request';
 import ServiceLayerUtils from '../utils/ServiceLayerUtils';
+import Button from './widgets/Button';
 import ComboBox from './widgets/ComboBox';
 import FileSelector from './widgets/FileSelector';
 import LayerCatalogWidget from './widgets/LayerCatalogWidget';
@@ -87,17 +88,17 @@ class ImportLayer extends React.Component {
         let button = null;
         if (this.state.type === "URL") {
             button = (
-                <button className="button importlayer-addbutton" disabled={!this.state.url || this.state.pendingRequests > 0} onClick={() => this.scanService()}>
+                <Button className="importlayer-addbutton" disabled={!this.state.url || this.state.pendingRequests > 0} onClick={() => this.scanService()}>
                     {this.state.pendingRequests > 0 ? (<Spinner />) : null}
                     {LocaleUtils.tr("importlayer.connect")}
-                </button>
+                </Button>
             );
         } else {
             button = (
-                <button className="button importlayer-addbutton" disabled={this.state.file === null || this.state.addingLayer} onClick={this.importFileLayer} type="button">
+                <Button className="importlayer-addbutton" disabled={this.state.file === null || this.state.addingLayer} onClick={this.importFileLayer}>
                     {this.state.addingLayer ? (<Spinner />) : null}
                     {LocaleUtils.tr("importlayer.addlayer")}
-                </button>
+                </Button>
             );
         }
         let layerList = null;

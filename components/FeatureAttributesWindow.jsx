@@ -14,6 +14,7 @@ import PropTypes from 'prop-types';
 import LocaleUtils from '../utils/LocaleUtils';
 import Icon from './Icon';
 import ResizeableWindow from './ResizeableWindow';
+import Button from './widgets/Button';
 import TextInput from './widgets/TextInput';
 
 import './style/FeatureAttributesWindow.css';
@@ -53,7 +54,7 @@ class FeatureAttributesWindow extends React.Component {
                             <tr key={name}>
                                 <td>{name}</td>
                                 <td><TextInput onChange={(text) => this.updateAttrib(name, text)} value={value} /></td>
-                                <td><button className="button" type="button"><Icon icon="trash" onClick={() => this.removeAttrib(name)} /></button></td>
+                                <td><Button><Icon icon="trash" onClick={() => this.removeAttrib(name)} /></Button></td>
                             </tr>
                         ))}
                         {this.props.allAttribs.filter(attrib => !featureAttribs.has(attrib)).map(name => (
@@ -71,9 +72,9 @@ class FeatureAttributesWindow extends React.Component {
                                 <input name="value" placeholder={LocaleUtils.tr("featureattributes.value")} type="text" />
                             </td>
                             <td>
-                                <button className="button" type="submit">
+                                <Button type="submit">
                                     <Icon icon="plus" />
-                                </button>
+                                </Button>
                             </td>
                         </tr>
                     </tbody>

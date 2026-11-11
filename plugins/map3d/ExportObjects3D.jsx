@@ -22,6 +22,7 @@ import {GLTFExporter} from 'three/addons/exporters/GLTFExporter.js';
 import {setCurrentTask} from '../../actions/task';
 import {TileMeshHelper} from '../../components/map3d/utils/MiscUtils3D';
 import SideBar from '../../components/SideBar';
+import Button from '../../components/widgets/Button';
 import Spinner from '../../components/widgets/Spinner';
 import LocaleUtils from '../../utils/LocaleUtils';
 import VectorLayerUtils from '../../utils/VectorLayerUtils';
@@ -96,11 +97,11 @@ class ExportObjects3D extends React.Component {
                         </tbody>
                     </table>
                     <div className="button-bar">
-                        <button className="button" disabled={exportDisabled} type="submit">
+                        <Button disabled={exportDisabled} type="submit">
                             {this.state.exporting ? (
                                 <span className="mapexport-wait"><Spinner /> {LocaleUtils.tr("common.wait")}</span>
                             ) : LocaleUtils.tr("common.export")}
-                        </button>
+                        </Button>
                     </div>
                 </form>
             </div>

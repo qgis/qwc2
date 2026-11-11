@@ -21,6 +21,7 @@ import MapButton from '../components/MapButton';
 import MapSelection from '../components/MapSelection';
 import PickFeature from '../components/PickFeature';
 import SideBar from '../components/SideBar';
+import Button from '../components/widgets/Button';
 import ButtonBar from '../components/widgets/ButtonBar';
 import ComboBox from '../components/widgets/ComboBox';
 import DateTimeInput from '../components/widgets/DateTimeInput';
@@ -531,7 +532,7 @@ class MapFilter extends React.Component {
             ...customFilters,
             (
                 <div className="map-filter-add-custom" key="addcustomfilter">
-                    <button className="button" onClick={this.addCustomFilter} type="button">{LocaleUtils.tr("mapfilter.addcustomfilter")}</button>
+                    <Button onClick={this.addCustomFilter}>{LocaleUtils.tr("mapfilter.addcustomfilter")}</Button>
                 </div>
             )
         ];

@@ -17,6 +17,7 @@ import {getFeatureTemplate} from '../utils/EditingUtils';
 import LocaleUtils from '../utils/LocaleUtils';
 import AttributeForm from './AttributeForm';
 import Icon from './Icon';
+import Button from './widgets/Button';
 
 import './style/LinkFeatureForm.css';
 
@@ -117,10 +118,10 @@ class LinkFeatureForm extends React.Component {
                         </div>
                     )}
                     {!editContext.changed && (<div className="link-feature-form-close">
-                        <button className="button" onClick={this.close}>
+                        <Button onClick={this.close}>
                             <Icon icon="remove" />
                             {LocaleUtils.tr("common.close")}
-                        </button>
+                        </Button>
                     </div>)}
                 </div>
             );
@@ -131,10 +132,10 @@ class LinkFeatureForm extends React.Component {
                         <span>{LocaleUtils.tr("linkfeatureform.pickhint")}</span>
                     </div>
                     <div className="link-feature-form-close">
-                        <button className="button" onClick={this.close}>
+                        <Button onClick={this.close}>
                             <Icon icon="remove" />
                             {LocaleUtils.tr("common.cancel")}
-                        </button>
+                        </Button>
                     </div>
                 </div>
             );
@@ -155,10 +156,10 @@ class LinkFeatureForm extends React.Component {
                         />
                     )}
                     {!editContext.changed && (<div className="link-feature-form-close">
-                        <button className="button" onClick={this.close}>
+                        <Button onClick={this.close}>
                             <Icon icon="remove" />
                             {editContext.action === 'Draw' ? LocaleUtils.tr("common.cancel") : LocaleUtils.tr("common.close")}
-                        </button>
+                        </Button>
                     </div>)}
                 </div>
             );

@@ -11,8 +11,8 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 import LocaleUtils from '../../utils/LocaleUtils';
-import withTooltip from '../../utils/Tooltip';
 import Icon from '../Icon';
+import Button from './Button';
 
 
 export default class CopyButton extends React.Component {
@@ -36,12 +36,12 @@ export default class CopyButton extends React.Component {
             tooltipMessage = LocaleUtils.tr("copybtn.click_to_copy");
         }
         return (
-            <button
-                className={`button ${this.props.buttonClass}`} onClick={this.copyToClipboard} type="button"
-                {...withTooltip(tooltipMessage, {onMouseLeave: () => this.setState({copied: null})})}
+            <Button
+                className={this.props.buttonClass} onClick={this.copyToClipboard}
+                onMouseLeave={() => this.setState({copied: null})} title={tooltipMessage}
             >
                 <Icon icon="copy"/>
-            </button>
+            </Button>
         );
     }
     copyToClipboard = () => {

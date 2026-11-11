@@ -20,6 +20,7 @@ import {setCurrentTask} from '../../actions/task';
 import ExportSelection from '../../components/ExportSelection';
 import Icon from '../../components/Icon';
 import SideBar from '../../components/SideBar';
+import Button from '../../components/widgets/Button';
 import NumberInput from '../../components/widgets/NumberInput';
 import Spinner from '../../components/widgets/Spinner';
 import LocaleUtils from '../../utils/LocaleUtils';
@@ -206,11 +207,11 @@ class MapExport3D extends React.Component {
                         </div>
                     ) : null}
                     <div className="button-bar">
-                        <button className="button" disabled={exportDisabled} type="submit">
+                        <Button disabled={exportDisabled} type="submit">
                             {this.state.exporting ? (
                                 <span className="mapexport-wait"><Spinner /> {LocaleUtils.tr("common.wait")}</span>
                             ) : LocaleUtils.tr("common.export")}
-                        </button>
+                        </Button>
                     </div>
                 </form>
             </div>

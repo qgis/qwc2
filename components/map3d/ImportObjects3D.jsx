@@ -16,6 +16,7 @@ import {processStarted, processFinished} from '../../actions/processNotification
 import ConfigUtils from '../../utils/ConfigUtils';
 import LocaleUtils from '../../utils/LocaleUtils';
 import Request from '../../utils/Request';
+import Button from '../widgets/Button';
 import FileSelector from '../widgets/FileSelector';
 import Spinner from '../widgets/Spinner';
 
@@ -43,10 +44,10 @@ class ImportObjects3D extends React.Component {
                         title={LocaleUtils.tr("layertree3d.supportedformats")} />
                 </div>
                 <div>
-                    <button className="button" disabled={this.state.selectedfile === null || this.state.importing} onClick={this.importFile} type="button">
+                    <Button disabled={this.state.selectedfile === null || this.state.importing} onClick={this.importFile}>
                         {this.state.importing ? (<Spinner />) : null}
                         {LocaleUtils.tr("layertree3d.import")}
-                    </button>
+                    </Button>
                 </div>
             </div>
         );

@@ -8,13 +8,13 @@
 
 import React from 'react';
 
-import classnames from 'classnames';
 import isEmpty from 'lodash.isempty';
 import PropTypes from 'prop-types';
 
 import ConfigUtils from '../../utils/ConfigUtils';
 import withTooltip from '../../utils/Tooltip';
 import Icon from '../Icon';
+import Button from './Button';
 import MenuButton from './MenuButton';
 
 import './style/ButtonBar.css';
@@ -70,21 +70,17 @@ export default class ButtonBar extends React.Component {
                         if (Array.isArray(entry)) {
                             entry = entry[0];
                         }
-                        let classes = classnames({
-                            button: true,
-                            pressed: this.props.active === entry.key || entry.pressed
-                        });
-                        classes += entry.extraClasses ? ' ' + entry.extraClasses : '';
                         return (
-                            <button className={classes}
+                            <Button className={entry.extraClasses}
                                 disabled={entry.disabled || this.props.disabled} key={entry.key}
                                 onClick={entry.type !== "submit" ? () => this.props.onClick(entry.key, entry.data) : null}
+                                pressed={this.props.active === entry.key || entry.pressed}
                                 type={entry.type || "button"}
                                 {...withTooltip(entry.tooltip)}
                             >
                                 {entry.icon ? (<Icon icon={entry.icon} />) : null}
                                 {entry.label && (!isMobile || !entry.icon || this.props.forceLabel || entry.forceLabel) ? (<span>{entry.label}</span>) : null}
-                            </button>
+                            </Button>
                         );
                     } else {
                         return null;

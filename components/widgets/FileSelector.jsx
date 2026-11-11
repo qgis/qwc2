@@ -12,6 +12,7 @@ import PropTypes from 'prop-types';
 
 import LocaleUtils from '../../utils/LocaleUtils';
 import Icon from '../Icon';
+import Button from './Button';
 
 import './style/FileSelector.css';
 
@@ -62,9 +63,9 @@ export default class FileSelector extends React.Component {
             <div className="FileSelector controlgroup" onClick={this.triggerFileOpen}>
                 <input placeholder={placeholder} readOnly title={this.props.title} type="text" value={value} />
                 <input accept={this.props.accept} multiple={this.props.multiple} onChange={this.fileChanged} ref={el => { this.fileinput = el; }} type="file" />
-                <button className="button" title={this.props.title}>
+                <Button title={this.props.title}>
                     <Icon icon="folder-open" />
-                </button>
+                </Button>
             </div>
         );
     }

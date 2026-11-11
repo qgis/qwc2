@@ -8,6 +8,7 @@ import LocaleUtils from '../utils/LocaleUtils';
 import MeasureUtils from '../utils/MeasureUtils';
 import Icon from './Icon';
 import {BottomToolPortalContext} from './PluginsContainer';
+import Button from './widgets/Button';
 import NumberInput from './widgets/NumberInput';
 
 import './style/SegmentInput.css';
@@ -40,9 +41,9 @@ export default class SegmentInput extends React.Component {
             <div className="segment-input">
                 <span className="segment-input-label">{label}</span>
                 <div className="controlgroup">
-                    <button className={"button" + (this.state.enabled ? " pressed" : "")} onClick={this.toggle} title={label}>
+                    <Button onClick={this.toggle} pressed={this.state.enabled} title={label}>
                         <Icon icon="measure_line" />
-                    </button>
+                    </Button>
                     {this.state.enabled ? (
                         <NumberInput decimals={decimals} max={99999} min={Math.pow(10, -decimals)} onChange={distance => this.setState({distance})} value={this.state.distance} />
                     ) : null}

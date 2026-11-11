@@ -18,6 +18,7 @@ import {changeRedliningState, resetRedliningState} from '../actions/redlining';
 import PickFeature from '../components/PickFeature';
 import ResizeableWindow from '../components/ResizeableWindow';
 import TaskBar from '../components/TaskBar';
+import Button from '../components/widgets/Button';
 import ButtonBar from '../components/widgets/ButtonBar';
 import NumberInput from '../components/widgets/NumberInput';
 import Spinner from '../components/widgets/Spinner';
@@ -269,7 +270,7 @@ class GeometryDigitizer extends React.Component {
                             {Object.entries(geomLinkData.params || {}).map(([key, value]) => (
                                 <input key={key} name={key} type="hidden" value={value} />
                             ))}
-                            <button className="button" disabled={!geomLinkData.url || !haveFeatures} type="submit">{LocaleUtils.tr("geomdigitizer.send")}</button>
+                            <Button disabled={!geomLinkData.url || !haveFeatures} type="submit">{LocaleUtils.tr("geomdigitizer.send")}</Button>
                         </form>
                     </div>
                 </div>

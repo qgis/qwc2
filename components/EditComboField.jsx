@@ -13,6 +13,7 @@ import PropTypes from 'prop-types';
 import {KeyValCache} from '../utils/EditingUtils';
 import LocaleUtils from '../utils/LocaleUtils';
 import Icon from './Icon';
+import Button from './widgets/Button';
 import ComboBox from './widgets/ComboBox';
 
 import './style/EditComboField.css';
@@ -129,10 +130,10 @@ export default class EditComboField extends React.Component {
                     })}
                 </ComboBox>
                 {this.props.showEdit ? (
-                    <button className="button" onClick={this.onEdit} type="button"><Icon icon="draw" /></button>
+                    <Button onClick={this.onEdit}><Icon icon="draw" /></Button>
                 ) : null}
                 {this.props.showAdd ? (
-                    <button className="button" onClick={this.onAdd} type="button"><Icon icon="plus" /></button>
+                    <Button onClick={this.onAdd}><Icon icon="plus" /></Button>
                 ) : null}
             </div>
         );

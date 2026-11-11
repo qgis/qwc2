@@ -16,6 +16,7 @@ import {Color, BufferAttribute, BufferGeometry, Float32BufferAttribute, LineSegm
 import Icon from '../../components/Icon';
 import {computeOBBXY, TileMeshHelper, updateObjectLabel} from '../../components/map3d/utils/MiscUtils3D';
 import SideBar from '../../components/SideBar';
+import Button from '../../components/widgets/Button';
 import ConfigUtils from '../../utils/ConfigUtils';
 import LocaleUtils from '../../utils/LocaleUtils';
 
@@ -67,7 +68,7 @@ class MeasureObjects3D extends React.Component {
                             ))}
                         </div>
                         <div className="measureobjects3d-restorebutton">
-                            <button className="button" onClick={this.removeAll}>{LocaleUtils.tr("measureobjects3d.removeall")}</button>
+                            <Button onClick={this.removeAll}>{LocaleUtils.tr("measureobjects3d.removeall")}</Button>
                         </div>
                     </div>
                 )}

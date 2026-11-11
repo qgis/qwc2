@@ -33,6 +33,7 @@ import {setCurrentTask} from '../actions/task';
 import Icon from '../components/Icon';
 import MapSelection from '../components/MapSelection';
 import ResizeableWindow from '../components/ResizeableWindow';
+import Button from '../components/widgets/Button';
 import Input from '../components/widgets/Input';
 import NumberInput from '../components/widgets/NumberInput';
 import Spinner from '../components/widgets/Spinner';
@@ -877,14 +878,14 @@ class SensorThingsTool extends React.Component {
                 </div>
             );
             btnLocationInfo = (
-                <button className={"button" + (this.state.showLocationInfoWindow ? " pressed" : "")} onClick={() => this.toggleLocationInfoWindow()} title={LocaleUtils.tr("sensorthingstool.locationInfo.title")}>
+                <Button onClick={() => this.toggleLocationInfoWindow()} pressed={this.state.showLocationInfoWindow} title={LocaleUtils.tr("sensorthingstool.locationInfo.title")}>
                     <Icon icon="info" />
-                </button>
+                </Button>
             );
             btnRemoveLocation = (
-                <button className="button" onClick={this.removeSelectedLocation} title={LocaleUtils.tr("sensorthingstool.removeLocation")}>
+                <Button onClick={this.removeSelectedLocation} title={LocaleUtils.tr("sensorthingstool.removeLocation")}>
                     <Icon icon="trash" />
-                </button>
+                </Button>
             );
 
             if (this.state.currentSensorLocation !== null) {
@@ -901,12 +902,12 @@ class SensorThingsTool extends React.Component {
                                     );
                                 })}
                             </select>
-                            <button className="button" onClick={this.addSelectedDatastream} title={LocaleUtils.tr("sensorthingstool.addDatastream")}>
+                            <Button onClick={this.addSelectedDatastream} title={LocaleUtils.tr("sensorthingstool.addDatastream")}>
                                 <Icon icon="plus" />
-                            </button>
-                            <button className={"button" + (this.state.showDatastreamsFilterWindow ? " pressed" : "") + (datastreamsFilterActive ? " filter-active" : "")} onClick={() => this.toggleDatastreamsFilterWindow()} title={LocaleUtils.tr("sensorthingstool.datastreamsFilter.title")}>
+                            </Button>
+                            <Button className={datastreamsFilterActive ? " filter-active" : ""} onClick={() => this.toggleDatastreamsFilterWindow()} pressed={this.state.showDatastreamsFilterWindow} title={LocaleUtils.tr("sensorthingstool.datastreamsFilter.title")}>
                                 <Icon icon="filter" />
-                            </button>
+                            </Button>
                         </div>
                     );
                 } else {
@@ -916,9 +917,9 @@ class SensorThingsTool extends React.Component {
                             <select>
                                 <option>{LocaleUtils.tr("sensorthingstool.datastreamNone")}</option>
                             </select>
-                            <button className={"button" + (this.state.showDatastreamsFilterWindow ? " pressed" : "") + (datastreamsFilterActive ? " filter-active" : "")} onClick={() => this.toggleDatastreamsFilterWindow()} title={LocaleUtils.tr("sensorthingstool.datastreamsFilter.title")}>
+                            <Button className={datastreamsFilterActive ? " filter-active" : ""} onClick={() => this.toggleDatastreamsFilterWindow()} pressed={this.state.showDatastreamsFilterWindow} title={LocaleUtils.tr("sensorthingstool.datastreamsFilter.title")}>
                                 <Icon icon="filter" />
-                            </button>
+                            </Button>
                         </div>
                     );
                 }
@@ -936,15 +937,15 @@ class SensorThingsTool extends React.Component {
                                     <td><div className="sensor-things-datastream-legend" style={{backgroundColor: `rgba(${graphDatastreamState.color.join(',')},0.5)`, borderColor: `rgb(${graphDatastreamState.color.join(',')})`}} /></td>
                                     <td>{datastream.description}&nbsp;</td>
                                     <td>
-                                        <button className={"button" + (this.state.datastreamInfoWindow === datastreamIndex ? " pressed" : "")} onClick={() => this.toggleDatastreamInfoWindow(datastreamIndex)} title={LocaleUtils.tr("sensorthingstool.datastreamInfo.title")}>
+                                        <Button onClick={() => this.toggleDatastreamInfoWindow(datastreamIndex)} pressed={this.state.datastreamInfoWindow === datastreamIndex} title={LocaleUtils.tr("sensorthingstool.datastreamInfo.title")}>
                                             <Icon icon="info" />
-                                        </button>
-                                        <button className={"button" + (this.state.datastreamTableWindow === datastreamIndex ? " pressed" : "")} onClick={() => this.toggleDatastreamTableWindow(datastreamIndex)} title={LocaleUtils.tr("sensorthingstool.datastreamTable.title")}>
+                                        </Button>
+                                        <Button onClick={() => this.toggleDatastreamTableWindow(datastreamIndex)} pressed={this.state.datastreamTableWindow === datastreamIndex} title={LocaleUtils.tr("sensorthingstool.datastreamTable.title")}>
                                             <Icon icon="list-alt" />
-                                        </button>
-                                        <button className="button" onClick={() => this.removeDatastream(datastreamIndex)} title={LocaleUtils.tr("sensorthingstool.removeDatastream")}>
+                                        </Button>
+                                        <Button onClick={() => this.removeDatastream(datastreamIndex)} title={LocaleUtils.tr("sensorthingstool.removeDatastream")}>
                                             <Icon icon="trash" />
-                                        </button>
+                                        </Button>
                                         {this.state.graph.datastreams[datastreamIndex].loading ? (<Spinner />) : null}
                                     </td>
                                 </tr>
@@ -967,26 +968,26 @@ class SensorThingsTool extends React.Component {
 
                                 <div className="sensor-things-toolbar-spacer-small" />
 
-                                <button className={"button" + (this.state.locationPickingActive ? " pressed" : "")} onClick={this.toggleLocationPicking} title={LocaleUtils.tr("sensorthingstool.pickLocation")}>
+                                <Button onClick={this.toggleLocationPicking} pressed={this.state.locationPickingActive} title={LocaleUtils.tr("sensorthingstool.pickLocation")}>
                                     <Icon icon="pick" />
-                                </button>
+                                </Button>
                             </div>
                         </div>
 
                         <div className="sensor-things-toolbar">
-                            <button className="button" onClick={this.exportCSV} title={LocaleUtils.tr("sensorthingstool.exportCSV")}>
+                            <Button onClick={this.exportCSV} title={LocaleUtils.tr("sensorthingstool.exportCSV")}>
                                 <Icon icon="export" />
-                            </button>
-                            <button className="button" onClick={this.exportImage} title={LocaleUtils.tr("sensorthingstool.exportImage")}>
+                            </Button>
+                            <Button onClick={this.exportImage} title={LocaleUtils.tr("sensorthingstool.exportImage")}>
                                 <Icon icon="rasterexport" />
-                            </button>
+                            </Button>
 
                             <div className="sensor-things-toolbar-spacer-small" />
 
                             <div>
-                                <button className={"button" + (this.state.graphOptionsPopup ? " pressed" : "")} onClick={() => this.setState((state) => ({graphOptionsPopup: !state.graphOptionsPopup}))} title={LocaleUtils.tr("sensorthingstool.graphOptions.title")}>
+                                <Button onClick={() => this.setState((state) => ({graphOptionsPopup: !state.graphOptionsPopup}))} pressed={this.state.graphOptionsPopup} title={LocaleUtils.tr("sensorthingstool.graphOptions.title")}>
                                     <Icon icon="cog" />
-                                </button>
+                                </Button>
                                 {this.renderGraphOptions()}
                             </div>
                         </div>
@@ -1007,9 +1008,9 @@ class SensorThingsTool extends React.Component {
 
                         <div className="sensor-things-toolbar-spacer" />
 
-                        <button className="button" onClick={this.updatePeriodIntervalAfterBegin} title={LocaleUtils.tr("sensorthingstool.setPeriodAfterBegin")}>
+                        <Button onClick={this.updatePeriodIntervalAfterBegin} title={LocaleUtils.tr("sensorthingstool.setPeriodAfterBegin")}>
                             <Icon icon="after" />
-                        </button>
+                        </Button>
                         <select onChange={(ev) => this.setState({selectedInterval: parseInt(ev.target.value, 10)})} title={LocaleUtils.tr("sensorthingstool.selectInterval")} value={this.state.selectedInterval}>
                             {intervalOptions.map((interval, idx) => {
                                 return (
@@ -1017,33 +1018,33 @@ class SensorThingsTool extends React.Component {
                                 );
                             })}
                         </select>
-                        <button className="button" onClick={this.updatePeriodIntervalBeforeEnd} title={LocaleUtils.tr("sensorthingstool.setPeriodBeforeEnd")}>
+                        <Button onClick={this.updatePeriodIntervalBeforeEnd} title={LocaleUtils.tr("sensorthingstool.setPeriodBeforeEnd")}>
                             <Icon icon="before" />
-                        </button>
+                        </Button>
 
                         <div className="sensor-things-toolbar-spacer-small" />
 
-                        <button className="button" onClick={this.updatePeriodPrevInterval} title={LocaleUtils.tr("sensorthingstool.showPrevPeriod")}>
+                        <Button onClick={this.updatePeriodPrevInterval} title={LocaleUtils.tr("sensorthingstool.showPrevPeriod")}>
                             <Icon icon="nav-left" />
-                        </button>
-                        <button className="button" onClick={this.updatePeriodNextInterval} title={LocaleUtils.tr("sensorthingstool.showNextPeriod")}>
+                        </Button>
+                        <Button onClick={this.updatePeriodNextInterval} title={LocaleUtils.tr("sensorthingstool.showNextPeriod")}>
                             <Icon icon="nav-right" />
-                        </button>
-                        <button className="button" onClick={this.updatePeriodNow} title={LocaleUtils.tr("sensorthingstool.setEndToNow")}>
+                        </Button>
+                        <Button onClick={this.updatePeriodNow} title={LocaleUtils.tr("sensorthingstool.setEndToNow")}>
                             <Icon icon="today" />
-                        </button>
+                        </Button>
 
                         <div className="sensor-things-toolbar-spacer-small" />
 
-                        <button className="button" onClick={this.zoomIn} title={LocaleUtils.tr("common.zoomin")}>
+                        <Button onClick={this.zoomIn} title={LocaleUtils.tr("common.zoomin")}>
                             <Icon icon="zoomin" />
-                        </button>
-                        <button className="button" onClick={this.zoomOut} title={LocaleUtils.tr("common.zoomout")}>
+                        </Button>
+                        <Button onClick={this.zoomOut} title={LocaleUtils.tr("common.zoomout")}>
                             <Icon icon="zoomout" />
-                        </button>
-                        <button className="button" onClick={this.updateFullPeriod} title={updateFullPeriodLabel}>
+                        </Button>
+                        <Button onClick={this.updateFullPeriod} title={updateFullPeriodLabel}>
                             <Icon icon="home" />
-                        </button>
+                        </Button>
 
                         <div className="sensor-things-toolbar-spacer" />
 
@@ -1067,9 +1068,9 @@ class SensorThingsTool extends React.Component {
                     <div className="sensor-things-location-select-header">
                         <b>{LocaleUtils.tr("sensorthingstool.selectLocation")}</b>
                         <div className="sensor-things-toolbar-spacer" />
-                        <button className="button" onClick={() => this.setState({locationsAtPoint: []})} title={LocaleUtils.tr("common.close")}>
+                        <Button onClick={() => this.setState({locationsAtPoint: []})} title={LocaleUtils.tr("common.close")}>
                             <Icon icon="remove" />
-                        </button>
+                        </Button>
                     </div>
                     <div className="sensor-things-location-select-list">
                         <table className="sensor-things-location-select-table">
@@ -1083,12 +1084,12 @@ class SensorThingsTool extends React.Component {
                                         </td>
                                         <td>
                                             <div className="sensor-things-location-select-buttons">
-                                                <button className="button" onClick={() => this.addBasicLocation(location)} title={LocaleUtils.tr("sensorthingstool.addLocation")}>
+                                                <Button onClick={() => this.addBasicLocation(location)} title={LocaleUtils.tr("sensorthingstool.addLocation")}>
                                                     <Icon icon="plus" />
-                                                </button>
-                                                <button className="button" onClick={() => this.addFullLocation(location)} title={LocaleUtils.tr("sensorthingstool.addLocationAndDatastreams")}>
+                                                </Button>
+                                                <Button onClick={() => this.addFullLocation(location)} title={LocaleUtils.tr("sensorthingstool.addLocationAndDatastreams")}>
                                                     <Icon icon="sync" />
-                                                </button>
+                                                </Button>
                                             </div>
                                         </td>
                                     </tr>
@@ -1544,18 +1545,18 @@ class SensorThingsTool extends React.Component {
                                     <td>
                                         <Input onChange={this.updateCustomThresholdXDate} type="date" value={thresholdValueXDate} />
                                         <Input onChange={this.updateCustomThresholdXTime} type="time" value={thresholdValueXTime} />
-                                        <button className={"button reset-button"} onClick={() => this.updateCustomThreshold('x', {value: null})}>
+                                        <Button className="reset-button" onClick={() => this.updateCustomThreshold('x', {value: null})}>
                                             <Icon icon="clear" />
-                                        </button>
+                                        </Button>
                                     </td>
                                 </tr>
                                 <tr>
                                     <td />
                                     <td>
                                         <input onChange={(ev) => this.updateCustomThreshold('x', {label: ev.target.value})} placeholder={LocaleUtils.tr("sensorthingstool.graphOptions.thresholdLabel")} type="text" value={this.state.customThresholds.x.label} />
-                                        <button className={"button reset-button"} onClick={() => this.updateCustomThreshold('x', {label: ""})} >
+                                        <Button className="reset-button" onClick={() => this.updateCustomThreshold('x', {label: ""})} >
                                             <Icon icon="clear" />
-                                        </button>
+                                        </Button>
                                     </td>
                                 </tr>
                             </tbody>
@@ -1580,18 +1581,18 @@ class SensorThingsTool extends React.Component {
                                     <td>
                                         <div className="sensor-things-number-field">
                                             <NumberInput decimals={3} hideArrows onChange={value => this.updateGraphAxis('y', {max: value})} placeholder={LocaleUtils.tr("sensorthingstool.graphOptions.yAuto")} value={this.state.graph.y.max} />
-                                            <button className={"button reset-button"} onClick={() => this.updateGraphAxis('y', {max: null})}>
+                                            <Button className="reset-button" onClick={() => this.updateGraphAxis('y', {max: null})}>
                                                 <Icon icon="clear" />
-                                            </button>
+                                            </Button>
                                         </div>
                                     </td>
                                     {this.state.graph.y2.enabled ? (
                                         <td>
                                             <div className="sensor-things-number-field">
                                                 <NumberInput decimals={3} hideArrows onChange={value => this.updateGraphAxis('y2', {max: value})} placeholder={LocaleUtils.tr("sensorthingstool.graphOptions.yAuto")} value={this.state.graph.y2.max} />
-                                                <button className={"button reset-button"} onClick={() => this.updateGraphAxis('y2', {max: null})}>
+                                                <Button className="reset-button" onClick={() => this.updateGraphAxis('y2', {max: null})}>
                                                     <Icon icon="clear" />
-                                                </button>
+                                                </Button>
                                             </div>
                                         </td>
                                     ) : null}
@@ -1601,18 +1602,18 @@ class SensorThingsTool extends React.Component {
                                     <td>
                                         <div className="sensor-things-number-field">
                                             <NumberInput decimals={3} hideArrows onChange={value => this.updateGraphAxis('y', {min: value})} placeholder={LocaleUtils.tr("sensorthingstool.graphOptions.yAuto")} value={this.state.graph.y.min} />
-                                            <button className={"button reset-button"} onClick={() => this.updateGraphAxis('y', {min: null})}>
+                                            <Button className="reset-button" onClick={() => this.updateGraphAxis('y', {min: null})}>
                                                 <Icon icon="clear" />
-                                            </button>
+                                            </Button>
                                         </div>
                                     </td>
                                     {this.state.graph.y2.enabled ? (
                                         <td>
                                             <div className="sensor-things-number-field">
                                                 <NumberInput decimals={3} hideArrows onChange={value => this.updateGraphAxis('y2', {min: value})} placeholder={LocaleUtils.tr("sensorthingstool.graphOptions.yAuto")} value={this.state.graph.y2.min} />
-                                                <button className={"button reset-button"} onClick={() => this.updateGraphAxis('y2', {min: null})}>
+                                                <Button className="reset-button" onClick={() => this.updateGraphAxis('y2', {min: null})}>
                                                     <Icon icon="clear" />
-                                                </button>
+                                                </Button>
                                             </div>
                                         </td>
                                     ) : null}
@@ -1643,18 +1644,18 @@ class SensorThingsTool extends React.Component {
                                     <td>
                                         <div className="sensor-things-number-field">
                                             <NumberInput decimals={3} hideArrows onChange={value => this.updateCustomThreshold('y', {value: value})} placeholder={LocaleUtils.tr("sensorthingstool.graphOptions.thresholdValue")} value={this.state.customThresholds.y.value} />
-                                            <button className={"button reset-button"} onClick={() => this.updateCustomThreshold('y', {value: null})}>
+                                            <Button className="reset-button" onClick={() => this.updateCustomThreshold('y', {value: null})}>
                                                 <Icon icon="clear" />
-                                            </button>
+                                            </Button>
                                         </div>
                                     </td>
                                     {this.state.graph.y2.enabled ? (
                                         <td>
                                             <div className="sensor-things-number-field">
                                                 <NumberInput decimals={3} hideArrows onChange={value => this.updateCustomThreshold('y2', {value: value})} placeholder={LocaleUtils.tr("sensorthingstool.graphOptions.thresholdValue")} value={this.state.customThresholds.y2.value} />
-                                                <button className={"button reset-button"} onClick={() => this.updateCustomThreshold('y2', {value: null})}>
+                                                <Button className="reset-button" onClick={() => this.updateCustomThreshold('y2', {value: null})}>
                                                     <Icon icon="clear" />
-                                                </button>
+                                                </Button>
                                             </div>
                                         </td>
                                     ) : null}
@@ -1663,16 +1664,16 @@ class SensorThingsTool extends React.Component {
                                     <td />
                                     <td>
                                         <input onChange={(ev) => this.updateCustomThreshold('y', {label: ev.target.value})} placeholder={LocaleUtils.tr("sensorthingstool.graphOptions.thresholdLabel")} type="text" value={this.state.customThresholds.y.label} />
-                                        <button className={"button reset-button"} onClick={() => this.updateCustomThreshold('y', {label: ""})} >
+                                        <Button className="reset-button" onClick={() => this.updateCustomThreshold('y', {label: ""})} >
                                             <Icon icon="clear" />
-                                        </button>
+                                        </Button>
                                     </td>
                                     {this.state.graph.y2.enabled ? (
                                         <td>
                                             <input onChange={(ev) => this.updateCustomThreshold('y2', {label: ev.target.value})} placeholder={LocaleUtils.tr("sensorthingstool.graphOptions.thresholdLabel")} type="text" value={this.state.customThresholds.y2.label} />
-                                            <button className={"button reset-button"} onClick={() => this.updateCustomThreshold('y2', {label: ""})} >
+                                            <Button className="reset-button" onClick={() => this.updateCustomThreshold('y2', {label: ""})} >
                                                 <Icon icon="clear" />
-                                            </button>
+                                            </Button>
                                         </td>
                                     ) : null}
                                 </tr>
@@ -1879,9 +1880,9 @@ class SensorThingsTool extends React.Component {
                                                     <div>{datastreamInfo.sensor.description}</div>
                                                 </td>
                                                 <td>
-                                                    <button className="button" onClick={() => this.addDatastream(datastreamId)} title={LocaleUtils.tr("sensorthingstool.addDatastream")}>
+                                                    <Button onClick={() => this.addDatastream(datastreamId)} title={LocaleUtils.tr("sensorthingstool.addDatastream")}>
                                                         <Icon icon="plus" />
-                                                    </button>
+                                                    </Button>
                                                 </td>
                                             </tr>
                                         );
@@ -2035,12 +2036,12 @@ class SensorThingsTool extends React.Component {
                                             <td>{LocaleUtils.tr("sensorthingstool.datastreamOptions.percentiles")}:</td>
                                             <td>
                                                 <input onChange={(ev) => this.updateDatastreamOptions(datastreamIndex, {percentilesInput: ev.target.value})} placeholder={LocaleUtils.tr("sensorthingstool.datastreamOptions.percentiles")} title={LocaleUtils.tr("sensorthingstool.datastreamOptions.percentilesDesc")} type="text" value={datastreamOptions.percentilesInput} />
-                                                <button className="button reset-button" onClick={() => this.updateDatastreamOptions(datastreamIndex, {percentiles: "refresh"})} title={LocaleUtils.tr("sensorthingstool.datastreamOptions.showPercentiles")}>
+                                                <Button className="reset-button" onClick={() => this.updateDatastreamOptions(datastreamIndex, {percentiles: "refresh"})} title={LocaleUtils.tr("sensorthingstool.datastreamOptions.showPercentiles")}>
                                                     <Icon icon="plus" />
-                                                </button>
-                                                <button className="button reset-button" onClick={() => this.updateDatastreamOptions(datastreamIndex, {percentilesInput: "", percentiles: []})} >
+                                                </Button>
+                                                <Button className="reset-button" onClick={() => this.updateDatastreamOptions(datastreamIndex, {percentilesInput: "", percentiles: []})} >
                                                     <Icon icon="clear" />
-                                                </button>
+                                                </Button>
                                             </td>
                                         </tr>
                                     </tbody>
@@ -2174,9 +2175,9 @@ class SensorThingsTool extends React.Component {
                     </div>
                     <div className="sensor-things-toolbar">
                         <div className="sensor-things-toolbar-spacer" />
-                        <button className="button" onClick={this.exportSingleCSV} title={LocaleUtils.tr("sensorthingstool.exportCSV")}>
+                        <Button onClick={this.exportSingleCSV} title={LocaleUtils.tr("sensorthingstool.exportCSV")}>
                             <Icon icon="export" />
-                        </button>
+                        </Button>
                     </div>
                 </div>
             </ResizeableWindow>

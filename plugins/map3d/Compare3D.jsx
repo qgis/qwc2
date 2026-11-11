@@ -17,6 +17,7 @@ import {setCurrentTask} from '../../actions/task';
 import Icon from '../../components/Icon';
 import MessageBar from '../../components/MessageBar';
 import SideBar from '../../components/SideBar';
+import Button from '../../components/widgets/Button';
 import NumberInput from '../../components/widgets/NumberInput';
 import arrowModel from '../../resources/arrow.glb';
 import LocaleUtils from '../../utils/LocaleUtils';
@@ -232,9 +233,9 @@ class Compare3D extends React.Component {
                 <MessageBar>
                     <div role="body">
                         {LocaleUtils.tr("compare3d.info_message")}&nbsp;
-                        <button className="button" onClick={() => this.props.setCurrentTask("Compare3D")}>
+                        <Button onClick={() => this.props.setCurrentTask("Compare3D")}>
                             {LocaleUtils.tr("compare3d.modify")}
-                        </button>
+                        </Button>
                     </div>
                 </MessageBar>
             ) : null

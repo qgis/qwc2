@@ -19,6 +19,7 @@ import {zoomToExtent} from '../actions/map';
 import Icon from '../components/Icon';
 import IdentifyViewer from '../components/IdentifyViewer';
 import SideBar from '../components/SideBar';
+import Button from '../components/widgets/Button';
 import ComboBox from '../components/widgets/ComboBox';
 import InputContainer from '../components/widgets/InputContainer';
 import Spinner from '../components/widgets/Spinner';
@@ -168,10 +169,10 @@ class FeatureSearch extends React.Component {
                     </tbody></table>
                 </fieldset>
                 <div className="feature-search-bar">
-                    <button className="button" disabled={this.state.busy} type="submit">
+                    <Button disabled={this.state.busy} type="submit">
                         {this.state.busy ? (<Spinner />) : null}
                         {LocaleUtils.tr("search.search")}
-                    </button>
+                    </Button>
                 </div>
             </form>
         );

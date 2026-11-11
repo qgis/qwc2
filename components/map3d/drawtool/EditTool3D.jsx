@@ -17,6 +17,7 @@ import {TransformControls} from 'three/addons/controls/TransformControls';
 import LocaleUtils from '../../../utils/LocaleUtils';
 import Icon from '../../Icon';
 import {BottomToolPortalContext} from '../../PluginsContainer';
+import Button from '../../widgets/Button';
 import ButtonBar from '../../widgets/ButtonBar';
 import ColorButton from '../../widgets/ColorButton';
 import TextInput from '../../widgets/TextInput';
@@ -264,18 +265,18 @@ export default class EditTool3D extends React.Component {
             ) : null,
             ReactDOM.createPortal((
                 <div>
-                    <button className={"button" + (this.state.snapTo3dEnabled ? " pressed" : "")} onClick={() => this.setState(state => ({snapTo3dEnabled: !state.snapTo3dEnabled}))} title={LocaleUtils.tr("draw3d.snap_3dbody")}>
+                    <Button onClick={() => this.setState(state => ({snapTo3dEnabled: !state.snapTo3dEnabled}))} pressed={this.state.snapTo3dEnabled} title={LocaleUtils.tr("draw3d.snap_3dbody")}>
                         <Icon icon="snap_3d" size="large" />
-                    </button>
+                    </Button>
                     {this.props.snapIndex2d.haveSnapLayers() ? (
-                        <button className={"button" + (this.state.snapTo2dNodeEnabled ? " pressed" : "")} onClick={() => this.setState(state => ({snapTo2dNodeEnabled: !state.snapTo2dNodeEnabled}))} title={LocaleUtils.tr("draw3d.snap_2dvertex")}>
+                        <Button onClick={() => this.setState(state => ({snapTo2dNodeEnabled: !state.snapTo2dNodeEnabled}))} pressed={this.state.snapTo2dNodeEnabled} title={LocaleUtils.tr("draw3d.snap_2dvertex")}>
                             <Icon icon="snap_vertex" size="large" />
-                        </button>
+                        </Button>
                     ) : null}
                     {this.props.snapIndex2d.haveSnapLayers() ? (
-                        <button className={"button" + (this.state.snapTo2dEdgeEnabled ? " pressed" : "")} onClick={() => this.setState(state => ({snapTo2dEdgeEnabled: !state.snapTo2dEdgeEnabled}))} title={LocaleUtils.tr("draw3d.snap_2dedge")}>
+                        <Button onClick={() => this.setState(state => ({snapTo2dEdgeEnabled: !state.snapTo2dEdgeEnabled}))} pressed={this.state.snapTo2dEdgeEnabled} title={LocaleUtils.tr("draw3d.snap_2dedge")}>
                             <Icon icon="snap_edge" size="large" />
-                        </button>
+                        </Button>
                     ) : null}
                 </div>
             ), this.context)

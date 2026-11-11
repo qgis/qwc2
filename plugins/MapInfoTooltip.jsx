@@ -15,6 +15,7 @@ import PropTypes from 'prop-types';
 import {setCurrentTask} from '../actions/task';
 import Icon from '../components/Icon';
 import {MapContainerPortalContext} from '../components/PluginsContainer';
+import Button from '../components/widgets/Button';
 import CopyButton from '../components/widgets/CopyButton';
 import ConfigUtils from '../utils/ConfigUtils';
 import CoordinatesUtils from '../utils/CoordinatesUtils';
@@ -176,9 +177,9 @@ class MapInfoTooltip extends React.Component {
                             <td><b>{LocaleUtils.tr("routing.route")}:</b></td>
                             <td>
                                 <div className="controlgroup">
-                                    <button className="button" onClick={() => this.props.setCurrentTask("Routing", null, null, {from: point})}>{LocaleUtils.tr("routing.fromhere")}</button>
-                                    <button className="button" onClick={() => this.props.setCurrentTask("Routing", null, null, {to: point})}>{LocaleUtils.tr("routing.tohere")}</button>
-                                    <button className="button" onClick={() => this.props.setCurrentTask("Routing", null, null, {via: point})}>{LocaleUtils.tr("routing.addviapoint")}</button>
+                                    <Button onClick={() => this.props.setCurrentTask("Routing", null, null, {from: point})}>{LocaleUtils.tr("routing.fromhere")}</Button>
+                                    <Button onClick={() => this.props.setCurrentTask("Routing", null, null, {to: point})}>{LocaleUtils.tr("routing.tohere")}</Button>
+                                    <Button onClick={() => this.props.setCurrentTask("Routing", null, null, {via: point})}>{LocaleUtils.tr("routing.addviapoint")}</Button>
                                 </div>
                             </td>
                         </tr>
@@ -186,8 +187,8 @@ class MapInfoTooltip extends React.Component {
                             <td><b>{LocaleUtils.tr("routing.reachability")}:</b></td>
                             <td>
                                 <div className="controlgroup">
-                                    <button className="button" onClick={() => this.props.setCurrentTask("Routing", null, null, {isocenter: point})}>{LocaleUtils.tr("routing.isocenter")}</button>
-                                    <button className="button" onClick={() => this.props.setCurrentTask("Routing", null, null, {isoextracenter: point})}>{LocaleUtils.tr("routing.isoextracenter")}</button>
+                                    <Button onClick={() => this.props.setCurrentTask("Routing", null, null, {isocenter: point})}>{LocaleUtils.tr("routing.isocenter")}</Button>
+                                    <Button onClick={() => this.props.setCurrentTask("Routing", null, null, {isoextracenter: point})}>{LocaleUtils.tr("routing.isoextracenter")}</Button>
                                 </div>
                             </td>
                         </tr>

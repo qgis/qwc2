@@ -23,6 +23,7 @@ import Request from '../utils/Request';
 import EditComboField from './EditComboField';
 import EditUploadField from './EditUploadField';
 import Icon from './Icon';
+import Button from './widgets/Button';
 import ButtonBar from './widgets/ButtonBar';
 import DateTimeInput from './widgets/DateTimeInput';
 import ListInput from './widgets/ListInput';
@@ -536,7 +537,7 @@ class QtDesignerForm extends React.Component {
             }
         } else if (widget.class === "QPushButton") {
             if (widget.name.startsWith("btn__") && widget.onClick) {
-                return (<button className="button" disabled={constraints.readOnly} onClick={() => widget.onClick(this.props.setFormBusy)} type="button">{widget.property.text}</button>);
+                return (<Button disabled={constraints.readOnly} onClick={() => widget.onClick(this.props.setFormBusy)}>{widget.property.text}</Button>);
             } else if (widget.name.startsWith("featurelink__")) {
                 const parts = widget.name.split("__");
                 // featurelink__layer__attrname
@@ -551,19 +552,19 @@ class QtDesignerForm extends React.Component {
                         const dataset = this.props.mapPrefix + "." + rellayer;
                         return (
                             <div className="qt-designer-form-featurelink-buttons">
-                                <button className="button" onClick={() => this.props.editRelationRecord(dataset, index)} onMouseEnter={() => this.setHighlight(dataset + ":" + index, feature)} onMouseLeave={() => this.clearHighlight(dataset + ":" + index)} type="button">
+                                <Button onClick={() => this.props.editRelationRecord(dataset, index)} onMouseEnter={() => this.setHighlight(dataset + ":" + index, feature)} onMouseLeave={() => this.clearHighlight(dataset + ":" + index)}>
                                     <Icon icon="editing" /><span>{String(value ?? "")}</span>
-                                </button>
+                                </Button>
                             </div>
                         );
                     } else {
                         if (value !== null) {
                             return (
                                 <div className="qt-designer-form-featurelink-buttons">
-                                    <button className="button" onClick={() => this.props.switchEditContext('Edit', layer, value, (f) => updateField(attrname, f.id))} onMouseEnter={() => this.setHighlight(layer + ":" + feature.id, feature)} onMouseLeave={() => this.clearHighlight(layer + ":" + feature.id)} type="button">
+                                    <Button onClick={() => this.props.switchEditContext('Edit', layer, value, (f) => updateField(attrname, f.id))} onMouseEnter={() => this.setHighlight(layer + ":" + feature.id, feature)} onMouseLeave={() => this.clearHighlight(layer + ":" + feature.id)}>
                                         <Icon icon="editing" /><span>{String(value ?? "")}</span>
-                                    </button>
-                                    <button className="button qt-designer-form-featurelink-clear" onClick={() => updateField(attrname, null)} type="button"><Icon icon="clear" /></button>
+                                    </Button>
+                                    <Button className="qt-designer-form-featurelink-clear" onClick={() => updateField(attrname, null)}><Icon icon="clear" /></Button>
                                 </div>
                             );
                         } else {

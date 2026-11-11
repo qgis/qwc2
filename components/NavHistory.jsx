@@ -14,6 +14,7 @@ import PropTypes from 'prop-types';
 import LocaleUtils from '../utils/LocaleUtils';
 import MapUtils from '../utils/MapUtils';
 import Icon from './Icon';
+import Button from './widgets/Button';
 
 
 class NavHistory extends React.Component {
@@ -36,24 +37,20 @@ class NavHistory extends React.Component {
     render() {
         return (
             <div className="NavHistory controlgroup">
-                <button
-                    className="button"
+                <Button
                     disabled={this.state.index <= 0}
                     onClick={this.back}
                     title={LocaleUtils.tr("navhistory.back")}
-                    type="button"
                 >
                     <Icon icon="arrow-left" />
-                </button>
-                <button
-                    className="button"
+                </Button>
+                <Button
                     disabled={this.state.index < 0 || this.state.index >= this.state.history.length - 1}
                     onClick={this.forward}
                     title={LocaleUtils.tr("navhistory.forward")}
-                    type="button"
                 >
                     <Icon icon="arrow-right" />
-                </button>
+                </Button>
             </div>
         );
     }

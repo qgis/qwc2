@@ -13,6 +13,7 @@ import PropTypes from 'prop-types';
 
 import viewconeIcon from '../resources/viewcone.svg';
 import OlLayer from './map/OlLayer';
+import Button from './widgets/Button';
 
 import './style/OverviewMapButton.css';
 
@@ -95,9 +96,9 @@ export default class OverviewMapButton extends React.Component {
             (
                 <div className="overview-map" key="OverivewMap">
                     <div className="ol-overviewmap-map" ref={this.initOverviewMap} style={style} />
-                    <button onClick={() => this.setState(state => ({collapsed: !state.collapsed}))} type="button">
+                    <Button onClick={() => this.setState(state => ({collapsed: !state.collapsed}))}>
                         {this.state.collapsed ? '«' : '»'}
-                    </button>
+                    </Button>
                 </div>
             ),
             this.map && this.props.layer ? (

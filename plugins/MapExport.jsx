@@ -20,6 +20,7 @@ import {setSnappingConfig} from '../actions/map';
 import Icon from '../components/Icon';
 import PrintSelection from '../components/PrintSelection';
 import SideBar from '../components/SideBar';
+import Button from '../components/widgets/Button';
 import ComboBox from '../components/widgets/ComboBox';
 import NumberInput from '../components/widgets/NumberInput';
 import Spinner from '../components/widgets/Spinner';
@@ -259,11 +260,11 @@ class MapExport extends React.Component {
                         </tbody>
                     </table>
                     <div className="button-bar">
-                        <button className="button" disabled={this.state.exporting || isEmpty(this.state.extents)} type="submit">
+                        <Button disabled={this.state.exporting || isEmpty(this.state.extents)} type="submit">
                             {this.state.exporting ? (
                                 <span className="mapexport-wait"><Spinner /> {LocaleUtils.tr("common.wait")}</span>
                             ) : LocaleUtils.tr("common.export")}
-                        </button>
+                        </Button>
                     </div>
                 </form>
             </div>

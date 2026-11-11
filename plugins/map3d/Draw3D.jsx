@@ -18,6 +18,7 @@ import Icon from '../../components/Icon';
 import CreateTool3D from '../../components/map3d/drawtool/CreateTool3D';
 import EditTool3D from '../../components/map3d/drawtool/EditTool3D';
 import TaskBar from '../../components/TaskBar';
+import Button from '../../components/widgets/Button';
 import ButtonBar from '../../components/widgets/ButtonBar';
 import {FeatureSnapIndex} from '../../utils/FeatureSnapIndex';
 import LocaleUtils from '../../utils/LocaleUtils';
@@ -118,7 +119,7 @@ class Draw3D extends React.Component {
                                     <option key={entry.objectId} value={entry.objectId}>{entry.title}</option>
                                 ))}
                             </select>
-                            <button className="button" onClick={this.createDrawGroup}><Icon icon="plus" /></button>
+                            <Button onClick={this.createDrawGroup}><Icon icon="plus" /></Button>
                         </div>
                     </div>
                     <div className="redlining-groupcontrol">

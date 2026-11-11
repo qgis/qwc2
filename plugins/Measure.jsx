@@ -15,6 +15,7 @@ import {setSnappingConfig} from '../actions/map.js';
 import {changeMeasurementState} from '../actions/measurement.js';
 import Icon from '../components/Icon';
 import TaskBar from '../components/TaskBar';
+import Button from '../components/widgets/Button.jsx';
 import ButtonBar from '../components/widgets/ButtonBar';
 import CopyButton from '../components/widgets/CopyButton';
 import CoordinatesUtils from '../utils/CoordinatesUtils.js';
@@ -168,22 +169,22 @@ class Measure extends React.Component {
                 <input className="measure-result-field" readOnly type="text" value={text} />
                 {unitSelector}
                 {this.props.measureState.mode === "LineString" && (
-                    <button
-                        className={"button" + (this.props.measureState.showSegmentLengths ? " pressed" : "")}
+                    <Button
                         onClick={this.toggleSegmentLengths}
-                        title={LocaleUtils.tr("measureComponent.segment_lengths")} type="button"
+                        pressed={this.props.measureState.showSegmentLengths}
+                        title={LocaleUtils.tr("measureComponent.segment_lengths")}
                     >
                         <Icon icon="text" />
-                    </button>
+                    </Button>
                 )}
                 {this.props.measureState.mode === "Polygon" && (
-                    <button
-                        className={"button" + (this.props.measureState.showPerimeterLength ? " pressed" : "")}
+                    <Button
                         onClick={this.togglePerimeterLength}
-                        title={LocaleUtils.tr("measureComponent.perimeter_length")} type="button"
+                        pressed={this.props.measureState.showPerimeterLength}
+                        title={LocaleUtils.tr("measureComponent.perimeter_length")}
                     >
                         <Icon icon="text" />
-                    </button>
+                    </Button>
                 )}
                 <CopyButton text={text} />
             </div>

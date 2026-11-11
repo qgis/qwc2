@@ -16,6 +16,7 @@ import {AmbientLight, BasicShadowMap, CameraHelper, DirectionalLight, Directiona
 
 import Icon from '../../components/Icon';
 import SideBar from '../../components/SideBar';
+import Button from '../../components/widgets/Button';
 import Input from '../../components/widgets/Input';
 import NumberInput from '../../components/widgets/NumberInput';
 import ToggleSwitch from '../../components/widgets/ToggleSwitch';
@@ -213,7 +214,7 @@ export default class MapLight3D extends React.Component {
                         ) : null}
                         <tr>
                             <td />
-                            <td><button className="button" onClick={this.setCurrentDateTime}>{LocaleUtils.tr("maplight3d.currentdatetime")}</button></td>
+                            <td><Button onClick={this.setCurrentDateTime}>{LocaleUtils.tr("maplight3d.currentdatetime")}</Button></td>
                         </tr>
                         <tr>
                             <td>{LocaleUtils.tr("maplight3d.sunLightIntensity")}</td>

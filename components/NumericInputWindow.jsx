@@ -18,6 +18,7 @@ import LocaleUtils from '../utils/LocaleUtils';
 import VectorLayerUtils from '../utils/VectorLayerUtils';
 import Icon from './Icon';
 import ResizeableWindow from './ResizeableWindow';
+import Button from './widgets/Button';
 import TextInput from './widgets/TextInput';
 
 import './style/NumericInputWindow.css';
@@ -139,14 +140,14 @@ class NumericInputWindow extends React.Component {
                 <tbody>
                     {coordinates.map((entry, idx) => (
                         <tr key={"coo" + idx} onMouseEnter={() => this.highlightListCoordinate(idx)} onMouseLeave={() => this.clearListCoordinateHighlight(idx)}>
-                            <td><button className="button" onClick={() => this.insertCoordinate(idx)}><Icon icon="plus" /></button></td>
+                            <td><Button onClick={() => this.insertCoordinate(idx)}><Icon icon="plus" /></Button></td>
                             <td><span>x</span></td><td>{this.renderOrdinateInput(coordinates[idx][0], value => this.updateListCoordinate(value, idx, 0))}</td>
                             <td><span>y</span></td><td>{this.renderOrdinateInput(coordinates[idx][1], value => this.updateListCoordinate(value, idx, 1))}</td>
-                            <td><button className="button" onClick={() => this.removeCoordinate(idx)}><Icon icon="trash" /></button></td>
+                            <td><Button onClick={() => this.removeCoordinate(idx)}><Icon icon="trash" /></Button></td>
                         </tr>
                     ))}
                     <tr>
-                        <td><button className="button" onClick={() => this.insertCoordinate(coordinates.length)}><Icon icon="plus" /></button></td>
+                        <td><Button onClick={() => this.insertCoordinate(coordinates.length)}><Icon icon="plus" /></Button></td>
                         <td colSpan="5" />
                     </tr>
                 </tbody>

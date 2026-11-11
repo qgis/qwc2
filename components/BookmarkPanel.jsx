@@ -18,6 +18,7 @@ import TextInput from '../components/widgets/TextInput';
 import ConfigUtils from '../utils/ConfigUtils';
 import LocaleUtils from '../utils/LocaleUtils';
 import MiscUtils from '../utils/MiscUtils';
+import Button from './widgets/Button';
 
 import './style/BookmarkPanel.css';
 
@@ -49,24 +50,24 @@ class BookmarkPanel extends React.Component {
             <div className="bookmark-body" role="body">
                 <h4 className="bookmark-header">
                     <span>{this.props.translations.title}</span>
-                    {username ? (<button className="button" onClick={this.addBookmark} title={this.props.translations.new}><Icon icon="plus" /></button>) : null}
+                    {username ? (<Button onClick={this.addBookmark} title={this.props.translations.new}><Icon icon="plus" /></Button>) : null}
                 </h4>
                 {!this.props.openOnClick ? (
                     <div className="bookmark-actions controlgroup">
-                        <button className="button" disabled={buttonsDisabled} onClick={() => this.props.onOpen(currentBookmark.key, false)} title={this.props.translations.open}>
+                        <Button disabled={buttonsDisabled} onClick={() => this.props.onOpen(currentBookmark.key, false)} title={this.props.translations.open}>
                             <Icon icon="folder-open" />
-                        </button>
-                        <button className="button" disabled={buttonsDisabled} onClick={() => this.props.onOpen(currentBookmark.key, true)} title={this.props.translations.openTab}>
+                        </Button>
+                        <Button disabled={buttonsDisabled} onClick={() => this.props.onOpen(currentBookmark.key, true)} title={this.props.translations.openTab}>
                             <Icon icon="open_link" />
-                        </button>
+                        </Button>
                         {this.props.onZoomToExtent ? (
-                            <button className="button" disabled={buttonsDisabled} onClick={() => this.props.onZoomToExtent(currentBookmark.key)} title={this.props.translations.zoomToExtent}>
+                            <Button disabled={buttonsDisabled} onClick={() => this.props.onZoomToExtent(currentBookmark.key)} title={this.props.translations.zoomToExtent}>
                                 <Icon icon="zoom" />
-                            </button>
+                            </Button>
                         ) : null}
-                        <button className="button" disabled={!updatable} onClick={() => this.updateBookmark(currentBookmark, {}, true)} title={this.props.translations.update}>
+                        <Button disabled={!updatable} onClick={() => this.updateBookmark(currentBookmark, {}, true)} title={this.props.translations.update}>
                             <Icon icon="save" />
-                        </button>
+                        </Button>
                     </div>
                 ) : null}
                 <div className="bookmark-list">

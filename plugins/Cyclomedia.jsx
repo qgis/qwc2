@@ -14,6 +14,7 @@ import PropTypes from 'prop-types';
 import {addLayer, addLayerFeatures, changeLayerProperty, removeLayer, LayerRole} from '../actions/layers';
 import {setCurrentTask} from '../actions/task';
 import ResizeableWindow from '../components/ResizeableWindow';
+import Button from '../components/widgets/Button';
 import Spinner from '../components/widgets/Spinner';
 import CoordinatesUtils from '../utils/CoordinatesUtils';
 import LocaleUtils from '../utils/LocaleUtils';
@@ -164,7 +165,7 @@ class Cyclomedia extends React.Component {
                                 </tr>
                                 <tr>
                                     <td colSpan="2">
-                                        <button className="button" disabled={!this.state.username} onClick={() => this.setState({status: Status.INITIALIZING})} type="button">{LocaleUtils.tr("cyclomedia.login")}</button>
+                                        <Button disabled={!this.state.username} onClick={() => this.setState({status: Status.INITIALIZING})}>{LocaleUtils.tr("cyclomedia.login")}</Button>
                                     </td>
                                 </tr>
                                 <tr>

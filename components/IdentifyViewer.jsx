@@ -31,6 +31,7 @@ import VectorLayerUtils from '../utils/VectorLayerUtils';
 import Icon from './Icon';
 import IdentifyAttribute from './IdentifyAttribute';
 import IdentifyResult from './IdentifyResult';
+import Button from './widgets/Button';
 import ButtonBar from './widgets/ButtonBar';
 import FeaturesTable from './widgets/FeaturesTable';
 import NavBar from './widgets/NavBar';
@@ -605,7 +606,7 @@ class IdentifyViewer extends React.Component {
     renderToolbar = (results) => {
         const resultCount = results.length;
         const toggleButton = (key, icon, disabled, tooltip = undefined) => (
-            <button className={"button" + (this.state[key] ? " pressed" : "")} disabled={disabled} onClick={() => this.setState(state => ({[key]: !state[key]}))} title={tooltip}><Icon icon={icon} /></button>
+            <Button disabled={disabled} onClick={() => this.setState(state => ({[key]: !state[key]}))} pressed={this.state[key]} title={tooltip}><Icon icon={icon} /></Button>
         );
         let infoLabel = null;
         if (this.state.compareEnabled) {
@@ -632,7 +633,7 @@ class IdentifyViewer extends React.Component {
                 {this.state.settingsMenu ? this.renderSettingsMenu(enabledSettings) : null}
                 {this.props.enableCompare && this.props.resultDisplayMode !== "table" ? toggleButton("compareEnabled", "compare", this.state.selectedResults.size() < 2, LocaleUtils.tr("identify.compare")) : null}
                 {this.props.showZoomToResults && (
-                    <button className="button" onClick={() => this.zoomTo(this.props.identifyResults)} title={LocaleUtils.tr("identify.zoom")}><Icon icon="zoom" /></button>
+                    <Button onClick={() => this.zoomTo(this.props.identifyResults)} title={LocaleUtils.tr("identify.zoom")}><Icon icon="zoom" /></Button>
                 )}
                 <span className="identify-toolbar-spacer" />
                 {infoLabel}
@@ -672,9 +673,9 @@ class IdentifyViewer extends React.Component {
                                                 ))}
                                         </select>
                                         {haveAttributeTable ? (
-                                            <button className="button" onClick={() => this.openResultsInAttributeTable(match)} title={LocaleUtils.tr("common.openinattributetable")} type="button">
+                                            <Button onClick={() => this.openResultsInAttributeTable(match)} title={LocaleUtils.tr("common.openinattributetable")}>
                                                 <Icon icon="editing" />
-                                            </button>
+                                            </Button>
                                         ) : null}
                                     </div>
                                 </td>
@@ -700,12 +701,12 @@ class IdentifyViewer extends React.Component {
                                                 <option key={id} value={id}>{exporters[id].title ?? LocaleUtils.tr(exporters[id].titleMsgId)}</option>
                                             ))}
                                         </select>
-                                        <button className="button" onClick={() => this.exportResults()} title={LocaleUtils.tr("common.download")}>
+                                        <Button onClick={() => this.exportResults()} title={LocaleUtils.tr("common.download")}>
                                             <Icon icon="export" />
-                                        </button>
-                                        <button className="button" disabled={clipboardExportDisabled} onClick={() => this.exportResults(true)} title={LocaleUtils.tr("identify.clipboard")}>
+                                        </Button>
+                                        <Button disabled={clipboardExportDisabled} onClick={() => this.exportResults(true)} title={LocaleUtils.tr("identify.clipboard")}>
                                             <Icon icon="copy" />
-                                        </button>
+                                        </Button>
                                     </div>
                                 </td>
                             </tr>
@@ -723,13 +724,12 @@ class IdentifyViewer extends React.Component {
                                                 ));
                                             })}
                                         </select>
-                                        <button
-                                            className="button"
+                                        <Button
                                             disabled={!this.state.selectedAggregatedReport || this.state.generatingReport}
                                             onClick={this.downloadAggregatedReport}
                                         >
                                             {this.state.generatingReport ? (<Spinner />) : (<Icon icon="report" />)}
-                                        </button>
+                                        </Button>
                                     </div>
                                 </td>
                             </tr>

@@ -23,6 +23,7 @@ import PickFeature from '../components/PickFeature';
 import PrintSelection from '../components/PrintSelection';
 import ResizeableWindow from '../components/ResizeableWindow';
 import SideBar from '../components/SideBar';
+import Button from '../components/widgets/Button';
 import EditableSelect from '../components/widgets/EditableSelect';
 import InputContainer from '../components/widgets/InputContainer';
 import NumberInput from '../components/widgets/NumberInput';
@@ -426,9 +427,9 @@ class Print extends React.Component {
                         {resolutionInput}
                     </div>
                     <div className="button-bar">
-                        <button className="button" disabled={this.state.printing} type="submit">
+                        <Button disabled={this.state.printing} type="submit">
                             {this.state.printing ? (<span className="print-wait"><Spinner /> {LocaleUtils.tr("common.wait")}</span>) : LocaleUtils.tr("print.submit")}
-                        </button>
+                        </Button>
                     </div>
                 </form>
             </div>

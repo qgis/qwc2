@@ -37,6 +37,7 @@ import MapUtils from '../utils/MapUtils';
 import MiscUtils from '../utils/MiscUtils';
 import VectorLayerUtils from '../utils/VectorLayerUtils';
 import MapSelection from './MapSelection';
+import Button from './widgets/Button';
 import ButtonBar from './widgets/ButtonBar';
 import ComboBox from './widgets/ComboBox';
 import FeaturesTable from './widgets/FeaturesTable';
@@ -325,9 +326,9 @@ class AttributeTableWidget extends React.Component {
             ConfigUtils.getPluginConfig("Editing")?.cfg?.omitReadOnlyDatasets && Object.values(curEditConfig?.permissions || {}).every(permission => permission === false)
         );
         const deleteButton = showDelButton ? (
-            <button className="button" disabled={layerChanged || editing || selectionEmpty} onClick={() => this.setState({confirmDelete: true})} title={LocaleUtils.tr("attribtable.deletefeatures")}>
+            <Button disabled={layerChanged || editing || selectionEmpty} onClick={() => this.setState({confirmDelete: true})} title={LocaleUtils.tr("attribtable.deletefeatures")}>
                 <Icon icon="trash" />
-            </button>
+            </Button>
         ) : null;
         let captchaBar = null;
         if (captchaRequired && (editing || this.state.confirmDelete)) {
@@ -367,50 +368,50 @@ class AttributeTableWidget extends React.Component {
                             ))}
                         </ComboBox>
                     ) : null}
-                    <button className="button" disabled={!this.state.selectedLayer || editing || loading} onClick={() => this.reload({}, this.state.selectedLayer)} title={LocaleUtils.tr("attribtable.reload")}>
+                    <Button disabled={!this.state.selectedLayer || editing || loading} onClick={() => this.reload({}, this.state.selectedLayer)} title={LocaleUtils.tr("attribtable.reload")}>
                         <Icon icon="refresh" />
-                    </button>
+                    </Button>
                     {showAddButton ? (
-                        <button className="button" disabled={nolayer || editing || loading || layerChanged} onClick={this.addFeature} title={LocaleUtils.tr("attribtable.addfeature")}>
+                        <Button disabled={nolayer || editing || loading || layerChanged} onClick={this.addFeature} title={LocaleUtils.tr("attribtable.addfeature")}>
                             <Icon icon="plus" />
-                        </button>
+                        </Button>
                     ) : null}
-                    <button className="button" disabled={layerChanged || selectionEmpty} onClick={this.zoomToSelection} title={LocaleUtils.tr("attribtable.zoomtoselection")}>
+                    <Button disabled={layerChanged || selectionEmpty} onClick={this.zoomToSelection} title={LocaleUtils.tr("attribtable.zoomtoselection")}>
                         <Icon icon="search" />
-                    </button>
+                    </Button>
                     <ButtonBar active={this.state.selectMode} buttons={pickButtons} disabled={nolayer} onClick={this.setSelectMode} />
                     {showEditButton ? (
-                        <button className="button" disabled={layerChanged || editing || Object.keys(this.state.selectedFeatures).length !== 1} onClick={this.switchToFormEditMode} title={LocaleUtils.tr("attribtable.formeditmode")}>
+                        <Button disabled={layerChanged || editing || Object.keys(this.state.selectedFeatures).length !== 1} onClick={this.switchToFormEditMode} title={LocaleUtils.tr("attribtable.formeditmode")}>
                             <Icon icon="editing" />
-                        </button>
+                        </Button>
                     ) : null}
                     {this.state.confirmDelete ? (
-                        <button className="button button-accept" disabled={captchaPending} onClick={this.deleteSelectedFeatured}>
+                        <Button className="button-accept" disabled={captchaPending} onClick={this.deleteSelectedFeatured}>
                             <Icon icon="ok" />
                             <span>{LocaleUtils.tr("common.delete")}</span>
-                        </button>
+                        </Button>
                     ) : deleteButton}
                     {this.state.confirmDelete ? (
-                        <button className="button button-reject" onClick={() => this.setState({confirmDelete: false, captchaResponse: null})}>
+                        <Button className="button-reject" onClick={() => this.setState({confirmDelete: false, captchaResponse: null})}>
                             <Icon icon="remove" />
                             <span>{LocaleUtils.tr("attribtable.nodelete")}</span>
-                        </button>
+                        </Button>
                     ) : null}
                     {editing ? (
-                        <button className="button button-accept" disabled={captchaPending} onClick={this.commit}>
+                        <Button className="button-accept" disabled={captchaPending} onClick={this.commit}>
                             <Icon icon="ok" />
                             <span>{LocaleUtils.tr("attribtable.commit")}</span>
-                        </button>
+                        </Button>
                     ) : null}
                     {editing ? (
-                        <button className="button button-reject" onClick={this.discard}>
+                        <Button className="button-reject" onClick={this.discard}>
                             <Icon icon="remove" />
                             <span>{LocaleUtils.tr("attribtable.discard")}</span>
-                        </button>
+                        </Button>
                     ) : null}
-                    <button className={"button " + (this.state.selectedOnly ? "pressed" : "")} disabled={isEmpty(this.state.selectedFeatures)} onClick={() => this.setState(state => ({selectedOnly: !state.selectedOnly}))} title={LocaleUtils.tr("attribtable.selectedonly")} type="button">
+                    <Button disabled={isEmpty(this.state.selectedFeatures)} onClick={() => this.setState(state => ({selectedOnly: !state.selectedOnly}))} pressed={this.state.selectedOnly} title={LocaleUtils.tr("attribtable.selectedonly")}>
                         <Icon icon="checked" />
-                    </button>
+                    </Button>
                     <MenuButton menuIcon="export" onActivate={this.export} tooltip={LocaleUtils.tr("common.export")}>
                         <div value="csv">CSV</div>
                         <div value="xlsx">XLSX</div>

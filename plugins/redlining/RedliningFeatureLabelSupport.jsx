@@ -14,6 +14,7 @@ import PropTypes from 'prop-types';
 import {addLayer, addLayerFeatures, removeLayerFeatures, removeLayer, LayerRole} from '../../actions/layers';
 import Icon from '../../components/Icon';
 import PickFeature from '../../components/PickFeature';
+import Button from '../../components/widgets/Button';
 import ComboBox from '../../components/widgets/ComboBox';
 import TextInput from '../../components/widgets/TextInput';
 import {parseExpression} from '../../utils/EditingUtils';
@@ -62,7 +63,7 @@ class RedliningFeatureLabelSupport extends React.Component {
                         placeholder={"'Text: ' || \"fieldname\""}
                         readOnly={!isCustomProfile} value={selectedProfile?.expression} />
                     {isCustomProfile ? (
-                        <button className="button" type="button"><Icon icon="ok" /></button>
+                        <Button><Icon icon="ok" /></Button>
                     ) : null}
                 </div>
             );

@@ -16,6 +16,7 @@ import {openExternalUrl} from '../actions/windows';
 import AppMenu from '../components/AppMenu';
 import Icon from '../components/Icon';
 import ThemeList from '../components/ThemeList';
+import Button from '../components/widgets/Button';
 import ConfigUtils from '../utils/ConfigUtils';
 import LocaleUtils from '../utils/LocaleUtils';
 import {UrlParams} from '../utils/PermaLinkUtils';
@@ -110,9 +111,9 @@ class Portal extends React.Component {
                         type="text"
                         value={this.state.filter} />
                     {this.props.showCloseButton ? (
-                        <button className="portal-close-button button" onClick={() => this.props.setCurrentTask(null)} type="button">
+                        <Button className="portal-close-button" onClick={() => this.props.setCurrentTask(null)}>
                             <Icon icon="remove" /><span>{LocaleUtils.tr("portal.close")}</span>
-                        </button>
+                        </Button>
                     ) : null}
                     <span className="portal-topbar-spacer" />
                     {this.props.menuItems.length > 0 ? (

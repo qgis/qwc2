@@ -10,12 +10,12 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import {connect} from 'react-redux';
 
-import classNames from 'classnames';
 import PropTypes from 'prop-types';
 
 import LocaleUtils from '../utils/LocaleUtils';
 import Icon from './Icon';
 import {BottomToolPortalContext} from './PluginsContainer';
+import Button from './widgets/Button';
 import NumberInput from './widgets/NumberInput';
 
 import './style/LocationRecorder.css';
@@ -45,17 +45,13 @@ class LocationRecorder extends React.Component {
         if (!this.props.locateEnabled || !this.props.locatePosition) {
             return null;
         }
-        const buttonClasses = classNames({
-            button: true,
-            pressed: this.state.recording
-        });
         return ReactDOM.createPortal((
             <div className="LocationRecorder">
                 <Icon icon="screenshot" />
-                <button className={buttonClasses} onClick={this.toggleRecording}>
+                <Button onClick={this.toggleRecording} pressed={this.state.recording}>
                     <Icon icon={this.state.recording ? "square" : "circle_full"} />
                     <span>{this.state.recording ? LocaleUtils.tr("locationrecorder.stop") : LocaleUtils.tr("locationrecorder.record")}</span>
-                </button>
+                </Button>
                 <NumberInput decimals={1} max={30} min={0.5} mobile onChange={value => this.setState({interval: value})} step={0.5} suffix="s" value={this.state.interval} />
             </div>
         ), this.context);

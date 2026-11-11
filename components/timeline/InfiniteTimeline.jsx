@@ -14,6 +14,7 @@ import PropTypes from 'prop-types';
 import LocaleUtils from '../../utils/LocaleUtils';
 import MiscUtils from '../../utils/MiscUtils';
 import Icon from '../Icon';
+import Button from '../widgets/Button';
 import ButtonBar from '../widgets/ButtonBar';
 import NumberInput from '../widgets/NumberInput';
 
@@ -71,15 +72,15 @@ export default class InfiniteTimeline extends React.Component {
                     <div className="inftimeline-toolbar-spacer" />
                 </div>
                 <div className="inftimeline-clip">
-                    <button className="button inftimeline-pan-left" onContextMenu={MiscUtils.killEvent} onPointerDown={() => this.pan(-20)}>
+                    <Button className="inftimeline-pan-left" onContextMenu={MiscUtils.killEvent} onPointerDown={() => this.pan(-20)}>
                         <Icon icon="chevron-left" />
-                    </button>
+                    </Button>
                     <div className="inftimeline-ticks">
                         {this.renderTicks()}
                     </div>
-                    <button className="button inftimeline-pan-right" onContextMenu={MiscUtils.killEvent} onPointerDown={() => this.pan(20)}>
+                    <Button className="inftimeline-pan-right" onContextMenu={MiscUtils.killEvent} onPointerDown={() => this.pan(20)}>
                         <Icon icon="chevron-right" />
-                    </button>
+                    </Button>
                 </div>
                 {/* Render the slider component passed from the parent */}
                 {this.props.children(

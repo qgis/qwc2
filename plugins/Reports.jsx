@@ -19,6 +19,7 @@ import Icon from '../components/Icon';
 import MapSelection from '../components/MapSelection';
 import PickFeature from '../components/PickFeature';
 import SideBar from '../components/SideBar';
+import Button from '../components/widgets/Button';
 import ButtonBar from '../components/widgets/ButtonBar';
 import ComboBox from '../components/widgets/ComboBox';
 import Spinner from '../components/widgets/Spinner';
@@ -106,14 +107,14 @@ class Reports extends React.Component {
                     />
                 </div>
                 <div>
-                    <button
-                        className="button reports-download-button"
+                    <Button
+                        className="reports-download-button"
                         disabled={this.state.generatingReport || (isEmpty(this.state.reportFeatures) && this.state.featureSelectionMode !== "All")}
-                        onClick={this.downloadReport} type="button"
+                        onClick={this.downloadReport}
                     >
                         {this.state.generatingReport ? (<Spinner />) : (<Icon icon="report" />)}
                         <span>{LocaleUtils.tr("common.download")}</span>
-                    </button>
+                    </Button>
                 </div>
             </div>
         );

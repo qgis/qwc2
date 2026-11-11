@@ -12,6 +12,7 @@ import PropTypes from 'prop-types';
 
 import LocaleUtils from '../../utils/LocaleUtils';
 import Icon from '../Icon';
+import Button from './Button';
 import NumberInput from './NumberInput';
 import TextInput from './TextInput';
 
@@ -47,7 +48,7 @@ export default class ListInput extends React.Component {
                 ))}
                 {!this.props.readOnly ? (
                     <div className="list-input-add">
-                        <button className="button" onClick={this.addVal} type="button">{LocaleUtils.tr("common.add")}</button>
+                        <Button onClick={this.addVal}>{LocaleUtils.tr("common.add")}</Button>
                     </div>
                 ) : null}
             </div>

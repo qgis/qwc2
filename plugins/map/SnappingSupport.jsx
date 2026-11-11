@@ -20,6 +20,7 @@ import {LayerRole} from '../../actions/layers';
 import {setSnappingConfig} from '../../actions/map';
 import Icon from '../../components/Icon';
 import {BottomToolPortalContext} from '../../components/PluginsContainer';
+import Button from '../../components/widgets/Button';
 import Spinner from '../../components/widgets/Spinner';
 import IdentifyUtils from '../../utils/IdentifyUtils';
 import LocaleUtils from '../../utils/LocaleUtils';
@@ -125,18 +126,18 @@ class SnappingSupport extends React.Component {
                     <Spinner/>
                 ) : (
                     <span>
-                        <button className={"button" + (snapVertex ? " pressed" : "")} onClick={() => this.toggleSnap('vertex')} title={LocaleUtils.tr("snapping.vertex")}>
+                        <Button onClick={() => this.toggleSnap('vertex')} pressed={snapVertex} title={LocaleUtils.tr("snapping.vertex")}>
                             <Icon icon="snap_vertex" />
-                        </button>
-                        <button className={"button" + (snapEdge ? " pressed" : "")} onClick={() => this.toggleSnap('edge')} title={LocaleUtils.tr("snapping.edge")}>
+                        </Button>
+                        <Button onClick={() => this.toggleSnap('edge')} pressed={snapEdge} title={LocaleUtils.tr("snapping.edge")}>
                             <Icon icon="snap_edge" />
-                        </button>
-                        <button className={"button " + (snapIntersection ? " pressed" : "")} onClick={() => this.toggleSnap('intersection')} title={LocaleUtils.tr("snapping.intersection")}>
+                        </Button>
+                        <Button onClick={() => this.toggleSnap('intersection')} pressed={snapIntersection} title={LocaleUtils.tr("snapping.intersection")}>
                             <Icon icon="snap_intersection" />
-                        </button>
-                        <button className={"button " + (snapPerpendicular ? " pressed" : "")} onClick={() => this.toggleSnap('perpendicular')} title={LocaleUtils.tr("snapping.perpendicular")}>
+                        </Button>
+                        <Button onClick={() => this.toggleSnap('perpendicular')} pressed={snapPerpendicular} title={LocaleUtils.tr("snapping.perpendicular")}>
                             <Icon icon="snap_perpendicular" />
-                        </button>
+                        </Button>
                     </span>
                 )}
             </div>

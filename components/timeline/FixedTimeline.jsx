@@ -14,6 +14,7 @@ import PropTypes from 'prop-types';
 import LocaleUtils from '../../utils/LocaleUtils';
 import MiscUtils from '../../utils/MiscUtils';
 import Icon from '../Icon';
+import Button from '../widgets/Button';
 import ButtonBar from '../widgets/ButtonBar';
 import Input from '../widgets/Input';
 
@@ -68,15 +69,15 @@ export default class FixedTimeline extends React.Component {
                     <div><Input onChange={this.props.setEndTime} type="date" value={this.props.endTime.format('YYYY-MM-DD')} /></div>
                 </div>
                 <div className="fixtimeline-slider">
-                    <button className="button fixtimeline-pan-left" disabled={this.props.startTime.isSame(this.props.dataStartTime)} onContextMenu={MiscUtils.killEvent} onPointerDown={() => this.startPan(-1)}>
+                    <Button className="fixtimeline-pan-left" disabled={this.props.startTime.isSame(this.props.dataStartTime)} onContextMenu={MiscUtils.killEvent} onPointerDown={() => this.startPan(-1)}>
                         <Icon icon="chevron-left" />
-                    </button>
+                    </Button>
                     <div className="fixtimeline-ticks" ref={this.setTicksContainerRef}>
                         {this.renderTicks()}
                     </div>
-                    <button className="button fixtimeline-pan-right" disabled={this.props.endTime.isSame(this.props.dataEndTime)} onContextMenu={MiscUtils.killEvent} onPointerDown={() => this.startPan(1)}>
+                    <Button className="fixtimeline-pan-right" disabled={this.props.endTime.isSame(this.props.dataEndTime)} onContextMenu={MiscUtils.killEvent} onPointerDown={() => this.startPan(1)}>
                         <Icon icon="chevron-right" />
-                    </button>
+                    </Button>
                 </div>
                 {/* Render the slider component passed from the parent */}
                 {this.props.children(

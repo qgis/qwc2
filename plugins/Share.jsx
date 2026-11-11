@@ -19,6 +19,7 @@ import ShareLink from '../components/share/ShareLink';
 import ShareQRCode from '../components/share/ShareQRCode';
 import ShareSocials from '../components/share/ShareSocials';
 import SideBar from '../components/SideBar';
+import Button from '../components/widgets/Button';
 import ToggleSwitch from '../components/widgets/ToggleSwitch';
 import ConfigUtils from '../utils/ConfigUtils';
 import CoordinatesUtils from '../utils/CoordinatesUtils';
@@ -107,7 +108,7 @@ class Share extends React.Component {
                 {!this.state.location ? (
                     <div className="share-reload-overlay">
                         <div>
-                            <button className="button" onClick={this.refreshPermalink}>{LocaleUtils.tr("share.refresh")}</button>
+                            <Button onClick={this.refreshPermalink}>{LocaleUtils.tr("share.refresh")}</Button>
                         </div>
                         {username && !isEmpty(this.props.restrictableGroups) ? (
                             <div className="share-group-restriction">

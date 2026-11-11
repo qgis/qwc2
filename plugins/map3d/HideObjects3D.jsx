@@ -16,6 +16,7 @@ import {BufferAttribute, BufferGeometry, Float32BufferAttribute, Matrix4, Mesh, 
 import Icon from '../../components/Icon';
 import {TileMeshHelper} from '../../components/map3d/utils/MiscUtils3D';
 import SideBar from '../../components/SideBar';
+import Button from '../../components/widgets/Button';
 import LocaleUtils from '../../utils/LocaleUtils';
 
 import './style/HideObjects3D.css';
@@ -60,7 +61,7 @@ class HideObjects3D extends React.Component {
                             ))}
                         </div>
                         <div className="hideobjects3d-restorebutton">
-                            <button className="button" onClick={this.restoreAll}>{LocaleUtils.tr("hideobjects3d.restoreall")}</button>
+                            <Button onClick={this.restoreAll}>{LocaleUtils.tr("hideobjects3d.restoreall")}</Button>
                         </div>
                     </div>
                 )}

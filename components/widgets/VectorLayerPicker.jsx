@@ -13,6 +13,7 @@ import {v4 as uuidv4} from 'uuid';
 
 import Icon from '../../components/Icon';
 import LocaleUtils from '../../utils/LocaleUtils';
+import Button from './Button';
 
 import './style/VectorLayerPicker.css';
 
@@ -33,7 +34,7 @@ export default class VectorLayerPicker extends React.Component {
                     {this.props.layers.map(layer => (<option key={layer.id} value={layer.id}>{layer.title}</option>))}
                 </select>
                 {this.props.addLayer ? (
-                    <button className="button" onClick={this.addLayer}><Icon icon="plus" /></button>
+                    <Button onClick={this.addLayer}><Icon icon="plus" /></Button>
                 ) : null}
             </div>
         );

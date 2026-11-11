@@ -18,6 +18,7 @@ import LocaleUtils from "../utils/LocaleUtils";
 import MiscUtils from "../utils/MiscUtils";
 import Request from '../utils/Request';
 import ResizeableWindow from "./ResizeableWindow";
+import Button from "./widgets/Button";
 
 
 class LegendPrintWindow extends React.Component {
@@ -130,7 +131,7 @@ class LegendPrintWindow extends React.Component {
                     <div className="layertree-legend-print-body">
                         <iframe srcDoc={this.state.srcdoc} />
                         <div className="layertree-legend-print-body-buttonbar">
-                            <button onClick={printLegend}>{LocaleUtils.tr("layertree.printlegend")}</button>
+                            <Button onClick={printLegend}>{LocaleUtils.tr("layertree.printlegend")}</Button>
                         </div>
                     </div>
                 ) : null}

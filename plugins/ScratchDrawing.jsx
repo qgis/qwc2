@@ -17,6 +17,7 @@ import {setSnappingConfig} from '../actions/map';
 import {changeRedliningState, resetRedliningState} from '../actions/redlining';
 import {setCurrentTask} from '../actions/task';
 import TaskBar from '../components/TaskBar';
+import Button from '../components/widgets/Button';
 import LocaleUtils from '../utils/LocaleUtils';
 
 import './style/Redlining.css';
@@ -113,9 +114,9 @@ class ScratchDrawing extends React.Component {
             <TaskBar task="ScratchDrawing">
                 <div className="scratch-drawing-taskbar-body" role="body">
                     <span>{this.props.task.data?.message}</span>
-                    <button className="button" onClick={() => this.submitGeometry()}>
+                    <Button onClick={() => this.submitGeometry()}>
                         {LocaleUtils.tr("scratchdrawing.finish")}
-                    </button>
+                    </Button>
                 </div>
             </TaskBar>
         );

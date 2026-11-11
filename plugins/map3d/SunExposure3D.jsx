@@ -20,6 +20,7 @@ import {Box3, Color} from 'three';
 
 import Icon from '../../components/Icon';
 import SideBar from '../../components/SideBar';
+import Button from '../../components/widgets/Button';
 import Input from '../../components/widgets/Input';
 import NumberInput from '../../components/widgets/NumberInput';
 import Spinner from '../../components/widgets/Spinner';
@@ -118,10 +119,10 @@ export default class SunExposure3D extends React.Component {
                         </tbody>
                     </table>
                     <div className="button-bar">
-                        <button className="button" disabled={computeDisabled} type="submit">
+                        <Button disabled={computeDisabled} type="submit">
                             {this.state.busy ? (<Spinner />) : (<Icon icon="ok" />)}
                             <span>{this.state.busy ? LocaleUtils.tr("common.wait") : LocaleUtils.tr("common.compute")}</span>
-                        </button>
+                        </Button>
                     </div>
                     {this.state.pointCloudEntity ? this.renderResultControls() : null}
                 </form>
@@ -168,9 +169,9 @@ export default class SunExposure3D extends React.Component {
                     <span>{gradMax}</span>
                 </div>
                 <div className="button-bar">
-                    <button className="button" onClick={this.clearResult} type="button">
+                    <Button onClick={this.clearResult}>
                         <Icon icon="clear" /><span>{LocaleUtils.tr("common.clear")}</span>
-                    </button>
+                    </Button>
                 </div>
             </div>
         );

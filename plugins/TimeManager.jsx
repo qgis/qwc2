@@ -27,6 +27,7 @@ import ResizeableWindow from '../components/ResizeableWindow';
 import FixedTimeline from '../components/timeline/FixedTimeline';
 import InfiniteTimeline from '../components/timeline/InfiniteTimeline';
 import TimelineFeaturesSlider from '../components/timeline/TimelineFeaturesSlider';
+import Button from '../components/widgets/Button';
 import ButtonBar from '../components/widgets/ButtonBar';
 import NumberInput from '../components/widgets/NumberInput';
 import ToggleSwitch from '../components/widgets/ToggleSwitch';
@@ -455,15 +456,15 @@ class TimeManager extends React.Component {
                         ) : null}
                     </div>
                     <div className="time-manager-options-menubutton">
-                        <button className={"button" + (this.state.settingsPopup ? " pressed" : "")} onClick={() => this.setState((state) => ({settingsPopup: !state.settingsPopup}))}>
+                        <Button onClick={() => this.setState((state) => ({settingsPopup: !state.settingsPopup}))} pressed={this.state.settingsPopup}>
                             <Icon icon="cog" />
-                        </button>
+                        </Button>
                         {this.state.settingsPopup ? options : null}
                     </div>
                 </div>
                 {filterActive ? (
                     <div className="time-manager-filter-warning">
-                        <Icon icon="warning" /> {LocaleUtils.tr("timemanager.filterwarning")} <button className="button" onClick={() => this.props.setCurrentTask("MapFilter")} type="button">{LocaleUtils.tr("common.edit")}</button>
+                        <Icon icon="warning" /> {LocaleUtils.tr("timemanager.filterwarning")} <Button onClick={() => this.props.setCurrentTask("MapFilter")}>{LocaleUtils.tr("common.edit")}</Button>
                     </div>
                 ) : null}
                 <div className="time-manager-timeline">

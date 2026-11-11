@@ -16,6 +16,7 @@ import {closeWindow, closeAllWindows, NotificationType} from '../actions/windows
 import LocaleUtils from '../utils/LocaleUtils';
 import Icon from './Icon';
 import ResizeableWindow from './ResizeableWindow';
+import Button from './widgets/Button';
 
 import './style/WindowManager.css';
 
@@ -90,10 +91,10 @@ class WindowManager extends React.Component {
                     {!isEmpty(data.actions) ? (
                         <div className="windows-notification-actions">
                             {data.actions.map((action, idx) => (
-                                <button className="button" key={"action" + idx} onClick={() => {
+                                <Button key={"action" + idx} onClick={() => {
                                     const res = action.onClick();
                                     if (res) this.closeWindow(key);
-                                }} type="button">{action.name}</button>
+                                }}>{action.name}</Button>
                             ))}
                         </div>) : null
                     }

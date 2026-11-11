@@ -1,0 +1,94 @@
+/** Button **/
+:where(.qwc-root) button.button {
+    background-color: var(--button-bg-color);
+    color: var(--button-text-color);
+    border: 1px solid var(--border-color);
+    display: inline-flex;
+    padding: 0.5em;
+    align-items: center;
+    justify-content: center;
+    height: 2em;
+    overflow: hidden;
+    cursor: pointer;
+    outline: none;
+}
+
+:where(.qwc-root) button.button:focus {
+    outline: var(--focus-outline);
+}
+
+:where(.qwc-root) button.button:disabled {
+    background-color: var(--button-bg-color-disabled);
+    color: var(--button-text-color-disabled);
+    cursor: default;
+}
+
+:where(.qwc-root) button.button:not(:disabled):hover {
+    background-color: var(--button-bg-color-hover);
+    color: var(--button-text-color-hover);
+}
+
+:where(.qwc-root) button.button.pressed:not(:disabled):hover {
+    background-color: var(--button-bg-color-active-hover);
+    color: var(--button-text-color-active-hover);
+}
+
+:where(.qwc-root) button.button.pressed:not(:disabled) {
+    background-color: var(--button-bg-color-active);
+    color: var(--button-text-color-active);
+}
+
+:where(.qwc-root) button.button-accept {
+    background-color: rgb(127,255,127);
+}
+
+:where(.qwc-root) button.button-warning {
+    background-color: #ffd979;
+}
+
+:where(.qwc-root) button.button-reject {
+    background-color: rgb(255,127,127);
+}
+
+:where(.qwc-root) button.button-warning:not(:disabled):hover {
+    background-color: #f5ce74;
+}
+
+:where(.qwc-root) button.button-accept:not(:disabled):hover {
+    background-color: rgb(127,225,127);
+}
+
+:where(.qwc-root) button.button-reject:not(:disabled):hover {
+    background-color: rgb(225,127,127);
+}
+
+:where(.qwc-root) button.button > * {
+    flex: 0 0 auto;
+}
+
+:where(.qwc-root) button.button:not(:disabled):active > * {
+    transform: translateX(1px) translateY(1px);
+}
+
+:where(.qwc-root) button.button > span:not(.icon) {
+    margin: 0 0.25em;
+}
+
+:where(.qwc-root) button.button > div.spinner {
+    width: 1.5em;
+    height: 1.5em;
+}
+
+:where(.qwc-root) button.selected {
+    position: relative;
+}
+:where(.qwc-root) button.selected:after {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 3px;
+    background-color: var(--color-active);
+    border-top: 1px solid var(--border-color);
+    content: "";
+}

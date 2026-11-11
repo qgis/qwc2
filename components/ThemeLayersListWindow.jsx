@@ -22,6 +22,7 @@ import LocaleUtils from '../utils/LocaleUtils';
 import ThemeUtils from '../utils/ThemeUtils';
 import Icon from './Icon';
 import ResizeableWindow from './ResizeableWindow';
+import Button from './widgets/Button';
 
 import './style/ThemeLayersListWindow.css';
 
@@ -86,7 +87,7 @@ class ThemeLayersListWindow extends React.Component {
                     <div className="theme-list-window-frame">
                         {this.renderLayerGroup(this.props.theme)}
                     </div>
-                    <button className="button" disabled={!this.state.selectedLayers.length} onClick={this.addSelectedLayers}>{LocaleUtils.tr("themelayerslist.addselectedlayers")}</button>
+                    <Button disabled={!this.state.selectedLayers.length} onClick={this.addSelectedLayers}>{LocaleUtils.tr("themelayerslist.addselectedlayers")}</Button>
                 </div>
             </ResizeableWindow>
         );

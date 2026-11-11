@@ -13,6 +13,7 @@ import PropTypes from 'prop-types';
 import {v4 as uuidv4} from 'uuid';
 
 import {LayerRole, addLayer, addLayerFeatures} from '../../actions/layers';
+import Button from '../../components/widgets/Button';
 import NumberInput from '../../components/widgets/NumberInput';
 import VectorLayerPicker from '../../components/widgets/VectorLayerPicker';
 import LocaleUtils from '../../utils/LocaleUtils';
@@ -85,9 +86,9 @@ class RedliningBufferSupport extends React.Component {
                         value={this.state.bufferLayer.id} />
                 </div>
                 <div className="redlining-control">
-                    <button className="button" disabled={!enabled} onClick={this.computeBuffer}>
+                    <Button disabled={!enabled} onClick={this.computeBuffer}>
                         {LocaleUtils.tr("redlining.buffercompute")}
-                    </button>
+                    </Button>
                 </div>
             </div>
         );

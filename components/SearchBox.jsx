@@ -9,7 +9,6 @@
 import React from 'react';
 import {connect} from 'react-redux';
 
-import classnames from 'classnames';
 import isEmpty from 'lodash.isempty';
 import pointInPolygon from 'point-in-polygon';
 import polygonIntersectTest from 'polygon-intersect-test';
@@ -39,6 +38,7 @@ import ServiceLayerUtils from '../utils/ServiceLayerUtils';
 import VectorLayerUtils from '../utils/VectorLayerUtils';
 import Icon from './Icon';
 import MapSelection from './MapSelection';
+import Button from './widgets/Button';
 import ButtonBar from './widgets/ButtonBar';
 import ComboBox from './widgets/ComboBox';
 import InputContainer from './widgets/InputContainer';
@@ -197,9 +197,9 @@ class SearchBox extends React.Component {
                                 <div className="searchbox-filter-options-geometry controlgroup">
                                     <ButtonBar active={this.state.filterGeomType} buttons={filterButtons} onClick={this.setFilterGeomType} />
                                     {searchRegionSelection}
-                                    <button className="button" onClick={this.clearFilter} title={LocaleUtils.tr("common.clear")}>
+                                    <Button onClick={this.clearFilter} title={LocaleUtils.tr("common.clear")}>
                                         <Icon icon="clear" />
-                                    </button>
+                                    </Button>
                                 </div>
                             </td>
                         </tr>
@@ -662,11 +662,7 @@ class SearchBox extends React.Component {
     };
     render() {
         const placeholder = LocaleUtils.tr("search.placeholder");
-        const filterButtonClasses = classnames({
-            "button": true,
-            "searchbox-filter-button": true,
-            "pressed": this.state.filterOptionsVisible || this.state.selectedProvider || this.state.filterGeometry
-        });
+        const filterActive = this.state.filterOptionsVisible || this.state.selectedProvider || this.state.filterGeometry;
         return [
             (
                 <div className="SearchBox" key="SearchBox">
@@ -681,10 +677,10 @@ class SearchBox extends React.Component {
                         {this.state.pendingSearches.length > 0 ? (<Spinner role="suffix" />) : (<Icon icon="clear" onClick={this.clear} role="suffix" />)}
                     </InputContainer>
                     {this.props.searchOptions.allowSearchFilters ? (
-                        <button className={filterButtonClasses} onClick={() => this.toggleFilterOptions(!this.state.filterOptionsVisible)} title={LocaleUtils.tr("search.filter")}>
+                        <Button className="searchbox-filter-button" onClick={() => this.toggleFilterOptions(!this.state.filterOptionsVisible)} pressed={filterActive} title={LocaleUtils.tr("search.filter")}>
                             <Icon icon="filter" />
                             <Icon icon="chevron-down" />
-                        </button>
+                        </Button>
                     ) : null}
                     {this.renderResultsMenu()}
                     {this.renderFilterOptions()}

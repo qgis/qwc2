@@ -12,6 +12,7 @@ import PropTypes from "prop-types";
 
 import LocaleUtils from "../utils/LocaleUtils";
 import Icon from "./Icon";
+import Button from "./widgets/Button";
 
 
 export default class MeasureSwitcher extends React.PureComponent {
@@ -32,9 +33,9 @@ export default class MeasureSwitcher extends React.PureComponent {
         };
         return (
             <div className={"controlgroup " + (this.props.className ?? "")}>
-                <button className={"button" + (this.props.measureState.showmeasurements ? " pressed" : "")} onClick={() => this.props.changeMeasureState({showmeasurements: !this.props.measureState.showmeasurements})} title={LocaleUtils.tr("measureComponent.showmeasurements")}>
+                <Button onClick={() => this.props.changeMeasureState({showmeasurements: !this.props.measureState.showmeasurements})} pressed={this.props.measureState.showmeasurements} title={LocaleUtils.tr("measureComponent.showmeasurements")}>
                     <Icon icon="measure" size={this.props.iconSize} />
-                </button>
+                </Button>
                 {this.props.measureState.showmeasurements && ['LineString', 'Circle'].includes(this.props.geomType) ? (
                     <select className="controlgroup-fillitem" onChange={ev => this.props.changeMeasureState({lenUnit: ev.target.value})} style={style} value={this.props.measureState.lenUnit }>
                         <option value="metric">{LocaleUtils.tr("measureComponent.metric")}</option>
