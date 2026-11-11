@@ -14,6 +14,7 @@ import {v4 as uuidv4} from 'uuid';
 
 import LocaleUtils from '../../utils/LocaleUtils';
 import MiscUtils from '../../utils/MiscUtils';
+import withTooltip from '../../utils/Tooltip';
 import Icon from '../Icon';
 
 import './style/TextInput.css';
@@ -100,7 +101,7 @@ export default class TextInput extends React.Component {
             style.marginRight = '1.5em';
         }
         return (
-            <div className={wrapperClassName + " " + (this.props.className || "")} onClick={MiscUtils.killEvent} title={this.props.title}>
+            <div className={wrapperClassName + " " + (this.props.className || "")} onClick={MiscUtils.killEvent} {...withTooltip(this.props.title)}>
                 {this.props.name ? (
                     <textarea
                         className="text-input-form-el"

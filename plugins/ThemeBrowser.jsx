@@ -24,6 +24,7 @@ import ConfigUtils from '../utils/ConfigUtils';
 import LayerUtils from '../utils/LayerUtils';
 import LocaleUtils from '../utils/LocaleUtils';
 import MiscUtils, {ToggleSet} from '../utils/MiscUtils';
+import withTooltip from '../utils/Tooltip';
 
 import './ThemeBrowser.css';
 
@@ -188,7 +189,7 @@ class ThemeBrowser extends React.Component {
             <div className="themebrowser-tree-entry-container" data-id={JSON.stringify({layerId: layer.id, path: path})} key={layer.id + ":" + entry.name}>
                 <div className={entryClasses} onKeyDown={ev => this.adjustEntryOpacity(ev, entry, layer.id, path)} onPointerDown={ev => this.adjustEntryOpacity(ev, entry, layer.id, path)} style={entryStyle} tabIndex={0}>
                     <Icon className={plusClasses} icon="plus" onPointerDown={() => this.toggleEntryVisibility(entry, layer.id, path)} />
-                    <span className="themebrowser-tree-entry-title" onKeyDown={MiscUtils.checkKeyActivate} onPointerDown={ev => this.toggleEntryExpanded(ev, entry, layer.id, path)} tabIndex={0} title={entry.title}>{entry.title}</span>
+                    <span className="themebrowser-tree-entry-title" onKeyDown={MiscUtils.checkKeyActivate} onPointerDown={ev => this.toggleEntryExpanded(ev, entry, layer.id, path)} tabIndex={0} {...withTooltip(entry.title)}>{entry.title}</span>
                     {entry.visibility ? (<span className="themebrowser-tree-entry-opacity">{Math.round(opacity / 255 * 100) + "%"}</span>) : null}
                     {sortable ? (<span className="themebrowser-tree-entry-drag" onKeyDown={(ev) => this.onKeySort(ev, layer.id, path)} onPointerDown={() => this.onDragStart(layer, path)} onPointerUp={this.onDragEnd} tabIndex={0}><Icon icon="drag" /></span>) : null}
                 </div>

@@ -34,6 +34,7 @@ import CoordinatesUtils from '../utils/CoordinatesUtils';
 import LocaleUtils from '../utils/LocaleUtils';
 import MeasureUtils from '../utils/MeasureUtils';
 import RoutingInterface from '../utils/RoutingInterface';
+import withTooltip from '../utils/Tooltip';
 import VectorLayerUtils from '../utils/VectorLayerUtils';
 
 import './style/Routing.css';
@@ -588,7 +589,7 @@ class Routing extends React.Component {
     };
     renderImportButton = (config) => {
         return (
-            <label className="routing-import-button" title={LocaleUtils.tr("routing.importhint")}>
+            <label className="routing-import-button" {...withTooltip(LocaleUtils.tr("routing.importhint"))}>
                 <Icon icon="import" /> {LocaleUtils.tr("routing.importpoints")}
                 <input onChange={(ev) => this.importPoints(ev, config)} type="file" />
             </label>

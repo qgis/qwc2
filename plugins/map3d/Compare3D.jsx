@@ -21,6 +21,7 @@ import Button from '../../components/widgets/Button';
 import NumberInput from '../../components/widgets/NumberInput';
 import arrowModel from '../../resources/arrow.glb';
 import LocaleUtils from '../../utils/LocaleUtils';
+import withTooltip from '../../utils/Tooltip';
 
 import './style/Compare3D.css';
 
@@ -270,7 +271,7 @@ class Compare3D extends React.Component {
                                 <div
                                     className="compare3d-item compare3d-item-toggleall"
                                     onClick={this.state.enabled ? () => this.toggleAllObjects(section, objects, toggleAllValue) : null}
-                                    title={LocaleUtils.tr("compare3d.toggleall")}
+                                    {...withTooltip(LocaleUtils.tr("compare3d.toggleall"))}
                                 >
                                     <Icon className="compare3d-item-checkbox" disabled={!this.state.enabled} icon={toggleAllIcon} />
                                     <span>{LocaleUtils.tr("compare3d.toggleall")}</span>
@@ -280,7 +281,7 @@ class Compare3D extends React.Component {
                                         className="compare3d-item"
                                         key={entry.objectId}
                                         onClick={this.state.enabled ? () => this.toggleObject(section, entry.objectId) : null}
-                                        title={entry.title ?? entry.objectId}
+                                        {...withTooltip(entry.title ?? entry.objectId)}
                                     >
                                         <Icon className="compare3d-item-checkbox" disabled={!this.state.enabled} icon={clipState[entry.objectId]?.[section] ? "unchecked" : "checked"} />
                                         <span>{entry.title ?? entry.objectId}</span>

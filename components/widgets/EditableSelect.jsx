@@ -13,6 +13,7 @@ import isEmpty from 'lodash.isempty';
 import PropTypes from 'prop-types';
 
 import MiscUtils from '../../utils/MiscUtils';
+import withTooltip from '../../utils/Tooltip';
 import Icon from '../Icon';
 import InputContainer from './InputContainer';
 import PopupMenu from './PopupMenu';
@@ -109,7 +110,7 @@ export default class EditableSelect extends React.Component {
                 return null;
             }
             return (
-                <div key={"opt" + idx} onClick={() => this.optionSelected(option)} onMouseDown={MiscUtils.killEvent} title={label}>{label}</div>
+                <div key={"opt" + idx} onClick={() => this.optionSelected(option)} onMouseDown={MiscUtils.killEvent} {...withTooltip(label)}>{label}</div>
             );
         }).filter(Boolean);
         return !isEmpty(options) ? (
@@ -121,7 +122,7 @@ export default class EditableSelect extends React.Component {
     renderSelectedOption = () => {
         const label = EditableSelect.optionLabel(this.state.selectedOption);
         return (
-            <div className="editable-select-selopt" onClick={() => this.setState({popup: true})} title={label}>
+            <div className="editable-select-selopt" onClick={() => this.setState({popup: true})} {...withTooltip(label)}>
                 {label}
             </div>
         );

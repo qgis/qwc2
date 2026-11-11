@@ -12,6 +12,7 @@ import classNames from 'classnames';
 import PropTypes from 'prop-types';
 
 import MiscUtils from '../../utils/MiscUtils';
+import withTooltip from '../../utils/Tooltip';
 import Icon from '../Icon';
 
 import './style/NumberInput.css';
@@ -81,7 +82,7 @@ export default class NumberInput extends React.Component {
         const plusIcon = this.props.mobile ? "plus" : "chevron-up";
         const minusIcon = this.props.mobile ? "minus" : "chevron-down";
         return (
-            <div className={className + " " + this.props.className} title={this.props.title}>
+            <div className={className + " " + this.props.className} {...withTooltip(this.props.title)}>
                 <input disabled={this.props.disabled}
                     inputMode={this.props.decimals > 0 ? "decimal" : "numeric"}
                     onBlur={this.commit} onChange={this.onChange}

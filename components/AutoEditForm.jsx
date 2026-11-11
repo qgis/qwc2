@@ -10,6 +10,7 @@ import React from 'react';
 
 import PropTypes from 'prop-types';
 
+import withTooltip from '../utils/Tooltip';
 import EditComboField from './EditComboField';
 import EditUploadField from './EditUploadField';
 import NumberInput from './widgets/NumberInput';
@@ -104,7 +105,7 @@ export default class AutoEditForm extends React.Component {
         }
         return (
             <tr key={field.id}>
-                <td colSpan={input ? 1 : 2} title={field.name}>{title}</td>
+                <td colSpan={input ? 1 : 2} {...withTooltip(field.name)}>{title}</td>
                 {input ? (<td>{input}</td>) : null}
             </tr>
         );

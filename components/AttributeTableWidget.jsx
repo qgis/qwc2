@@ -35,6 +35,7 @@ import LayerUtils from '../utils/LayerUtils';
 import LocaleUtils from '../utils/LocaleUtils';
 import MapUtils from '../utils/MapUtils';
 import MiscUtils from '../utils/MiscUtils';
+import withTooltip from '../utils/Tooltip';
 import VectorLayerUtils from '../utils/VectorLayerUtils';
 import MapSelection from './MapSelection';
 import Button from './widgets/Button';
@@ -506,7 +507,7 @@ class AttributeTableWidget extends React.Component {
             input = (
                 <input disabled={disabled} name={field.id} type={field.type} {...constraints}
                     onChange={(ev) => updateField(field.id, ev.target.value, true)}
-                    title={value} value={value} />
+                    value={value} {...withTooltip(value)} />
             );
         } else if (field.type === "file") {
             return (<EditUploadField constraints={constraints} dataset={editConfig.editDataset} disabled={disabled} fieldId={field.id} iface={this.props.iface} name={field.id} showThumbnails={false} updateField={updateField} updateFile={(fieldId, data) => {this.changedFiles[fieldId] = data; }} value={value} />);

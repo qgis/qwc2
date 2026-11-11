@@ -34,6 +34,7 @@ import LayerUtils from '../utils/LayerUtils';
 import LocaleUtils from '../utils/LocaleUtils';
 import MapUtils from '../utils/MapUtils';
 import MiscUtils from '../utils/MiscUtils';
+import withTooltip from '../utils/Tooltip';
 import VectorLayerUtils from '../utils/VectorLayerUtils';
 
 import '../actions/bookmark';
@@ -307,7 +308,7 @@ class LayerTree extends React.Component {
                 <div className={classnames(itemclasses)}>
                     {showExpander ? (<Icon className="layertree-item-expander" icon={expanderstate} onClick={() => this.groupExpandedToggled(layer, path, group.expanded)} />) : (<span className="layertree-item-expander" />)}
                     <Icon className="layertree-item-checkbox" icon={checkboxstate} onClick={() => this.itemVisibilityToggled(layer, path, visibility)} />
-                    <span className="layertree-item-title" onClick={() => this.itemVisibilityToggled(layer, path, visibility)} title={group.title}>{group.title}</span>
+                    <span className="layertree-item-title" onClick={() => this.itemVisibilityToggled(layer, path, visibility)} {...withTooltip(group.title, {}, 'pointer')}>{group.title}</span>
                     {LayerUtils.hasQueryableSublayers(group) && this.props.allowSelectIdentifyableLayers ? (<Icon className={"layertree-item-identifyable " + identifyableClassName}  icon="info-sign" onClick={() => this.itemOmitQueryableToggled(layer, path, omitqueryable)} />) : null}
                     <span className="layertree-item-spacer" />
                     {Object.keys(styles || {}).length > 1 ? (<Icon className={styleMenuClasses} icon="paint" onClick={() => this.layerStyleMenuToggled(groupId)}/>) : null}
@@ -378,7 +379,7 @@ class LayerTree extends React.Component {
         if (layer.type === "separator") {
             title = (<input onChange={ev => this.props.changeLayerProperty(layer.id, "title", ev.target.value)} value={sublayer.title}/>);
         } else {
-            title = (<span className="layertree-item-title" onClick={() => this.itemVisibilityToggled(layer, path, sublayer.visibility)} title={sublayer.title}>{sublayer.title}</span>);
+            title = (<span className="layertree-item-title" onClick={() => this.itemVisibilityToggled(layer, path, sublayer.visibility)} {...withTooltip(sublayer.title, {}, 'pointer')}>{sublayer.title}</span>);
         }
         let queryableicon = null;
         if (this.props.allowSelectIdentifyableLayers) {
@@ -394,7 +395,7 @@ class LayerTree extends React.Component {
         const separatorTooltip = LocaleUtils.tr("layertree.separatortooltip");
         return (
             <div className="layertree-item-container" data-id={JSON.stringify({layer: layer.id, path: path})} key={sublayerId}>
-                {allowSeparators ? (<div className="layertree-item-addsep" onClick={() => this.props.addLayerSeparator(separatorTitle, layer.id, path)} title={separatorTooltip} />) : null}
+                {allowSeparators ? (<div className="layertree-item-addsep" onClick={() => this.props.addLayerSeparator(separatorTitle, layer.id, path)} {...withTooltip(separatorTooltip, {}, 'pointer')} />) : null}
                 <div className={classnames(itemclasses)}>
                     {(flattenGroups || skipExpanderPlaceholder) ? null : (<span className="layertree-item-expander" />)}
                     {checkbox}

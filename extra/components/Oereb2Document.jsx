@@ -18,6 +18,7 @@ import {v1 as uuidv1} from 'uuid';
 import {LayerRole, addLayer, removeLayer, changeLayerProperty} from '../../actions/layers';
 import Icon from '../../components/Icon';
 import LocaleUtils from '../../utils/LocaleUtils';
+import withTooltip from '../../utils/Tooltip';
 
 import './style/OerebDocument.css';
 
@@ -269,7 +270,7 @@ class Oereb2Document extends React.Component {
                 <h1>{LocaleUtils.tr(sectiontitle)}</h1>
                 <ul>
                     {Object.values(documents).sort((a, b) => a.index !== b.index ? a.index - b.index : a.label.localeCompare(b.label)).map((doc, idx) => (
-                        <li key={"doc" + idx}><a href={doc.link} rel="noopener noreferrer" target="_blank" title={doc.label}>&#128279; {doc.label}</a></li>
+                        <li key={"doc" + idx}><a href={doc.link} rel="noopener noreferrer" target="_blank" {...withTooltip(doc.label)}>&#128279; {doc.label}</a></li>
                     ))}
                 </ul>
             </div>

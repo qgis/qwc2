@@ -13,6 +13,7 @@ import PropTypes from 'prop-types';
 
 import ConfigUtils from '../utils/ConfigUtils';
 import MiscUtils from '../utils/MiscUtils';
+import withTooltip from '../utils/Tooltip';
 
 import './style/Icon.css';
 
@@ -60,7 +61,7 @@ export default class Icon extends React.Component {
                     onContextMenu={MiscUtils.killEvent} onKeyDown={onKeyDown}
                     onMouseDown={this.props.onMouseDown} onMouseUp={this.props.onMouseUp}
                     onPointerDown={this.props.onPointerDown}
-                    src={src} tabIndex={tabIndex} title={this.props.title || undefined}
+                    src={src} tabIndex={tabIndex} {...withTooltip(this.props.title)}
                 />
             );
         } else {
@@ -69,7 +70,7 @@ export default class Icon extends React.Component {
                     onContextMenu={MiscUtils.killEvent} onKeyDown={onKeyDown}
                     onMouseDown={this.props.onMouseDown} onMouseUp={this.props.onMouseUp}
                     onPointerDown={this.props.onPointerDown}
-                    tabIndex={tabIndex} title={this.props.title || undefined}
+                    tabIndex={tabIndex} {...withTooltip(this.props.title)}
                 />
             );
         }

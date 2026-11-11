@@ -18,6 +18,7 @@ import TextInput from '../components/widgets/TextInput';
 import ConfigUtils from '../utils/ConfigUtils';
 import LocaleUtils from '../utils/LocaleUtils';
 import MiscUtils from '../utils/MiscUtils';
+import withTooltip from '../utils/Tooltip';
 import Button from './widgets/Button';
 
 import './style/BookmarkPanel.css';
@@ -92,7 +93,7 @@ class BookmarkPanel extends React.Component {
                                 onAuxClick={(ev) => this.bookmarkClicked(ev, bookmark)}
                                 onClick={(ev) => this.bookmarkClicked(ev, bookmark)}
                                 onDoubleClick={(ev) => this.bookmarkDoubleClicked(ev, bookmark)}
-                                title={this.props.translations.lastUpdate + ": " + bookmark.date}
+                                {...withTooltip(this.props.translations.lastUpdate + ": " + bookmark.date)}
                             >
                                 {renaming ? (
                                     <InputContainer>

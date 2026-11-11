@@ -21,6 +21,7 @@ import {MapButtonPortalContext} from '../components/PluginsContainer';
 import ConfigUtils from '../utils/ConfigUtils';
 import LocaleUtils from '../utils/LocaleUtils';
 import MiscUtils from '../utils/MiscUtils';
+import withTooltip from '../utils/Tooltip';
 
 import './style/BackgroundSwitcher.css';
 
@@ -144,7 +145,7 @@ export class BackgroundSwitcher extends React.Component {
                 onKeyDown={this.KeyNav} tabIndex={this.state.visible ? 0 : -1}
             >
                 <div className="background-switcher-item-title">
-                    {layer ? (<span tabIndex={-1} title={this.itemTitle(layer)}>{this.itemTitle(layer)}</span>) : (<span>{LocaleUtils.tr(this.props.nobgMsgId)}</span>)}
+                    {layer ? (<span tabIndex={-1} {...withTooltip(this.itemTitle(layer))}>{this.itemTitle(layer)}</span>) : (<span>{LocaleUtils.tr(this.props.nobgMsgId)}</span>)}
                 </div>
                 <div className="background-switcher-item-thumbnail">
                     <img src={layer?.thumbnail ? assetsPath + "/" + layer.thumbnail : "data:image/gif;base64,R0lGODlhAQABAIAAAP7//wAAACH5BAAAAAAALAAAAAABAAEAAAICRAEAOw=="} />
@@ -172,7 +173,7 @@ export class BackgroundSwitcher extends React.Component {
         return (
             <div className={itemclasses} key={layer.name} onClick={(ev) => this.backgroundLayerClicked(ev, layer)} onKeyDown={this.KeyNav} tabIndex={this.state.visible ? 0 : -1}>
                 <div className="background-switcher-item-title">
-                    <span tabIndex="-1" title={this.itemTitle(layer)}>{this.itemTitle(layer)}</span><Icon icon="chevron-down" />
+                    <span tabIndex="-1" {...withTooltip(this.itemTitle(layer))}>{this.itemTitle(layer)}</span><Icon icon="chevron-down" />
                 </div>
                 <div className="background-switcher-item-thumbnail">
                     <img src={assetsPath + "/" + layer.thumbnail} />
@@ -192,7 +193,7 @@ export class BackgroundSwitcher extends React.Component {
                                 onMouseEnter={ev => this.updateGroupItem(ev, l)}
                                 onMouseLeave={ev => this.updateGroupItem(ev, layer)}
                                 tabIndex={0}
-                                title={this.itemTitle(l)}
+                                {...withTooltip(this.itemTitle(l))}
                             >{this.itemTitle(l)}</div>
                         );
                     })}

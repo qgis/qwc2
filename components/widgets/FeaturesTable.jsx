@@ -14,6 +14,7 @@ import PropTypes from 'prop-types';
 
 import LocaleUtils from '../../utils/LocaleUtils';
 import MiscUtils from '../../utils/MiscUtils';
+import withTooltip from '../../utils/Tooltip';
 import Icon from '../Icon';
 import TextInput from './TextInput';
 
@@ -100,7 +101,7 @@ export default class FeaturesTable extends React.PureComponent {
                         <tr className="featurestable-header">
                             {showSelColumn ? (<th>{selectAll}</th>) : null}
                             {showIdColumn ? (
-                                <th onClick={() => this.sortBy(pkfield.name)} onKeyDown={MiscUtils.checkKeyActivate} tabIndex={0} title={pkfield.name}>
+                                <th onClick={() => this.sortBy(pkfield.name)} onKeyDown={MiscUtils.checkKeyActivate} tabIndex={0} {...withTooltip(pkfield.name)}>
                                     <span>
                                         <span className="featurestable-headername">{pkfield.name}</span>
                                         {this.renderSortIndicator(pkfield.name)}
@@ -109,7 +110,7 @@ export default class FeaturesTable extends React.PureComponent {
                                 </th>
                             ) : null}
                             {fields.map((field, idx) => (
-                                <th key={field.id} onClick={() => this.sortBy(field.id)} onKeyDown={MiscUtils.checkKeyActivate} tabIndex={0} title={field.name}>
+                                <th key={field.id} onClick={() => this.sortBy(field.id)} onKeyDown={MiscUtils.checkKeyActivate} tabIndex={0} {...withTooltip(field.name)}>
                                     <span>
                                         <span className="featurestable-headername">
                                             {field.name}

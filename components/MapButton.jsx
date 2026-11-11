@@ -12,6 +12,7 @@ import ReactDOM from 'react-dom';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
 
+import withTooltip from '../utils/Tooltip';
 import Icon from './Icon';
 import {MapButtonPortalContext} from './PluginsContainer';
 import Spinner from './widgets/Spinner';
@@ -56,7 +57,7 @@ export default class MapButton extends React.Component {
                     onClick={this.props.onClick}
                     onMouseEnter={this.props.onMouseEnter}
                     onMouseLeave={this.props.onMouseLeave}
-                    ref={this.props.buttonRef} title={this.props.tooltip}
+                    ref={this.props.buttonRef} {...withTooltip(this.props.tooltip)}
                 >
                     {this.props.busy ? (
                         <Spinner />

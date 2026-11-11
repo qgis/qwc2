@@ -22,6 +22,7 @@ import NumberInput from '../../components/widgets/NumberInput';
 import ConfigUtils from '../../utils/ConfigUtils';
 import LayerUtils from '../../utils/LayerUtils';
 import LocaleUtils from '../../utils/LocaleUtils';
+import withTooltip from '../../utils/Tooltip';
 
 import './style/LayerTree3D.css';
 
@@ -147,7 +148,7 @@ class LayerTree3D extends React.Component {
                         icon={this.computeVisibilityIcon(isObject, entry, parent)}
                         onClick={() => updateCallback(entryId, {visibility: !entry.visibility}, {path})}
                     />
-                    <span className="layertree3d-item-title" onClick={() => updateCallback(entryId, {visibility: !entry.visibility}, {path})} title={entry.title ?? entryId}>{entry.title ?? entryId}</span>
+                    <span className="layertree3d-item-title" onClick={() => updateCallback(entryId, {visibility: !entry.visibility}, {path})} {...withTooltip(entry.title ?? entryId)}>{entry.title ?? entryId}</span>
                     {Object.keys(entry.styles || {}).length > 1 ? (
                         <Icon className={styleMenuClasses} icon="paint" onClick={() => this.layerStyleMenuToggled(key)}/>
                     ) : null}

@@ -35,6 +35,7 @@ import {UrlParams} from '../utils/PermaLinkUtils';
 import Request from '../utils/Request';
 import {FulltextSearch, SearchResultType} from '../utils/SearchProviders';
 import ServiceLayerUtils from '../utils/ServiceLayerUtils';
+import withTooltip from '../utils/Tooltip';
 import VectorLayerUtils from '../utils/VectorLayerUtils';
 import Icon from './Icon';
 import MapSelection from './MapSelection';
@@ -409,7 +410,7 @@ class SearchBox extends React.Component {
         return (
             <div className="searchbox-result" key={key} onClick={() => this.selectPlaceResult(provider, group, result)}>
                 {result.thumbnail ? (<img className="searchbox-result-thumbnail" onError={(ev) => this.loadFallbackResultImage(ev, group.type)} src={result.thumbnail} />) : null}
-                <span className="searchbox-result-label" dangerouslySetInnerHTML={{__html: MiscUtils.sanitizeHtml(result.text).replace(/<br\s*\/>/ig, ' ')}} title={result.label ?? result.text} />
+                <span className="searchbox-result-label" dangerouslySetInnerHTML={{__html: MiscUtils.sanitizeHtml(result.text).replace(/<br\s*\/>/ig, ' ')}} {...withTooltip(result.label ?? result.text, {}, 'pointer')} />
                 {result.externalLink ? <Icon icon="info-sign" onClick={ev => this.openUrl(ev, result.externalLink, result.target, result.label ?? result.text)} /> : null}
             </div>
         );
@@ -432,7 +433,7 @@ class SearchBox extends React.Component {
             <div className="searchbox-result" key={key} onClick={ConfigUtils.getPluginConfig("LayerCatalog")?.cfg?.toggleGroupOnClick && result.sublayers ? toggleLayerGroup : () => selectResult(provider, group, result)} style={{borderLeft: `${level}em solid transparent`}}>
                 {icon}
                 {result.theme ? (<Icon className="searchbox-result-openicon" icon="open" />) : null}
-                <span className="searchbox-result-label" dangerouslySetInnerHTML={{__html: MiscUtils.sanitizeHtml(result.text).replace(/<br\s*\/>/ig, ' ')}} title={result.label ?? result.text} />
+                <span className="searchbox-result-label" dangerouslySetInnerHTML={{__html: MiscUtils.sanitizeHtml(result.text).replace(/<br\s*\/>/ig, ' ')}} {...withTooltip(result.label ?? result.text, {}, 'pointer')} />
                 {result.theme && addThemes ? (<Icon icon="plus" onClick={(ev) => {MiscUtils.killEvent(ev); this.selectLayerResult(provider, group, result); }} title={LocaleUtils.tr("themeswitcher.addtotheme")}/>) : null}
                 {this.props.searchOptions.allowAddLayerAsGroup && result.sublayers ? (<Icon icon="group" onClick={(ev) => {MiscUtils.killEvent(ev); this.selectLayerResult(provider, group, result, true); }} title={LocaleUtils.tr("importlayer.asgroup")} />) : null}
                 {result.info ? <Icon icon="info-sign" onClick={(ev) => this.toggleLayerInfo(ev, provider, group, result, key, parent)} /> : null}

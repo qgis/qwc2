@@ -170,14 +170,14 @@ class ThemeList extends React.Component {
                                     </div>
                                 )}
                                 {item.hasRestrictedContent ? (
-                                    <div className="theme-item-restricted-content" title={LocaleUtils.tr("themeswitcher.restrictedcontent")}>
+                                    <div className="theme-item-restricted-content" {...withTooltip(LocaleUtils.tr("themeswitcher.restrictedcontent"))}>
                                         <Icon icon="lock" />
                                     </div>
                                 ) : null}
                                 {isEmpty(matches) ? null : (
                                     <div className="theme-item-filterinfo-overlay">
                                         {matches.map(match => (
-                                            <div key={match[0]} title={match[2]}><i>{match[0]}:</i><br />{match[1][0]}<b>{match[1][1]}</b>{match[1][2]}</div>
+                                            <div key={match[0]} {...withTooltip(match[2])}><i>{match[0]}:</i><br />{match[1][0]}<b>{match[1][1]}</b>{match[1][2]}</div>
                                         ))}
                                     </div>
                                 )}

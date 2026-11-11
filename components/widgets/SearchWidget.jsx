@@ -16,6 +16,7 @@ import {v4 as uuidv4} from 'uuid';
 import LocaleUtils from '../../utils/LocaleUtils';
 import Request from '../../utils/Request';
 import {SearchResultType} from '../../utils/SearchProviders';
+import withTooltip from '../../utils/Tooltip';
 import VectorLayerUtils from '../../utils/VectorLayerUtils';
 import Icon from '../Icon';
 import InputContainer from './InputContainer';
@@ -114,7 +115,7 @@ export default class SearchWidget extends React.Component {
     };
     renderItem = (group, item) => {
         return (
-            <div className="search-widget-results-item" key={group.id + ":" + item.id} onClick={() => this.resultSelected(group, item)} title={item.text}>{item.text}</div>
+            <div className="search-widget-results-item" key={group.id + ":" + item.id} onClick={() => this.resultSelected(group, item)} {...withTooltip(item.text)}>{item.text}</div>
         );
     };
     textChanged = (ev) => {

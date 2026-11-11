@@ -20,6 +20,7 @@ import {showNotification, closeWindow, NotificationType} from '../actions/window
 import LayerUtils from '../utils/LayerUtils';
 import LocaleUtils from '../utils/LocaleUtils';
 import ThemeUtils from '../utils/ThemeUtils';
+import withTooltip from '../utils/Tooltip';
 import Icon from './Icon';
 import ResizeableWindow from './ResizeableWindow';
 import Button from './widgets/Button';
@@ -54,7 +55,7 @@ class ThemeLayersListWindow extends React.Component {
         return (
             <div className="layerlist-item" key={layer.name}>
                 <Icon className="layerlist-item-checkbox" icon={checkboxstate} onClick={() => this.itemSelectionToggled(layer)} />
-                <span className="layerlist-item-title" title={layer.title}>{layer.title}</span>
+                <span className="layerlist-item-title" {...withTooltip(layer.title)}>{layer.title}</span>
                 <Icon className="layerlist-item-add" icon="plus" onClick={() => this.addLayers([{...layer, visibility: true}])} title={addLayerTitle} />
             </div>
         );

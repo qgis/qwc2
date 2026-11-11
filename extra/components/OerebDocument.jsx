@@ -17,6 +17,7 @@ import url from 'url';
 import {LayerRole, addLayer, removeLayer, changeLayerProperty} from '../../actions/layers';
 import Icon from '../../components/Icon';
 import LocaleUtils from '../../utils/LocaleUtils';
+import withTooltip from '../../utils/Tooltip';
 
 import './style/OerebDocument.css';
 
@@ -298,7 +299,7 @@ class OerebDocument extends React.Component {
                 <h1>{LocaleUtils.tr(sectiontitle)}</h1>
                 <ul>
                     {Object.values(documents).map((doc, idx) => (
-                        <li key={"doc" + idx}><a href={doc.link} rel="noopener noreferrer" target="_blank" title={doc.label}>&#128279; {doc.label}</a></li>
+                        <li key={"doc" + idx}><a href={doc.link} rel="noopener noreferrer" target="_blank" {...withTooltip(doc.label)}>&#128279; {doc.label}</a></li>
                     ))}
                 </ul>
             </div>

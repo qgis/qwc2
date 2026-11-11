@@ -16,6 +16,7 @@ import randomcolor from 'randomcolor';
 import {addLayerFeatures, removeLayer, LayerRole} from '../../actions/layers';
 import LocaleUtils from '../../utils/LocaleUtils';
 import MiscUtils from '../../utils/MiscUtils';
+import withTooltip from '../../utils/Tooltip';
 import Input from '../widgets/Input';
 import Spinner from '../widgets/Spinner';
 
@@ -283,9 +284,10 @@ class TimelineFeaturesSlider extends React.Component {
 
         return (
             <div className="timeline-slider-feature" key={features[0].id}
-                onMouseEnter={() => this.setState({highlightFeatures: features})}
-                onMouseLeave={() => this.setState({highlightFeatures: null})}
-                style={style} title={tooltip}
+                style={style} {...withTooltip(tooltip, {
+                    onMouseEnter: () => this.setState({highlightFeatures: features}),
+                    onMouseLeave: () => this.setState({highlightFeatures: null})
+                })}
             >
                 <span>
                     {label}

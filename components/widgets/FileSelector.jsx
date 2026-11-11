@@ -11,6 +11,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 import LocaleUtils from '../../utils/LocaleUtils';
+import withTooltip from '../../utils/Tooltip';
 import Icon from '../Icon';
 import Button from './Button';
 
@@ -61,7 +62,7 @@ export default class FileSelector extends React.Component {
         const placeholder = LocaleUtils.tr("fileselector.placeholder");
         return (
             <div className="FileSelector controlgroup" onClick={this.triggerFileOpen}>
-                <input placeholder={placeholder} readOnly title={this.props.title} type="text" value={value} />
+                <input placeholder={placeholder} readOnly type="text" value={value} {...withTooltip(this.props.title)} />
                 <input accept={this.props.accept} multiple={this.props.multiple} onChange={this.fileChanged} ref={el => { this.fileinput = el; }} type="file" />
                 <Button title={this.props.title}>
                     <Icon icon="folder-open" />

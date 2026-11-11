@@ -31,6 +31,7 @@ import EditingInterface from '../utils/EditingInterface';
 import {getFeatureTemplate} from '../utils/EditingUtils';
 import LayerUtils from '../utils/LayerUtils';
 import LocaleUtils from '../utils/LocaleUtils';
+import withTooltip from '../utils/Tooltip';
 
 import './style/Editing.css';
 
@@ -202,7 +203,7 @@ class Editing extends React.Component {
                                             </span>
                                         </label>
                                     </td>
-                                    <td title={attr.value}>{attr.value}</td>
+                                    <td {...withTooltip(attr.value)}>{attr.value}</td>
                                 </tr>
                             ))}
                         </tbody>
