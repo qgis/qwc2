@@ -29,9 +29,10 @@ export default class PrintSelection extends React.Component {
         }),
         geometryChanged: PropTypes.func,
         printSeriesChanged: PropTypes.func,
+        printSeriesCols: PropTypes.number,
         printSeriesEnabled: PropTypes.bool,
-        printSeriesGridSize: PropTypes.number,
         printSeriesOverlap: PropTypes.number,
+        printSeriesRows: PropTypes.bool,
         printSeriesSelected: PropTypes.arrayOf(PropTypes.string),
         rotation: PropTypes.number,
         scale: PropTypes.number
@@ -44,7 +45,6 @@ export default class PrintSelection extends React.Component {
         geometryChanged: () => {},
         printSeriesChanged: () => {},
         printSeriesEnabled: false,
-        printSeriesGridSize: 2,
         printSeriesOverlap: 0,
         printSeriesSelected: [],
         rotation: 0,
@@ -106,7 +106,9 @@ export default class PrintSelection extends React.Component {
         if (
             prevProps.printSeriesEnabled !== this.props.printSeriesEnabled ||
             prevProps.printSeriesOverlap !== this.props.printSeriesOverlap ||
-            prevProps.printSeriesSelected !== this.props.printSeriesSelected
+            prevProps.printSeriesSelected !== this.props.printSeriesSelected ||
+            prevProps.printSeriesCols !== this.props.printSeriesCols ||
+            prevProps.printSeriesRows !== this.props.printSeriesRows
         ) {
             this.geometryChanged();
         }
@@ -504,11 +506,12 @@ export default class PrintSelection extends React.Component {
         const dx2 = coordinates[2][0] - coordinates[3][0];
         const dy2 = coordinates[2][1] - coordinates[3][1];
         const rotation = -Math.atan2(dy1, dx1);
-        const gridSize = this.props.printSeriesEnabled ? this.props.printSeriesGridSize : 0;
+        const cols = this.props.printSeriesEnabled ? (this.props.printSeriesCols - 1) / 2 : 0;
+        const rows = this.props.printSeriesEnabled ? (this.props.printSeriesRows - 1) / 2 : 0;
 
         const geometries = [];
-        for (let i = -gridSize; i <= gridSize; i++) {
-            for (let j = -gridSize; j <= gridSize; j++) {
+        for (let i = -cols; i <= cols; i++) {
+            for (let j = -rows; j <= rows; j++) {
                 const index = [i, j];
                 const geometry = featureGeometry.clone();
                 geometry.translate(

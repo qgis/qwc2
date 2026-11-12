@@ -130,7 +130,9 @@ class Print extends React.Component {
         downloadMode: "onepdf",
         printSeriesEnabled: false,
         printSeriesOverlap: 0,
-        printSeriesSelected: []
+        printSeriesSelected: [],
+        printSeriesRows: 5,
+        printSeriesCols: 5
     };
     constructor(props) {
         super(props);
@@ -371,6 +373,18 @@ class Print extends React.Component {
                         ) : null}
                         {this.state.printSeriesEnabled ? (
                             <tr>
+                                <td>{LocaleUtils.tr("print.seriesgrid")}</td>
+                                <td>
+                                    <div className="print-series-grid-input">
+                                        <NumberInput decimals={0} max={10} min={1} mobile onChange={rows => this.setState({printSeriesRows: rows | 1})} step={2} value={this.state.printSeriesRows} />
+                                        &#10005;
+                                        <NumberInput decimals={0} max={10} min={1} mobile onChange={cols => this.setState({printSeriesCols: cols | 1})} step={2} value={this.state.printSeriesCols} />
+                                    </div>
+                                </td>
+                            </tr>
+                        ) : null}
+                        {this.state.printSeriesEnabled ? (
+                            <tr>
                                 <td>{LocaleUtils.tr("print.overlap")}</td>
                                 <td>
                                     <InputContainer>
@@ -510,8 +524,10 @@ class Print extends React.Component {
                 geometryChanged={this.geometryChanged}
                 key="PrintSelection"
                 printSeriesChanged={this.printSeriesChanged}
+                printSeriesCols={this.state.printSeriesCols}
                 printSeriesEnabled={this.props.displayPrintSeries && this.state.printSeriesEnabled}
                 printSeriesOverlap={this.state.printSeriesOverlap / 100}
+                printSeriesRows={this.state.printSeriesRows}
                 printSeriesSelected={this.state.printSeriesSelected}
                 rotation={this.state.rotation}
                 scale={this.state.scale}

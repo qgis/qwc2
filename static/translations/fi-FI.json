@@ -602,6 +602,7 @@
       "rotation": "Rotaatio",
       "scale": "Mittakaava",
       "series": "",
+      "seriesgrid": "",
       "submit": "Tulosta"
     },
     "qtdesignerform": {

@@ -602,6 +602,7 @@
       "rotation": "Döndürme",
       "scale": "Ölçek:",
       "series": "Yazdırma serileri",
+      "seriesgrid": "",
       "submit": "Yazdır"
     },
     "qtdesignerform": {

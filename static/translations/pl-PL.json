@@ -602,6 +602,7 @@
       "rotation": "Obrót",
       "scale": "Skala",
       "series": "Drukuj serie",
+      "seriesgrid": "",
       "submit": "Drukuj"
     },
     "qtdesignerform": {

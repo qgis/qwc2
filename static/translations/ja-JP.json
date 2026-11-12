@@ -602,6 +602,7 @@
       "rotation": "回転",
       "scale": "縮尺",
       "series": "シリーズを印刷",
+      "seriesgrid": "",
       "submit": "印刷"
     },
     "qtdesignerform": {

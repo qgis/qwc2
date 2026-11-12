@@ -115,3 +115,13 @@ span.print-output-window-wait div.spinner {
 #Print div.print-atlas-features > span > span:first-child {
     margin-right: 0.5em;
 }
+
+div.print-series-grid-input {
+    display: flex;
+    align-items: center;
+    gap: 0.25em;
+}
+
+div.print-series-grid-input > div.number-input {
+    flex: 1 1 auto;
+}

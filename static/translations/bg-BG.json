@@ -602,6 +602,7 @@
       "rotation": "Завъртане",
       "scale": "Стълбища",
       "series": "Серия за печат",
+      "seriesgrid": "",
       "submit": "Отпечатване"
     },
     "qtdesignerform": {

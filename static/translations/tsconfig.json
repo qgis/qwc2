@@ -528,6 +528,7 @@
     "print.rotation",
     "print.scale",
     "print.series",
+    "print.seriesgrid",
     "print.submit",
     "qtdesignerform.loading",
     "redlining.attributes",

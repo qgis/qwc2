@@ -602,6 +602,7 @@
       "rotation": "Rotació",
       "scale": "Escala",
       "series": "Sèrie d'impressió",
+      "seriesgrid": "",
       "submit": "Imprimir"
     },
     "qtdesignerform": {

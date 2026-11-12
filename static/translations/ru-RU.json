@@ -602,6 +602,7 @@
       "rotation": "Поворот",
       "scale": "Масштаб",
       "series": "",
+      "seriesgrid": "",
       "submit": "Печать"
     },
     "qtdesignerform": {

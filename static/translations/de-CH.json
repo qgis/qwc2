@@ -602,6 +602,7 @@
       "rotation": "Rotation",
       "scale": "Massstab",
       "series": "Seriendruck",
+      "seriesgrid": "Gitter",
       "submit": "Erzeugen"
     },
     "qtdesignerform": {
