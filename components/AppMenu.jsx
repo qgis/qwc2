@@ -21,6 +21,7 @@ import InputContainer from '../components/widgets/InputContainer';
 import ConfigUtils from '../utils/ConfigUtils';
 import LocaleUtils from '../utils/LocaleUtils';
 import MiscUtils from '../utils/MiscUtils';
+import withTooltip from '../utils/Tooltip';
 import Icon from './Icon';
 
 import './style/AppMenu.css';
@@ -162,7 +163,7 @@ class AppMenu extends React.Component {
             const trargs = item.trargs || [];
             const label = item.title ? LocaleUtils.tr(item.title, ...trargs) : LocaleUtils.tr("appmenu.items." + item.key + (item.mode || ""), ...trargs);
             const comment = item.comment ? LocaleUtils.tr("appmenu.items." + item.key + (item.mode || "") + "_comment", ...trargs) : "";
-            const labelclass = this.props.menuDisplayMode === "icononly" ? "appmenu-menu-item-tooltip" : "appmenu-menu-item-label";
+            const icononly = this.props.menuDisplayMode === "icononly";
             if (item.subitems) {
                 const expanded = filter || this.state.submenusVisible[level] === item.key;
                 const subitems = expanded ? this.renderMenuItems(item.subitems, level + 1, filter, true) : null;
@@ -180,11 +181,14 @@ class AppMenu extends React.Component {
                         onKeyDown={this.keyNav}
                         onMouseOver={ev => ev.target.focus()}
                         tabIndex={0}
+                        {...(icononly ? withTooltip(label, {}, 'left') : {})}
                     >
                         <Icon icon={item.icon} size="xlarge"/>
-                        <span className={labelclass}>
-                            {label}
-                        </span>
+                        {!icononly ? (
+                            <span className="appmenu-menu-item-label">
+                                {label}
+                            </span>
+                        ) : null}
                     </div>
                 ),
                 subitems];
@@ -200,11 +204,14 @@ class AppMenu extends React.Component {
                             onKeyDown={this.keyNav}
                             onMouseOver={ev => ev.target.focus()}
                             tabIndex={0}
+                            {...(icononly ? withTooltip(label, {}, 'left') : {})}
                         >
                             <Icon icon={item.icon} size="xlarge"/>
-                            <span className={labelclass}>
-                                {label}
-                            </span>
+                            {!icononly ? (
+                                <span className="appmenu-menu-item-label">
+                                    {label}
+                                </span>
+                            ) : null}
                         </div>
                     );
                 }
@@ -238,31 +245,27 @@ class AppMenu extends React.Component {
                         </span>)
                     ]}
                 </div>
-                <div className="appmenu-menu-container" tabIndex={-1}>
-                    <div className="appmenu-menu-aligner">
-                        <div className="appmenu-menu" inert={!visible} onMouseLeave={this.clearFocus} ref={el => { this.menuEl = el; MiscUtils.setupKillTouchEvents(el); }}>
-                            {this.props.showFilterField && this.props.menuDisplayMode !== "icononly" ? (
-                                <div
-                                    className="appmenu-menu-item appmenu-menu-item-filter"
-                                    onFocus={this.focusFilterField}
-                                    onKeyDown={this.keyNav}
-                                    onMouseOver={ev => ev.target.focus()}
-                                    tabIndex={0}
-                                >
-                                    <Icon icon={"search"} size="xlarge"/>
-                                    <InputContainer>
-                                        <input onChange={ev => this.setState({filter: ev.target.value, curEntry: null})}
-                                            placeholder={LocaleUtils.tr("common.filter")} ref={this.setFilterField}
-                                            role="input"
-                                            type="text"
-                                            value={this.state.filter}/>
-                                        <Icon icon="clear" onClick={() => this.setState({filter: ""})} role="suffix" />
-                                    </InputContainer>
-                                </div>
-                            ) : null}
-                            {this.renderMenuItems(this.props.menuItems, 0, filter)}
+                <div className="appmenu-menu" inert={!visible} onMouseLeave={this.clearFocus} ref={el => { this.menuEl = el; MiscUtils.setupKillTouchEvents(el); }} tabIndex={-1}>
+                    {this.props.showFilterField && this.props.menuDisplayMode !== "icononly" ? (
+                        <div
+                            className="appmenu-menu-item appmenu-menu-item-filter"
+                            onFocus={this.focusFilterField}
+                            onKeyDown={this.keyNav}
+                            onMouseOver={ev => ev.target.focus()}
+                            tabIndex={0}
+                        >
+                            <Icon icon={"search"} size="xlarge"/>
+                            <InputContainer>
+                                <input onChange={ev => this.setState({filter: ev.target.value, curEntry: null})}
+                                    placeholder={LocaleUtils.tr("common.filter")} ref={this.setFilterField}
+                                    role="input"
+                                    type="text"
+                                    value={this.state.filter}/>
+                                <Icon icon="clear" onClick={() => this.setState({filter: ""})} role="suffix" />
+                            </InputContainer>
                         </div>
-                    </div>
+                    ) : null}
+                    {this.renderMenuItems(this.props.menuItems, 0, filter)}
                 </div>
             </div>
         );

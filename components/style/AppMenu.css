@@ -60,45 +60,27 @@ div.AppMenu.appmenu-blocked {
     cursor: not-allowed;
 }
 
-div.AppMenu div.appmenu-menu-container {
+div.AppMenu div.appmenu-menu {
     position: absolute;
-    top: 100%;
+    top: var(--qwc-topbar-height);
     right: 0;
-    width: 100%;
-    overflow-y: auto;
-    overflow-x: hidden;
-    height: calc(var(--plugins-container-height) - var(--qwc-topbar-height) - var(--qwc-bottombar-height));
-    pointer-events: none;
+    max-height: calc(var(--plugins-container-height) - var(--qwc-topbar-height) - var(--qwc-bottombar-height));
     opacity: 0;
     transform-origin: top;
     transform: scaleY(0);
     transition: transform 0.25s, opacity 0.25s;
-}
-
-div.AppMenu.appmenu-visible div.appmenu-menu-container {
-    transform: scaleY(1);
-    opacity: 1;
-}
-
-div.AppMenu div.appmenu-menu-aligner {
-    display: flex;
-    justify-content: end;
-}
-
-div.AppMenu.appmenu-icononly div.appmenu-menu-aligner {
-    min-height: 100%;
-}
-
-div.AppMenu div.appmenu-menu {
-    position:  relative;
-    pointer-events: initial;
-    text-align: left;
+    overflow-y: auto;
+    overflow-x: hidden;
     background-color: var(--app-menu-bg-color);
     box-shadow: 0px 2px 4px rgba(136, 136, 136, 0.5);
-    text-align: left;
     width: 20rem;
     font-size: 90%;
     border-radius: 0px 0px 0px var(--border-radius);
+}
+
+div.AppMenu.appmenu-visible div.appmenu-menu {
+    transform: scaleY(1);
+    opacity: 1;
 }
 
 div.AppMenu.appmenu-compact div.appmenu-menu {
@@ -141,25 +123,6 @@ div.appmenu-menu-item-label {
 div.appmenu-menu-item-comment {
     font-weight: normal;
     font-size: 90%;
-}
-
-span.appmenu-menu-item-tooltip {
-    position: absolute;
-    display: none;
-    background-color: var(--tooltip-bg-color);
-    border: 1px solid var(--tooltip-border-color);
-    color: var(--tooltip-text-color);
-    font-size: 90%;
-    font-weight: normal;
-    padding: 0.5em;
-    border-radius: 0.5em;
-    white-space: nowrap;
-    right: calc(100% + 0.25em);
-    z-index: 2;
-}
-
-div.appmenu-menu-item:hover span.appmenu-menu-item-tooltip {
-    display: inline;
 }
 
 div.appmenu-submenu-active,
