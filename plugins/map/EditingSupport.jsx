@@ -12,6 +12,7 @@ import {connect} from 'react-redux';
 
 import ol from 'openlayers';
 import PropTypes from 'prop-types';
+import {createSelector} from 'reselect';
 
 import {setEditContext} from '../../actions/editing';
 import LocationRecorder from '../../components/LocationRecorder';
@@ -305,11 +306,17 @@ class EditingSupport extends React.Component {
     };
 }
 
-export default connect((state) => ({
-    editContexts: state.editing.contexts,
-    editContext: state.editing.contexts[state.editing.currentContext] || {},
-    displayCrs: state.map.displayCrs,
-    mapCrs: state.map.projection
-}), {
+const selector = createSelector([
+    state => state.editing,
+    state => state.map.displayCrs,
+    state => state.map.projection
+], (editing, displayCrs, mapCrs) => ({
+    editContexts: editing.contexts,
+    editContext: editing.contexts[editing.currentContext] || {},
+    displayCrs: displayCrs,
+    mapCrs: mapCrs
+}));
+
+export default connect(selector, {
     setEditContext: setEditContext
 })(EditingSupport);
