@@ -106,7 +106,7 @@ class NumericInputWindow extends React.Component {
         );
     };
     onValueChanged = (text, decimals, onChange) => {
-        const number = parseFloat(text);
+        const number = parseFloat(text.replace(",", "."));
         if (!isNaN(number)) {
             const factor = Math.pow(10, decimals);
             onChange(Math.round(number * factor) / factor);
