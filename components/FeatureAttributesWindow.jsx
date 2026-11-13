@@ -10,6 +10,7 @@ import React from 'react';
 import {connect} from 'react-redux';
 
 import PropTypes from 'prop-types';
+import {createSelector} from 'reselect';
 
 import LocaleUtils from '../utils/LocaleUtils';
 import Icon from './Icon';
@@ -109,10 +110,13 @@ class FeatureAttributesWindow extends React.Component {
     };
 }
 
-export default connect((state, ownProps) => ({
-    allAttribs: [...(state.layers.flat.find(layer => layer.id === ownProps.layerid)?.features ?? []).reduce((res, feature) => {
+const selector = createSelector([state => state.layers.flat, (state, ownProps) => ownProps.layerid], (layers, layerid) => {
+    const attribs = [...(layers.find(layer => layer.id === layerid)?.features ?? []).reduce((res, feature) => {
         Object.keys(feature.properties || {}).forEach(key => res.add(key));
         return res;
-    }, new Set())]
-}), {
+    }, new Set())];
+    return {allAttribs: attribs};
+});
+
+export default connect(selector, {
 })(FeatureAttributesWindow);
