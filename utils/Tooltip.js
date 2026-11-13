@@ -1,6 +1,6 @@
 import MiscUtils from "./MiscUtils";
 
-export default function withTooltip(tooltipContents, props = {}, align = 'center') {
+export default function withTooltip(tooltipContents, props = {}, align = 'center', delay = 500) {
     const updateTooltip = (target) => {
         const tooltip = target.popoverTargetElement;
         if (!tooltip.isConnected) {
@@ -76,7 +76,7 @@ export default function withTooltip(tooltipContents, props = {}, align = 'center
                 updateTooltip(target);
             }
             target.tooltipTimeout = null;
-        }, 500);
+        }, delay);
     };
     const hideTooltip = (ev) => {
         props.onMouseLeave?.(ev);

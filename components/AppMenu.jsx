@@ -181,7 +181,7 @@ class AppMenu extends React.Component {
                         onKeyDown={this.keyNav}
                         onMouseOver={ev => ev.target.focus()}
                         tabIndex={0}
-                        {...(icononly ? withTooltip(label, {}, 'left') : {})}
+                        {...(icononly ? withTooltip(label, {}, 'left', 0) : {})}
                     >
                         <Icon icon={item.icon} size="xlarge"/>
                         {!icononly ? (
@@ -204,7 +204,7 @@ class AppMenu extends React.Component {
                             onKeyDown={this.keyNav}
                             onMouseOver={ev => ev.target.focus()}
                             tabIndex={0}
-                            {...(icononly ? withTooltip(label, {}, 'left') : {})}
+                            {...(icononly ? withTooltip(label, {}, 'left', 0) : {})}
                         >
                             <Icon icon={item.icon} size="xlarge"/>
                             {!icononly ? (
