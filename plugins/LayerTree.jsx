@@ -388,6 +388,10 @@ class LayerTree extends React.Component {
         } else {
             queryableicon = <Icon className="layertree-item-queryable" icon="info-sign"/>;
         }
+        let timeIcon = null;
+        if (ConfigUtils.havePlugin("TimeManager") && (sublayer.dimensions ?? []).find(dim => dim.units === "ISO8601")) {
+            timeIcon = (<Icon className="layertree-item-clock" icon="clock" onClick={() => this.openTimenManager(layer, path, sublayer)} />);
+        }
         const allowOptions = layer.type !== "placeholder" && layer.type !== "separator";
         const flattenGroups = ConfigUtils.getConfigProp("flattenLayerTreeGroups", this.props.theme) || this.props.flattenGroups;
         const allowSeparators = allowReordering && (this.props.allowLayerTreeSeparators || ConfigUtils.getConfigProp("allowLayerTreeSeparators", this.props.theme));
@@ -401,6 +405,7 @@ class LayerTree extends React.Component {
                     {legendicon}
                     {title}
                     {sublayer.queryable && this.props.showQueryableIcon ? (queryableicon) : null}
+                    {timeIcon}
                     {sublayer.name in (this.props.filter.filterParams || {}) || this.props.filter.filterGeom ? (<Icon icon="filter" />) : null}
                     {this.props.loadingLayers.includes(layer.id) ? (<Spinner />) : null}
                     <span className="layertree-item-spacer" />
@@ -835,6 +840,12 @@ class LayerTree extends React.Component {
             recurseDirection = !oldvisibility ? "parents" : null;
         }
         this.props.changeLayerProperty(layer.id, "visibility", !oldvisibility, grouppath, recurseDirection);
+    };
+    openTimenManager = (layer, path, sublayer) => {
+        if (!sublayer.visibility) {
+            this.props.changeLayerProperty(layer.id, "visibility", true, path);
+        }
+        this.props.setCurrentTask("TimeManager");
     };
     itemOmitQueryableToggled = (layer, grouppath, oldomitqueryable) => {
         this.props.changeLayerProperty(layer.id, "omitFromQueryLayers", !oldomitqueryable, grouppath, "children");
