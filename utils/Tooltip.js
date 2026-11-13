@@ -53,8 +53,10 @@ export default function withTooltip(tooltipContents, props = {}, align = 'center
         const target = ev.currentTarget;
         if (target.popoverTargetElement) {
             if (
-                Math.abs(ev.clientX - target.popoverTargetElement.srcPos.x) < 10 &&
-                Math.abs(ev.clientY - target.popoverTargetElement.srcPos.y) < 10
+                align !== 'pointer' || (
+                    Math.abs(ev.clientX - target.popoverTargetElement.srcPos.x) < 10 &&
+                    Math.abs(ev.clientY - target.popoverTargetElement.srcPos.y) < 10
+                )
             ) {
                 return;
             }
@@ -83,6 +85,7 @@ export default function withTooltip(tooltipContents, props = {}, align = 'center
         if (tooltip) {
             tooltip.hidePopover();
             tooltip.remove();
+            ev.currentTarget.popoverTargetElement = null;
         }
     };
     const onRef = (el) => {
