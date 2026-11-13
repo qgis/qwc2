@@ -12,6 +12,7 @@ import {connect} from 'react-redux';
 
 import isEmpty from 'lodash.isempty';
 import PropTypes from 'prop-types';
+import {createSelector} from 'reselect';
 import {v4 as uuidv4} from 'uuid';
 
 import {LayerRole} from '../actions/layers';
@@ -340,12 +341,15 @@ class ValueTool extends React.Component {
     };
 }
 
-export default connect((state) => ({
-    enabled: state.task.id === "ValueTool",
-    layers: state.layers.flat.filter(layer => (
-        (layer.role === LayerRole.THEME || layer.role === LayerRole.USERLAYER) && (layer.infoFormats || []).includes("text/xml")
+const selector = createSelector([state => state.layers.flat, state => state.task, state => state.map], (layers, task, map) => ({
+    enabled: task.id === "ValueTool",
+    layers: layers.filter(layer => (
+        (layer.role === LayerRole.THEME || layer.role === LayerRole.USERLAYER) &&
+        (layer.infoFormats || []).includes("text/xml")
     )),
-    map: state.map
-}), {
+    map: map
+}));
+
+export default connect(selector, {
     setCurrentTask: setCurrentTask
 })(ValueTool);
