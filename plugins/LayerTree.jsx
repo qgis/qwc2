@@ -391,11 +391,10 @@ class LayerTree extends React.Component {
         const allowOptions = layer.type !== "placeholder" && layer.type !== "separator";
         const flattenGroups = ConfigUtils.getConfigProp("flattenLayerTreeGroups", this.props.theme) || this.props.flattenGroups;
         const allowSeparators = allowReordering && (this.props.allowLayerTreeSeparators || ConfigUtils.getConfigProp("allowLayerTreeSeparators", this.props.theme));
-        const separatorTitle = LocaleUtils.tr("layertree.separator");
         const separatorTooltip = LocaleUtils.tr("layertree.separatortooltip");
         return (
             <div className="layertree-item-container" data-id={JSON.stringify({layer: layer.id, path: path})} key={sublayerId}>
-                {allowSeparators ? (<div className="layertree-item-addsep" onClick={() => this.props.addLayerSeparator(separatorTitle, layer.id, path)} {...withTooltip(separatorTooltip, {}, 'pointer')} />) : null}
+                {allowSeparators ? (<div className="layertree-item-addsep" onClick={() => this.addLayerSeparator(layer.id, path)} {...withTooltip(separatorTooltip, {}, 'pointer')} />) : null}
                 <div className={classnames(itemclasses)}>
                     {(flattenGroups || skipExpanderPlaceholder) ? null : (<span className="layertree-item-expander" />)}
                     {checkbox}
@@ -927,6 +926,15 @@ class LayerTree extends React.Component {
                 this.props.changeLayerProperty(layerId, "style", style, [...path, idx]);
             }
         });
+    };
+    addLayerSeparator = (layerid, path) => {
+        // eslint-disable-next-line no-alert
+        const separatorTitle = prompt(
+            LocaleUtils.tr("layertree.separatortooltip"), LocaleUtils.tr("layertree.separator")
+        );
+        if (separatorTitle !== null) {
+            this.props.addLayerSeparator(separatorTitle, layerid, path);
+        }
     };
 }
 

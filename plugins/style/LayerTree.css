@@ -308,6 +308,7 @@ img.layertree-item-legend-tooltip {
     border-bottom: 4px solid transparent;
     margin-bottom: -6px;
     position: relative;
+    cursor: copy;
 }
 
 #LayerTree div.layertree-item-addsep:hover {
