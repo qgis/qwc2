@@ -130,7 +130,7 @@ export const ZoomInPlugin = connect((state) => ({
 })(ZoomButton);
 
 export const ZoomOutPlugin = connect((state) => ({
-    click: state.map.click || {},
+    click: state.map.click,
     currentTask: state.task.id,
     currentZoom: state.map.zoom,
     maxZoom: state.map.resolutions.length - 1,
