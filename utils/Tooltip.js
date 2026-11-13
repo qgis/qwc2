@@ -1,6 +1,9 @@
 import MiscUtils from "./MiscUtils";
 
 export default function withTooltip(tooltipContents, props = {}, align = 'center', delay = 500) {
+    if (!tooltipContents) {
+        return props;
+    }
     const updateTooltip = (target) => {
         const tooltip = target.popoverTargetElement;
         if (!tooltip.isConnected) {
