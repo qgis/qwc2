@@ -685,6 +685,8 @@ For catalog entries containing a `wms` resource, you can specify `"asGroup": <tr
 
 You can set a default fallback value for `asGroup` via the  `defaultAsGroupValue` `LayerCatalog` configuration option.
 
+You can specify custom search terms which should be matched against the catalog filter text in `searchterms`.
+
 Example:
 
 ```json
@@ -693,7 +695,8 @@ Example:
     {
       "title": "Öffentlicher Verkehr swissTLMRegio",
       "resource": "wms:http://wms.geo.admin.ch#ch.swisstopo.vec200-transportation-oeffentliche-verkehr",
-      "asGroup": true
+      "asGroup": true,
+      "searchterms": ["haltestellen", "bus", "zug", "tram"]
     },
     {
       "title": "Gewässerschutz",

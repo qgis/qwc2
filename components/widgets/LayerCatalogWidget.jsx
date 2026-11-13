@@ -152,16 +152,17 @@ class LayerCatalogWidget extends React.PureComponent {
             const filter = new RegExp(removeDiacritics(text).replace(/[-[\]/{}()*+?.\\^$|]/g, "\\$&"), "i");
             const filterCatalogEntry = (res, entry) => {
                 const titleMatches = removeDiacritics(entry.title).match(filter);
+                const termsMatches = (entry.searchterms ?? []).find(term => term.match(filter));
                 if (entry.sublayers) {
                     const matchedSublayers = entry.sublayers.reduce(filterCatalogEntry, []);
                     if (!isEmpty(matchedSublayers)) {
                         return [...res, {...entry, sublayers: matchedSublayers, expanded: true}];
-                    } else if (titleMatches) {
+                    } else if (titleMatches || termsMatches) {
                         return [...res, {...entry, expanded: false}];
                     } else {
                         return res;
                     }
-                } else if (titleMatches) {
+                } else if (titleMatches || termsMatches) {
                     return [...res, entry];
                 } else {
                     return res;
