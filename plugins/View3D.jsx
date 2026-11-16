@@ -457,25 +457,25 @@ class View3D extends React.Component {
         }
     };
     trackFocus = (ev) => {
-        const mapEl = document.getElementById("map");
-        const map3dEl = document.getElementById("map3d");
-        if (mapEl?.contains?.(document.activeElement)) {
-            this.focusedMap = "map";
-        } else if (map3dEl?.contains?.(document.activeElement)) {
+        const inContainer = document.activeElement.closest('.plugins-container-3d') !== null;
+        if (inContainer) {
             this.focusedMap = "map3d";
         } else {
-            this.focusedMap = null;
+            this.focusedMap = "map";
+        }
+        if (this.map3dComponentRef) {
+            this.map3dComponentRef.focusedMap = this.focusedMap;
         }
     };
     trackPointerFocus = (ev) => {
-        const mapEl = document.getElementById("map");
-        const map3dEl = document.getElementById("map3d");
-        if (mapEl?.contains?.(ev.target)) {
-            this.focusedMap = "map";
-        } else if (map3dEl?.contains?.(ev.target)) {
+        const inContainer = ev.target.closest('.plugins-container-3d') !== null;
+        if (inContainer) {
             this.focusedMap = "map3d";
         } else {
-            this.focusedMap = null;
+            this.focusedMap = "map";
+        }
+        if (this.map3dComponentRef) {
+            this.map3dComponentRef.focusedMap = this.focusedMap;
         }
     };
 }

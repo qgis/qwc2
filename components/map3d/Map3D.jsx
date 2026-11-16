@@ -180,6 +180,7 @@ class Map3D extends React.Component {
         this.inspector = null;
         this.instance = null;
         this.map = null;
+        this.focusedMap = null;
         this.sceneObjectGroup = null;
         this.objectMap = {};
         this.tilesetStyles = {};
@@ -242,7 +243,7 @@ class Map3D extends React.Component {
 
         // Update 2D color layers
         const sync2denabled = this.state.sceneContext.settings.sync2dlayers && !prevState.sceneContext.settings.sync2dlayers;
-        if (this.props.layers !== prevProps.layers || sync2denabled) {
+        if (this.focusedMap === "map" && (this.props.layers !== prevProps.layers || sync2denabled)) {
             this.setState((state) => ({
                 sceneContext: {
                     ...state.sceneContext,
