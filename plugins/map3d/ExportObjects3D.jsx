@@ -23,6 +23,8 @@ import {setCurrentTask} from '../../actions/task';
 import {TileMeshHelper} from '../../components/map3d/utils/MiscUtils3D';
 import SideBar from '../../components/SideBar';
 import Button from '../../components/widgets/Button';
+import ButtonBar from '../../components/widgets/ButtonBar';
+import ComboBox from '../../components/widgets/ComboBox';
 import Spinner from '../../components/widgets/Spinner';
 import LocaleUtils from '../../utils/LocaleUtils';
 import VectorLayerUtils from '../../utils/VectorLayerUtils';
@@ -39,16 +41,18 @@ class ExportObjects3D extends React.Component {
     state = {
         selectedFormat: "model/gltf+json",
         exporting: false,
-        exportPolygon: null
+        exportPolygon: null,
+        mode: 'Selection',
+        selectedLayer: ''
     };
     constructor(props) {
         super(props);
-        this.measureTool = null;
+        this.drawTool = null;
         this.drawLayer = null;
     }
     onShow = () => {
         this.abortController = new AbortController();
-        this.measureTool = new DrawTool({
+        this.drawTool = new DrawTool({
             instance: this.props.sceneContext.scene
         });
         this.drawLayer = new ColorLayer({
@@ -65,25 +69,45 @@ class ExportObjects3D extends React.Component {
     onHide = () => {
         this.abortController.abort();
         this.abortController = null;
-        this.measureTool.dispose();
-        this.measureTool = null;
+        this.drawTool.dispose();
+        this.drawTool = null;
         this.props.sceneContext.map.removeLayer(this.drawLayer, {dispose: true});
         this.drawLayer = null;
-        this.setState({exporting: false, exportPolygon: null});
+        this.setState({exporting: false, exportPolygon: null, selectedLayer: '', mode: 'Selection'});
     };
     formatChanged = (ev) => {
         this.setState({selectedFormat: ev.target.value});
     };
     renderBody = () => {
-        const exportDisabled = this.state.exporting || this.state.exportPolygon === null;
+        const exportDisabled = this.state.exporting || (this.state.exportPolygon === null && this.state.selectedLayer === '');
         const formatMap = {
             "model/gltf+json": "GLTF"
         };
+        const buttons = [
+            {key: 'Selection', label: LocaleUtils.tr("common.select"), icon: "selectbox"},
+            {key: 'Layer', label: LocaleUtils.tr("common.layer"), icon: "layers"}
+        ];
         return (
             <div className="mapexport-body">
                 <form onSubmit={this.exportArea}>
                     <table className="options-table">
                         <tbody>
+                            <tr>
+                                <td colSpan="2">
+                                    <ButtonBar active={this.state.mode} buttons={buttons} onClick={this.setMode} />
+                                </td>
+                            </tr>
+                            {this.state.mode === 'Layer' && (
+                                <tr>
+                                    <td>{LocaleUtils.tr("common.layer")}</td>
+                                    <td>
+                                        <ComboBox onChange={this.setSelectedLayer} value={this.state.selectedLayer}>
+                                            <div value="">{LocaleUtils.tr("common.select")}</div>
+                                            {this.renderLayerOptions()}
+                                        </ComboBox>
+                                    </td>
+                                </tr>
+                            )}
                             <tr>
                                 <td>{LocaleUtils.tr("common.format")}</td>
                                 <td>
@@ -107,6 +131,25 @@ class ExportObjects3D extends React.Component {
             </div>
         );
     };
+    renderLayerOptions = () => {
+        // sceneContext.objectTree.null.children
+        const drawLayers = [];
+        const collectDrawLayers = (group) => {
+            group.children.forEach(objectId => {
+                const entry = this.props.sceneContext.objectTree[objectId];
+                if (entry.drawGroup) {
+                    drawLayers.push({id: objectId, title: entry.title});
+                } else if (entry.children) {
+                    collectDrawLayers(entry);
+                }
+            });
+        };
+        collectDrawLayers(this.props.sceneContext.objectTree.null);
+        drawLayers.sort((a, b) => a.title.localeCompare(b.title));
+        return drawLayers.map(entry => (
+            <div key={entry.id} value={entry.id}>{entry.title}</div>
+        ));
+    };
     render() {
         return (
             <SideBar extraClasses="MapExport" icon={"export"}
@@ -119,18 +162,27 @@ class ExportObjects3D extends React.Component {
             </SideBar>
         );
     }
+    setMode = (mode) => {
+        this.drawLayer.source.clear();
+        this.setState({mode, selectedLayer: '', exportPolygon: null}, this.restart);
+    };
+    setSelectedLayer = (selectedLayer) => {
+        this.setState({selectedLayer});
+    };
     restart = () => {
         if (this.abortController) {
             this.abortController.abort();
         }
-        this.abortController = new AbortController();
-        const pick = (e) => this.props.sceneContext.scene.pickObjectsAt(e, {sortByDistance: true, where: [this.props.sceneContext.getMap()]});
-        const options = {
-            signal: this.abortController.signal,
-            endCondition: conditions.doubleClick,
-            pick: pick
-        };
-        this.measureTool.createPolygon(options).then(this.selectArea).catch(() => {});
+        if (this.state.mode === 'Selection') {
+            this.abortController = new AbortController();
+            const pick = (e) => this.props.sceneContext.scene.pickObjectsAt(e, {sortByDistance: true, where: [this.props.sceneContext.getMap()]});
+            const options = {
+                signal: this.abortController.signal,
+                endCondition: conditions.doubleClick,
+                pick: pick
+            };
+            this.drawTool.createPolygon(options).then(this.selectArea).catch(() => {});
+        }
     };
     selectArea = (polygon) => {
         if (polygon === null) {
@@ -174,32 +226,37 @@ class ExportObjects3D extends React.Component {
     };
     exportArea = (ev) => {
         ev.preventDefault();
-        this.setState({exporting: true});
         if (this.state.selectedFormat === "model/gltf+json") {
-            // Delay one loop to ensure exporting: true is set
-            setTimeout(this.exportToGltf, 0);
+            this.setState({exporting: true}, this.exportToGltf);
         }
     };
     exportToGltf = () => {
-        const bbox = VectorLayerUtils.computeFeatureBBox({type: "Polygon", coordinates: this.state.exportPolygon});
-        // Create a bounding box in world space
-        const selectionBox = new Box3().setFromPoints([
-            new Vector3(bbox[0], bbox[1], 0),
-            new Vector3(bbox[2], bbox[3], 8000)
-        ]);
         const exportGroup = new Group();
+        if (this.state.mode === 'Selection' && this.state.exportPolygon) {
+            const bbox = VectorLayerUtils.computeFeatureBBox({type: "Polygon", coordinates: this.state.exportPolygon});
+            // Create a bounding box in world space
+            const selectionBox = new Box3().setFromPoints([
+                new Vector3(bbox[0], bbox[1], 0),
+                new Vector3(bbox[2], bbox[3], 8000)
+            ]);
 
-        Object.values(this.props.sceneContext.objectTree).forEach(entry => {
-            if (!entry.objectId || !this.props.sceneContext.objectIsVisible(entry.objectId)) {
-                return;
-            }
-            const object = this.props.sceneContext.getSceneObject(entry.objectId);
-            if (object.tiles) {
-                this.addTileToExportGroup(object.tiles, exportGroup, selectionBox);
-            } else {
-                this.addObjectToExportGroup(object, exportGroup, selectionBox);
-            }
-        });
+            Object.values(this.props.sceneContext.objectTree).forEach(entry => {
+                if (!entry.objectId || !this.props.sceneContext.objectIsVisible(entry.objectId)) {
+                    return;
+                }
+                const object = this.props.sceneContext.getSceneObject(entry.objectId);
+                if (object.tiles) {
+                    this.addTileToExportGroup(object.tiles, exportGroup, selectionBox);
+                } else {
+                    this.addObjectToExportGroup(object, exportGroup, selectionBox);
+                }
+            });
+        } else if (this.state.mode === 'Layer' && this.state.selectedLayer) {
+            const obj = this.props.sceneContext.getSceneObject(this.state.selectedLayer);
+            exportGroup.add(obj.clone());
+        } else {
+            return;
+        }
         exportGroup.rotation.x -= Math.PI / 2; // GLTF is Y-UP
         exportGroup.updateMatrixWorld(true);
         const exportScene = new Scene();
