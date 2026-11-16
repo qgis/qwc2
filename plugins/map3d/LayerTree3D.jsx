@@ -10,8 +10,11 @@ import React from 'react';
 import {connect} from 'react-redux';
 
 import classNames from 'classnames';
+import FileSaver from 'file-saver';
 import isEmpty from 'lodash.isempty';
 import PropTypes from 'prop-types';
+import {Group, Scene} from 'three';
+import {GLTFExporter} from 'three/examples/jsm/Addons.js';
 
 import {LayerRole} from '../../actions/layers';
 import {setCurrentTask} from '../../actions/task';
@@ -172,6 +175,9 @@ class LayerTree3D extends React.Component {
                             {(!isEmpty(entry.children) || !isEmpty(entry.sublayers)) && !this.props.groupTogglesSublayers ? (
                                 <Icon icon="tree" onClick={() => updateCallback(entryId, {visibility: !entry.visibility}, {path, groupTogglesSublayers: true})} title={LocaleUtils.tr("layertree.togglegroup")} />
                             ) : null}
+                            {entry.drawGroup && (
+                                <Icon icon="export" onClick={() => this.export(entryId)} title={LocaleUtils.tr("common.export")} />
+                            )}
                         </div>
                         {entry.extrusionHeight !== undefined ? (
                             <div className="layertree3d-item-optionsmenu-row">
@@ -266,6 +272,20 @@ class LayerTree3D extends React.Component {
     };
     toggleSync2d = () => {
         this.props.sceneContext.setSetting("sync2dlayers", !this.props.sceneContext.settings.sync2dlayers);
+    };
+    export = (objectId) => {
+        const exportGroup = new Group();
+        exportGroup.rotation.x -= Math.PI / 2; // GLTF is Y-UP
+        exportGroup.updateMatrixWorld(true);
+        exportGroup.add(this.props.sceneContext.getSceneObject(objectId).clone());
+        const exportScene = new Scene();
+        exportScene.add(exportGroup);
+        const exporter = new GLTFExporter();
+        exporter.parse(exportScene, (gltf) => {
+            const blob = new Blob([JSON.stringify(gltf)], {type: 'application/json'});
+            FileSaver.saveAs(blob, "scene.gltf");
+            this.setState({exporting: false});
+        });
     };
 }
 
