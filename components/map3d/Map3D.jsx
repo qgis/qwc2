@@ -1040,7 +1040,8 @@ class Map3D extends React.Component {
                         styles: entry.styles || {},
                         style: entry.style || Object.keys(entry.styles || {})[0] || null
                     };
-                    this.importTiles3D(entry.url, entry.name);
+                    // NOTE: is added to objectTree manually, since objectTree is not yet in the state
+                    this.importTiles3D(entry.url, entry.name, false, entry);
                     this.objectMap[entry.name].userData = {
                         ...this.objectMap[entry.name].userData,
                         baseColor: entry.baseColor,
