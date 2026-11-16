@@ -408,6 +408,8 @@
     },
     "layertree3d": {
       "customheight": "",
+      "disableshadows": "",
+      "enableshadows": "",
       "import": "",
       "importobjects": "",
       "layers": "",

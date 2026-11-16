@@ -502,8 +502,8 @@ class Map3D extends React.Component {
                 this.notifyObjectAdded(scene);
             }
         });
-        tiles.castShadow = true;
-        tiles.receiveShadow = true;
+        tiles.castShadow = treeOptions.shadows ?? true;
+        tiles.receiveShadow = treeOptions.shadows ?? true;
         this.addSceneObject(objectId, tiles, addToLayerTree, treeOptions);
     };
     importObject3D = (dataOrUrl, objectId, addToLayerTree = false, treeOptions = {}, showEditTool = false, callback = null) => {
@@ -517,12 +517,10 @@ class Map3D extends React.Component {
             root.rotation.x += Math.PI / 2;
             root.updateMatrixWorld(true);
 
-            root.castShadow = true;
-            root.receiveShadow = true;
             root.traverse(c => {
                 if (c.geometry) {
-                    c.castShadow = true;
-                    c.receiveShadow = true;
+                    c.castShadow = treeOptions.shadows ?? true;
+                    c.receiveShadow = treeOptions.shadows ?? true;
                 }
                 updateObjectLabel(c, this.state.sceneContext);
             });
@@ -588,6 +586,7 @@ class Map3D extends React.Component {
                     visibility: true,
                     opacity: 255,
                     snap: true,
+                    shadows: true,
                     ...treeOptions
                 };
                 return {
@@ -705,6 +704,18 @@ class Map3D extends React.Component {
                     }
                 });
             }
+            changed = true;
+        }
+        if (options.shadows !== prevOptions?.shadows) {
+            object.traverse(c => {
+                if (c.geometry) {
+                    c.castShadow = options.shadows;
+                    c.receiveShadow = options.shadows;
+                }
+            });
+            // Appy also on the object itself, necessary for Tiles3D, where traverse does not update the entity itself
+            object.castShadow = options.shadows;
+            object.receiveShadow = options.shadows;
             changed = true;
         }
         if (changed) {
@@ -1021,6 +1032,7 @@ class Map3D extends React.Component {
                         title: entry.title ?? entry.name,
                         visibility: entry.visibility ?? true,
                         snap: entry.snap ?? true,
+                        shadows: entry.shadows ?? true,
                         opacity: 255,
                         styles: entry.styles || {},
                         style: entry.style || Object.keys(entry.styles || {})[0] || null
@@ -1045,6 +1057,7 @@ class Map3D extends React.Component {
                         title: entry.title ?? entry.name,
                         visibility: entry.visibility ?? true,
                         snap: entry.snap ?? true,
+                        shadows: entry.shadows ?? true,
                         opacity: 255
                     };
                     this.importObject3D(MiscUtils.resolveAssetsPath(entry.url), entry.name, false, {}, false, () => {
@@ -1345,8 +1358,8 @@ class Map3D extends React.Component {
                 loader.parse(item.data, ConfigUtils.getAssetsPath(), (gltf) => {
                     gltf.scene.traverse(c => {
                         if (c.isMesh) {
-                            c.castShadow = true;
-                            c.receiveShadow = true;
+                            c.castShadow = item.options.shadows ?? true;
+                            c.receiveShadow = item.options.shadows ?? true;
                         }
                         updateObjectLabel(c, this.state.sceneContext);
                     });

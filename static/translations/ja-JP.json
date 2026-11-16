@@ -408,6 +408,8 @@
     },
     "layertree3d": {
       "customheight": "値",
+      "disableshadows": "",
+      "enableshadows": "",
       "import": "インポート",
       "importobjects": "オブジェクトをインポート",
       "layers": "レイヤ",

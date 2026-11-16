@@ -388,6 +388,8 @@
     "layertree.zoomoscale",
     "layertree.zoomtolayer",
     "layertree3d.customheight",
+    "layertree3d.disableshadows",
+    "layertree3d.enableshadows",
     "layertree3d.import",
     "layertree3d.importobjects",
     "layertree3d.layers",

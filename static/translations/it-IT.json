@@ -408,6 +408,8 @@
     },
     "layertree3d": {
       "customheight": "Valore",
+      "disableshadows": "Disattiva le ombre",
+      "enableshadows": "Attiva le ombre",
       "import": "Importa",
       "importobjects": "Importa oggetti",
       "layers": "Livelli",

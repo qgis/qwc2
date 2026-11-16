@@ -408,6 +408,8 @@
     },
     "layertree3d": {
       "customheight": "Valor",
+      "disableshadows": "",
+      "enableshadows": "",
       "import": "Importar",
       "importobjects": "Importar objectes",
       "layers": "Capes",

@@ -408,6 +408,8 @@
     },
     "layertree3d": {
       "customheight": "Wartość",
+      "disableshadows": "",
+      "enableshadows": "",
       "import": "Import",
       "importobjects": "Import obiektów",
       "layers": "Warstwy",

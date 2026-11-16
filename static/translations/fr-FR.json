@@ -408,6 +408,8 @@
     },
     "layertree3d": {
       "customheight": "Valeur",
+      "disableshadows": "Désactiver les ombres",
+      "enableshadows": "Activer les ombres",
       "import": "Importer",
       "importobjects": "Importer objets",
       "layers": "Couches",

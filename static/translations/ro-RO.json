@@ -408,6 +408,8 @@
     },
     "layertree3d": {
       "customheight": "Valoare",
+      "disableshadows": "",
+      "enableshadows": "",
       "import": "Import",
       "importobjects": "Importă obiecte",
       "layers": "Straturi",

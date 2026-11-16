@@ -408,6 +408,8 @@
     },
     "layertree3d": {
       "customheight": "Wert",
+      "disableshadows": "Schatten deaktivieren",
+      "enableshadows": "Schatten aktivieren",
       "import": "Importieren",
       "importobjects": "Objekte importieren",
       "layers": "Ebenen",
