@@ -157,7 +157,7 @@ class View3D extends React.Component {
 
         // Set stored state
         const storedState = {
-            ...props.startupState.map3d
+            ...props.startupState.map3d?.state
         };
         if (props.startupParams.v3d) {
             const values = props.startupParams.v3d.split(",").map(parseFloat).filter(x => !isNaN(x));
@@ -216,8 +216,8 @@ class View3D extends React.Component {
             this.syncParentStore(this.props, true);
         } else if (this.state.enabledState === this.EnabledState.DISABLING && prevState.enabledState !== this.EnabledState.DISABLING) {
             if (this.map3dComponentRef) {
-                this.map3dComponentRef.store3dState().then(storedState => {
-                    this.setState({storedState, enabledState: this.EnabledState.DISABLED}, () => {
+                this.map3dComponentRef.store3dState().then(result => {
+                    this.setState({storedState: result.state, enabledState: this.EnabledState.DISABLED}, () => {
                         if (this.pendingViewState !== null) {
                             this.setState({enabledState: this.pendingViewState});
                         }
