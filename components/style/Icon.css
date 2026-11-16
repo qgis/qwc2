@@ -9,6 +9,18 @@ img.icon {
     vertical-align: top;
 }
 
+span.icon_xxsmall:before {
+    font-size: xx-small;
+}
+
+span.icon_xsmall:before {
+    font-size: x-small;
+}
+
+span.icon_small:before {
+    font-size: small;
+}
+
 span.icon_large:before {
     font-size: 150%;
 }
