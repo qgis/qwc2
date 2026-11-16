@@ -1372,6 +1372,7 @@ See [3D View](../../topics/View3D).
 | Property | Type | Description | Default value |
 |----------|------|-------------|---------------|
 | controlsPosition | `string` | The position of the navigation controls. Either `top` or `bottom`. | `'top'` |
+| controlsSpeed | `{`<br />`  pan: number,`<br />`  tilt: number,`<br />`  zoom: number,`<br />`}` | The pan/tilt/zoom speed when navigating with the respective map controls.<br />- `pan`: undefined<br />- `tilt`: undefined<br />- `zoom`: undefined | `{pan: 1, tilt: 1, zoom: 1}` |
 | defaultColorLayerVisibility | `bool` | Whether 2D layers should be visible by default when opening the 3D view. | `false` |
 | defaultFov | `number` | The default field of view (`20`: min, `100`: max). | `30` |
 | defaultPointSize | `number` | The default point size for point cloud tiles (`0`: min, `20`: max). Automatic size computation when the value is `0`. | `0` |

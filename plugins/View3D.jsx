@@ -45,6 +45,12 @@ class View3D extends React.Component {
         bookmark: PropTypes.object,
         /** The position of the navigation controls. Either `top` or `bottom`. */
         controlsPosition: PropTypes.string,
+        /** The pan/tilt/zoom speed when navigating with the respective map controls. */
+        controlsSpeed: PropTypes.shape({
+            pan: PropTypes.number,
+            tilt: PropTypes.number,
+            zoom: PropTypes.number
+        }),
         /** Whether 2D layers should be visible by default when opening the 3D view. */
         defaultColorLayerVisibility: PropTypes.bool,
         /** The default field of view (`20`: min, `100`: max). */
@@ -91,6 +97,7 @@ class View3D extends React.Component {
     };
     static defaultProps = {
         controlsPosition: 'top',
+        controlsSpeed: {pan: 1, tilt: 1, zoom: 1},
         defaultColorLayerVisibility: false,
         defaultFov: 30,
         defaultPointSize: 0,
@@ -332,6 +339,7 @@ class View3D extends React.Component {
                             <PluginsContainer className="plugins-container-3d" pluginsConfig={pluginsConfig}>
                                 <Map3D
                                     controlsPosition={this.props.controlsPosition}
+                                    controlsSpeed={{...View3D.defaultProps.controlsSpeed, ...this.props.controlsSpeed}}
                                     defaultColorLayerVisibility={this.props.defaultColorLayerVisibility}
                                     defaultFov={this.props.defaultFov}
                                     defaultPointSize={this.props.defaultPointSize}

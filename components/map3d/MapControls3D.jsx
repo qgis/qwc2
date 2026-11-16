@@ -31,6 +31,7 @@ class MapControls3D extends React.Component {
     static propTypes = {
         children: PropTypes.oneOfType([PropTypes.node, PropTypes.func]),
         controlsPosition: PropTypes.string,
+        controlsSpeed: PropTypes.object,
         currentTask: PropTypes.string,
         mouseButtons: PropTypes.object,
         onCameraChanged: PropTypes.func,
@@ -220,16 +221,18 @@ class MapControls3D extends React.Component {
         }
     };
     pan = (ev, dx, dy) => {
+        const k = this.props.controlsSpeed?.pan ?? 1;
         const panInterval = setInterval(() => {
-            this.props.sceneContext.scene.view.controls.panView(dx, dy);
+            this.props.sceneContext.scene.view.controls.panView(dx * k, dy * k);
         }, 50);
         ev.view.addEventListener('pointerup', () => {
             clearInterval(panInterval);
         }, {once: true});
     };
     tilt = (ev, azimuth, polar) => {
+        const k = this.props.controlsSpeed?.tilt ?? 1;
         const tiltInterval = setInterval(() => {
-            this.props.sceneContext.scene.view.controls.tiltView(azimuth, polar);
+            this.props.sceneContext.scene.view.controls.tiltView(azimuth * k, polar * k);
         }, 50);
         ev.view.addEventListener('pointerup', () => {
             clearInterval(tiltInterval);
@@ -251,7 +254,7 @@ class MapControls3D extends React.Component {
         const zoomInterval = setInterval(() => {
             const camerapos = this.props.sceneContext.scene.view.camera.position;
             const target = this.controls.target;
-            const k = Math.min(150, Math.sqrt(target.distanceTo(camerapos)));
+            const k = Math.min(150, Math.sqrt(target.distanceTo(camerapos))) * (this.props.controlsSpeed?.zoom ?? 1);
             this.props.sceneContext.scene.view.controls.zoomView(delta * k);
         }, 50);
         ev.view.addEventListener('pointerup', () => {

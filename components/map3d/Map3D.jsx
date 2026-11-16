@@ -91,6 +91,7 @@ class Map3D extends React.Component {
     static contextType = MapContainerPortalContext;
     static propTypes = {
         controlsPosition: PropTypes.string,
+        controlsSpeed: PropTypes.object,
         defaultColorLayerVisibility: PropTypes.bool,
         defaultFov: PropTypes.number,
         defaultPointSize: PropTypes.number,
@@ -828,6 +829,7 @@ class Map3D extends React.Component {
                 <UnloadWrapper key={this.state.sceneContext.sceneId} onUnload={this.onUnload} sceneId={this.state.sceneContext.sceneId}>
                     <MapControls3D
                         controlsPosition={this.props.controlsPosition}
+                        controlsSpeed={this.props.controlsSpeed}
                         mouseButtons={this.props.mouseButtons}
                         onCameraChanged={this.onCameraChanged}
                         onControlsSet={this.setupControls}
