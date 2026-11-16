@@ -158,9 +158,12 @@ class LayerTree3D extends React.Component {
                 {this.state.activemenu === key ? (
                     <div className="layertree3d-item-optionsmenu">
                         <div className="layertree3d-item-optionsmenu-row">
-                            {isObject ? (
+                            {isObject && (
                                 <Icon icon="zoom" onClick={() => this.props.sceneContext.zoomToObject(entryId)} title={LocaleUtils.tr("layertree3d.zoomtoobject")} />
-                            ) : null}
+                            )}
+                            {!isObject && entry.bbox?.bounds && (
+                                <Icon icon="zoom" onClick={() => this.props.sceneContext.zoomToExtent(entry.bbox)} title={LocaleUtils.tr("layertree.zoomtolayer")} />
+                            )}
                             {entry.imported ? (<Icon icon="draw" onClick={() => this.editObject(entryId)} />) : null}
                             <Icon icon="transparency" />
                             <input className="layertree3d-item-transparency-slider" max="255" min="0"

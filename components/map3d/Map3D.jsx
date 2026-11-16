@@ -153,6 +153,7 @@ class Map3D extends React.Component {
             removeSceneObject: (objectId) => {},
             updateSceneObject: (objectId, options, flags) => {},
             zoomToObject: (objectId) => {},
+            zoomToExtent: (extent) => {},
             objectIsVisible: (objectId) => {},
             objectContainsPoints: (object) => {},
 
@@ -197,6 +198,7 @@ class Map3D extends React.Component {
         this.state.sceneContext.addObjectAddedListener = (callback) => this.objectAddedListeners.push(callback);
         this.state.sceneContext.removeObjectAddedListener = (callback) => { this.objectAddedListeners = this.objectAddedListeners.filter(cb => cb !== callback); };
         this.state.sceneContext.zoomToObject = this.zoomToObject;
+        this.state.sceneContext.zoomToExtent = this.zoomToExtent;
         this.state.sceneContext.objectIsVisible = this.objectIsVisible;
         this.state.sceneContext.objectContainsPoints = this.objectContainsPoints;
         this.state.sceneContext.getMap = this.getMap;
@@ -777,6 +779,11 @@ class Map3D extends React.Component {
             ];
             this.state.sceneContext.setViewToExtent(bounds, 0);
         }
+    };
+    zoomToExtent = (extent) => {
+        const mapCrs = this.state.sceneContext.mapCrs;
+        const bounds = CoordinatesUtils.reprojectBbox(extent.bounds, extent.crs || mapCrs, mapCrs);
+        this.state.sceneContext.setViewToExtent(bounds, 0);
     };
     objectIsVisible = (objectId) => {
         const objectTree = this.state.sceneContext.objectTree;
