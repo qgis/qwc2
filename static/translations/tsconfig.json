@@ -395,6 +395,7 @@
     "layertree3d.layers",
     "layertree3d.objects",
     "layertree3d.supportedformats",
+    "layertree3d.sync2dlayers",
     "layertree3d.zoomtoobject",
     "linkfeatureform.drawhint",
     "linkfeatureform.pickhint",

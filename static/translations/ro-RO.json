@@ -415,6 +415,7 @@
       "layers": "Straturi",
       "objects": "Obiecte",
       "supportedformats": "Formate acceptate: GLTF",
+      "sync2dlayers": "",
       "zoomtoobject": "Zoom la obiect"
     },
     "linkfeatureform": {

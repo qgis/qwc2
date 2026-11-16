@@ -415,6 +415,7 @@
       "layers": "レイヤ",
       "objects": "オブジェクト",
       "supportedformats": "サポートされている形式: GLTF",
+      "sync2dlayers": "",
       "zoomtoobject": "オブジェクトにズーム"
     },
     "linkfeatureform": {

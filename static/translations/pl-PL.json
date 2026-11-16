@@ -415,6 +415,7 @@
       "layers": "Warstwy",
       "objects": "Obiekty",
       "supportedformats": "Wspierane formaty: GLTF",
+      "sync2dlayers": "",
       "zoomtoobject": "Powiększ do obiektu"
     },
     "linkfeatureform": {

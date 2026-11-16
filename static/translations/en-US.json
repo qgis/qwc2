@@ -415,6 +415,7 @@
       "layers": "Layers",
       "objects": "Objects",
       "supportedformats": "Supported formats: GLTF",
+      "sync2dlayers": "Sync 2D layer settings",
       "zoomtoobject": "Zoom to object"
     },
     "linkfeatureform": {

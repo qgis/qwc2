@@ -415,6 +415,7 @@
       "layers": "Couches",
       "objects": "Objets",
       "supportedformats": "Formats supportés: GLTF",
+      "sync2dlayers": "Synchroniser les paramètres des niveaux 2D",
       "zoomtoobject": "Zoomer sur le objet"
     },
     "linkfeatureform": {

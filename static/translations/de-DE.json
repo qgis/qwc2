@@ -415,6 +415,7 @@
       "layers": "Ebenen",
       "objects": "Objekte",
       "supportedformats": "Unterstützte Formate: GLTF",
+      "sync2dlayers": "Einstellungen von 2D Ebenen synchronisieren",
       "zoomtoobject": "Auf Objekt zoomen"
     },
     "linkfeatureform": {

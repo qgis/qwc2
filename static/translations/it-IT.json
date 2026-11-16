@@ -415,6 +415,7 @@
       "layers": "Livelli",
       "objects": "Oggetti",
       "supportedformats": "Formati supportati: GLTF",
+      "sync2dlayers": "Sincronizza le Impostazioni dei livelli 2D",
       "zoomtoobject": "Zooma su oggetto"
     },
     "linkfeatureform": {

@@ -415,6 +415,7 @@
       "layers": "Capas",
       "objects": "Objetos",
       "supportedformats": "Formatos soportados: GLTF",
+      "sync2dlayers": "",
       "zoomtoobject": "Zoom al objeto"
     },
     "linkfeatureform": {

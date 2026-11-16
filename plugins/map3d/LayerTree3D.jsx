@@ -62,7 +62,7 @@ class LayerTree3D extends React.Component {
             "layertree3d-titlebar-icon-active": this.props.sceneContext.settings.sync2dlayers
         });
         const extraTitlebarContent = (
-            <Icon className={iconclasses} icon="sync2d" onClick={this.toggleSync2d} />
+            <Icon className={iconclasses} icon="sync2d" onClick={this.toggleSync2d} title={LocaleUtils.tr("layertree3d.sync2dlayers")} />
         );
         return (
             <SideBar
