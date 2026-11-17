@@ -10,6 +10,7 @@
 import React from 'react';
 import {connect} from 'react-redux';
 
+import deepmerge from 'deepmerge';
 import PropTypes from 'prop-types';
 
 import PluginStore from './PluginStore';
@@ -72,10 +73,10 @@ class ConfigUtils extends React.Component {
         const pluginConfig = {
             ...config.plugins[config.isMobile ? "mobile" : "desktop"].find(entry => entry.name === name) || {}
         };
-        pluginConfig.cfg = {
-            ...PluginStore.getDefaultProps(name),
-            ...pluginConfig.cfg
-        };
+        pluginConfig.cfg = deepmerge(
+            PluginStore.getDefaultProps(name) ?? {},
+            pluginConfig.cfg ?? {}
+        );
         return pluginConfig;
     }
     static setSessionConfig(name, value) {
