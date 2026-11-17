@@ -10,7 +10,6 @@ import React from 'react';
 import {connect} from 'react-redux';
 
 import classnames from 'classnames';
-import {remove as removeDiacritics} from 'diacritics';
 import PropTypes from 'prop-types';
 
 import {toggleFullscreen} from '../actions/display';
@@ -132,7 +131,7 @@ class TopBar extends React.Component {
         if (this.props.registerTaskSearchProvider) {
             this.props.registerSearchProvider("tasksearch2d", {
                 label: LocaleUtils.tr("search.tasks"),
-                onSearch: this.searchTasks
+                onSearch: (text, params, callback) => TaskSearchProvider.search(text, params, callback, this.state.allowedMenuItems),
             });
         }
     }
@@ -233,37 +232,6 @@ class TopBar extends React.Component {
         if (el) {
             this.props.setTopbarHeight(el.clientHeight);
         }
-    };
-    searchTasks = (text, searchParams, callback) => {
-        const filter = new RegExp(removeDiacritics(text).replace(/[-[\]/{}()*+?.\\^$|]/g, "\\$&"), "i");
-        const results = [];
-        this.searchTaskGroup(results, filter, this.state.allowedMenuItems);
-        if (results.length > 0) {
-            callback({results: [{
-                id: "tasks",
-                title: LocaleUtils.tr("search.tasks"),
-                type: SearchResultType.TASK,
-                items: results
-            }]});
-        } else {
-            callback({results: []});
-        }
-    };
-    searchTaskGroup = (results, filter, group) => {
-        group.forEach(item => {
-            if (item.subitems) {
-                this.searchTaskGroup(results, filter, item.subitems);
-            } else {
-                const label = item.title ? LocaleUtils.tr(item.title) : LocaleUtils.tr("appmenu.items." + item.key + (item.mode || ""));
-                if (removeDiacritics(label).match(filter)) {
-                    results.push({
-                        id: "tasks:" + results.length,
-                        text: label,
-                        task: item
-                    });
-                }
-            }
-        });
     };
 }
 

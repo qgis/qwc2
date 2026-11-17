@@ -7,6 +7,7 @@
  */
 
 
+import {remove as removeDiacritics} from 'diacritics';
 import yaml from 'js-yaml';
 import polygonIntersectTest from 'polygon-intersect-test';
 
@@ -508,6 +509,40 @@ export class FulltextSearch {
                 }
             }).catch(() => {});
         }
+    }
+}
+
+export class TaskSearchProvider {
+    static search(searchText, searchParams, callback, allowedMenuItems) {
+        const filter = new RegExp(removeDiacritics(searchText).replace(/[-[\]/{}()*+?.\\^$|]/g, "\\$&"), "i");
+        const results = [];
+        TaskSearchProvider.searchTaskGroup(results, filter, allowedMenuItems);
+        if (results.length > 0) {
+            callback({results: [{
+                id: "tasks",
+                title: LocaleUtils.tr("search.tasks"),
+                type: SearchResultType.TASK,
+                items: results
+            }]});
+        } else {
+            callback({results: []});
+        }
+    }
+    static searchTaskGroup(results, filter, group) {
+        group.forEach(item => {
+            if (item.subitems) {
+                TaskSearchProvider.searchTaskGroup(results, filter, item.subitems);
+            } else {
+                const label = item.title ? LocaleUtils.tr(item.title) : LocaleUtils.tr("appmenu.items." + item.key + (item.mode || ""));
+                if (removeDiacritics(label).match(filter)) {
+                    results.push({
+                        id: "tasks:" + results.length,
+                        text: label,
+                        task: item
+                    });
+                }
+            }
+        });
     }
 }
 
