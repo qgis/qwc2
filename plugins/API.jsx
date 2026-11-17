@@ -94,7 +94,6 @@ import LayerUtils from '../utils/LayerUtils';
 import LocaleUtils from '../utils/LocaleUtils';
 import MapUtils from '../utils/MapUtils';
 import * as PermaLinkUtils from '../utils/PermaLinkUtils';
-import PluginStore from '../utils/PluginStore';
 import Request from '../utils/Request';
 import {SearchResultType} from '../utils/SearchProviders';
 import ServiceLayerUtils from '../utils/ServiceLayerUtils';
@@ -382,6 +381,7 @@ class API extends React.Component {
     }
     static propTypes = {
         addLayer: PropTypes.func,
+        addTranslations: PropTypes.func,
         /* List of origins which are allowed to post messages via `qwcIframe.postMessage`. */
         allowedMessageOrigins: PropTypes.arrayOf(PropTypes.string),
         click: PropTypes.object,
@@ -492,8 +492,7 @@ class API extends React.Component {
     addPlugin = (name, plugin, translations = {}) => {
         const component = plugin.WrappedComponent ?? plugin;
         const availableIn3D = component.availableIn3D ?? false;
-        PluginStore.addCustomPlugin(name, plugin);
-        window.qwc2.addTranslations(translations);
+        this.props.addTranslations(translations);
         this.props.registerCustomPlugin(name, availableIn3D);
     };
     /**
@@ -502,7 +501,6 @@ class API extends React.Component {
      * * `name`: The identifier
      */
     removePlugin = (name) => {
-        PluginStore.removeCustomPlugin(name);
         this.props.unregisterCustomPlugin(name);
     };
     /**

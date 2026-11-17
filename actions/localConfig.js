@@ -8,6 +8,7 @@
 
 import ReducerIndex from '../reducers/index';
 import localConfigReducer from '../reducers/localConfig';
+import PluginStore from '../utils/PluginStore';
 import {SearchProviders} from '../utils/SearchProviders';
 ReducerIndex.register("localConfig", localConfigReducer);
 
@@ -59,7 +60,8 @@ export function setUserInfoFields(fields) {
     };
 }
 
-export function registerCustomPlugin(name, availableIn3D) {
+export function registerCustomPlugin(name, plugin, availableIn3D) {
+    PluginStore.addCustomPlugin(name, plugin);
     return {
         type: REGISTER_CUSTOM_PLUGIN,
         name,
@@ -68,6 +70,7 @@ export function registerCustomPlugin(name, availableIn3D) {
 }
 
 export function unregisterCustomPlugin(name) {
+    PluginStore.removeCustomPlugin(name);
     return {
         type: UNREGISTER_CUSTOM_PLUGIN,
         name
