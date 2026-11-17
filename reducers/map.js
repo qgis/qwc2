@@ -98,11 +98,13 @@ export default function map(state = defaultState, action) {
         bounds[1] -= padding * height;
         bounds[3] += padding * height;
         let zoom = MapUtils.getZoomForExtent(bounds, state.resolutions, state.size, 0, state.scales.length - 1) + action.zoomOffset;
-        if (action.maxZoom !== undefined) {
-            zoom = Math.min(zoom, action.maxZoom);
+        if (action.maxScale !== undefined) {
+            const maxZoom = MapUtils.computeZoom(state.scales, action.maxScale);
+            zoom = Math.min(zoom, maxZoom);
         }
-        if (action.minZoom !== undefined) {
-            zoom = Math.max(zoom, action.minZoom);
+        if (action.minScale !== undefined) {
+            const minZoom = MapUtils.computeZoom(state.scales, action.minScale);
+            zoom = Math.max(zoom, minZoom);
         }
         const newState = {
             ...state,

@@ -26,7 +26,6 @@ import Spinner from '../components/widgets/Spinner';
 import IdentifyUtils from '../utils/IdentifyUtils';
 import LayerUtils from '../utils/LayerUtils';
 import LocaleUtils from '../utils/LocaleUtils';
-import MapUtils from '../utils/MapUtils';
 import Request from '../utils/Request';
 import {QgisSearch} from '../utils/SearchProviders';
 import VectorLayerUtils from '../utils/VectorLayerUtils';
@@ -45,7 +44,7 @@ class FeatureSearch extends React.Component {
         /** Whether to enable the export functionality. Either `true|false` or a list of single allowed formats (builtin formats: `json`, `geojson`, `csv`, `csvzip`, `shapefile`, `xlsx`). If a list is provided, the export formats will be sorted according to that list, and the default format will be the first format of the list. */
         enableExport: PropTypes.oneOfType([PropTypes.bool, PropTypes.array]),
         layers: PropTypes.array,
-        map: PropTypes.object,
+        mapCrs: PropTypes.string,
         /** Show zoom to all results button. */
         showZoomToResults: PropTypes.bool,
         /** The side of the application on which to display the sidebar. */
@@ -256,7 +255,7 @@ class FeatureSearch extends React.Component {
 
         this.setState({busy: true, searchResults: null});
         Request.get(this.props.theme.featureInfoUrl, {params}).then(response => {
-            let results = IdentifyUtils.parseResponse(response.data, this.props.theme, 'text/xml', null, this.props.map.projection);
+            let results = IdentifyUtils.parseResponse(response.data, this.props.theme, 'text/xml', null, this.props.mapCrs);
             // Enable the layers
             Object.keys(results).forEach(layername => {
                 const path = [];
@@ -285,8 +284,8 @@ class FeatureSearch extends React.Component {
             results = Object.fromEntries(Object.entries(results).map(([layername, features]) => ([this.props.theme.url + "#" + layername, features])));
             const bbox = VectorLayerUtils.computeFeaturesBBox(Object.values(results).flat());
             if (bbox) {
-                const maxZoom = MapUtils.computeZoom(this.props.map.scales, this.props.theme.minSearchScaleDenom || 1000);
-                this.props.zoomToExtent(bbox.bounds, bbox.crs, 0, undefined, maxZoom);
+                const maxScale = this.props.theme.minSearchScaleDenom || 1000;
+                this.props.zoomToExtent(bbox.bounds, bbox.crs, 0, undefined, maxScale);
             }
             this.setState({busy: false, searchResults: results});
         }).catch(() => {
@@ -343,7 +342,7 @@ class FeatureSearch extends React.Component {
 
 export default connect((state) => ({
     layers: state.layers.flat,
-    map: state.map,
+    mapCrs: state.map.projection,
     theme: state.theme.current
 }), {
     changeLayerProperty: changeLayerProperty,

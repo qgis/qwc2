@@ -29,7 +29,6 @@ import CoordinatesUtils from '../utils/CoordinatesUtils';
 import {defaultHighlightStyle} from '../utils/FeatureStyles';
 import LayerUtils from '../utils/LayerUtils';
 import LocaleUtils from '../utils/LocaleUtils';
-import MapUtils from '../utils/MapUtils';
 import MiscUtils from '../utils/MiscUtils';
 import {UrlParams} from '../utils/PermaLinkUtils';
 import Request from '../utils/Request';
@@ -953,24 +952,15 @@ class SearchBox extends React.Component {
         ) : CoordinatesUtils.reprojectBbox(
             item.bbox ?? [item.x, item.y, item.x, item.y], item.crs ?? mapCrs, mapCrs
         );
-        this.zoomToResultBBox(bbox, scale);
-        this.props.setCurrentSearchResult(item);
-    };
-    zoomToResultBBox = (bbox, scale) => {
-        let zoom = 0;
+        let minScale = undefined;
+        let maxScale = undefined;
         if (scale) {
-            zoom = MapUtils.computeZoom(this.props.map.scales, scale);
+            minScale = maxScale = scale;
         } else {
-            const maxZoom = MapUtils.computeZoom(this.props.map.scales, this.props.theme.minSearchScaleDenom || this.props.searchOptions.minScaleDenom);
-            if (bbox[0] !== bbox[2] && bbox[1] !== bbox[3]) {
-                zoom = MapUtils.getZoomForExtent(bbox, this.props.map.resolutions, this.props.map.size, 0, maxZoom);
-            } else {
-                zoom = maxZoom;
-            }
+            maxScale = this.props.theme.minSearchScaleDenom || this.props.searchOptions.minScaleDenom;
         }
-        const x = 0.5 * (bbox[0] + bbox[2]);
-        const y = 0.5 * (bbox[1] + bbox[3]);
-        this.props.zoomToPoint([x, y], zoom, this.props.map.projection);
+        this.props.zoomToExtent(bbox, mapCrs, 0, minScale, maxScale);
+        this.props.setCurrentSearchResult(item);
     };
     openUrl = (ev, url, target, title) => {
         MiscUtils.killEvent(ev);

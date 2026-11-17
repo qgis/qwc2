@@ -24,7 +24,6 @@ import {defaultHighlightStyle} from '../utils/FeatureStyles';
 import {IdentifyExporters} from '../utils/IdentifyExporters';
 import LayerUtils from '../utils/LayerUtils';
 import LocaleUtils from '../utils/LocaleUtils';
-import MapUtils from '../utils/MapUtils';
 import MiscUtils, {Memoizer, ToggleSet} from '../utils/MiscUtils';
 import Request from '../utils/Request';
 import VectorLayerUtils from '../utils/VectorLayerUtils';
@@ -55,7 +54,7 @@ class IdentifyViewer extends React.Component {
         identifyResults: PropTypes.object,
         layers: PropTypes.array,
         longAttributesDisplay: PropTypes.oneOf(['ellipsis', 'wrap']),
-        map: PropTypes.object,
+        mapCrs: PropTypes.string,
         openExternalUrl: PropTypes.func,
         removeLayer: PropTypes.func,
         replaceImageUrls: PropTypes.bool,
@@ -784,7 +783,7 @@ class IdentifyViewer extends React.Component {
             feature: results.map(result => result.id).join(","),
             x: results[0].clickPos?.[0],
             y: results[0].clickPos?.[1],
-            crs: this.props.map.projection,
+            crs: this.props.mapCrs,
             single_report: report.single_report || false
         };
         this.setState({generatingReport: true});
@@ -815,8 +814,8 @@ class IdentifyViewer extends React.Component {
     zoomTo = (results) => {
         const bbox = VectorLayerUtils.computeFeaturesBBox(Object.values(results).flat());
         if (bbox) {
-            const maxZoom = MapUtils.computeZoom(this.props.map.scales, this.props.theme.minSearchScaleDenom || 1000);
-            this.props.zoomToExtent(bbox.bounds, bbox.crs, 0, undefined, maxZoom);
+            const maxScale = this.props.theme.minSearchScaleDenom || 1000;
+            this.props.zoomToExtent(bbox.bounds, bbox.crs, 0, undefined, maxScale);
         }
         Object.keys(results).forEach(layerId => {
             const [layerUrl, layerName] = layerId.split('#');
@@ -842,7 +841,7 @@ const selector = (state) => ({
     editConfigs: state.layers.editConfigs,
     theme: state.theme.current,
     layers: state.layers.flat,
-    map: state.map
+    mapCrs: state.map.projection
 });
 
 export default connect(selector, {
