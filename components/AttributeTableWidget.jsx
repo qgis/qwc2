@@ -550,7 +550,9 @@ class AttributeTableWidget extends React.Component {
                 const fields = (this.props.showDisplayFieldOnly ? editConfig.fields.filter(
                     field => field.name === editConfig.displayField
                 ) : editConfig.fields.filter(field => (
-                    (this.props.showHiddenFields || field.constraints?.hidden !== true)
+                    this.props.showHiddenFields ||
+                    field.constraints?.hidden !== true ||
+                    (!this.props.hideIdColumn && field.id === editConfig.primaryKey)
                 ))).map(field => ({
                     ...field,
                     name: fieldTranslations?.[field.name] ?? field.name
