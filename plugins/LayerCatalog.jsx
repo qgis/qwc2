@@ -12,13 +12,14 @@ import {connect} from 'react-redux';
 import {remove as removeDiacritics} from 'diacritics';
 import PropTypes from 'prop-types';
 
+import {registerSearchProvider, unregisterSearchProvider} from '../actions/localConfig';
 import {setCurrentTask} from '../actions/task';
 import ResizeableWindow from '../components/ResizeableWindow';
 import LayerCatalogWidget from '../components/widgets/LayerCatalogWidget';
 import LocaleUtils from '../utils/LocaleUtils';
 import MiscUtils from '../utils/MiscUtils';
 import Request from '../utils/Request';
-import {registerSearchProvider, SearchResultType, unregisterSearchProvider} from '../utils/SearchProviders';
+import {SearchResultType} from '../utils/SearchProviders';
 
 import './style/LayerCatalog.css';
 
@@ -103,9 +104,11 @@ class LayerCatalog extends React.Component {
         levelBasedIndentSize: PropTypes.bool,
         /** Whether to register a search provider which allows searching catalog layers through the global search field. */
         registerCatalogSearchProvider: PropTypes.bool,
+        registerSearchProvider: PropTypes.func,
         setCurrentTask: PropTypes.func,
         /** Whether clicking the group name toggles the WMS group rather than loading the grouped layer. */
-        toggleGroupOnClick: PropTypes.bool
+        toggleGroupOnClick: PropTypes.bool,
+        unregisterSearchProvider: PropTypes.func
     };
     static defaultProps = {
         geometry: {
@@ -137,16 +140,14 @@ class LayerCatalog extends React.Component {
             });
         }
         if (this.props.registerCatalogSearchProvider) {
-            registerSearchProvider("catalogsearch", {
+            this.props.registerSearchProvider("catalogsearch", {
                 label: LocaleUtils.tr("layercatalog.windowtitle"),
                 onSearch: this.searchCatalog
             });
         }
     }
     componentWillUnmount() {
-        if (this.props.registerCatalogSearchProvider) {
-            unregisterSearchProvider("catalogsearch");
-        }
+        this.props.unregisterSearchProvider("catalogsearch");
     }
     componentDidUpdate(prevProps) {
         if (this.props.active && !prevProps.active) {
@@ -219,5 +220,7 @@ class LayerCatalog extends React.Component {
 export default connect(state => ({
     active: state.task.id === "LayerCatalog"
 }), {
-    setCurrentTask: setCurrentTask
+    setCurrentTask: setCurrentTask,
+    registerSearchProvider: registerSearchProvider,
+    unregisterSearchProvider: unregisterSearchProvider
 })(LayerCatalog);

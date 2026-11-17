@@ -14,11 +14,12 @@ import {remove as removeDiacritics} from 'diacritics';
 import PropTypes from 'prop-types';
 
 import {toggleFullscreen} from '../actions/display';
+import {registerSearchProvider, unregisterSearchProvider} from '../actions/localConfig';
 import {openExternalUrl, setTopbarHeight} from '../actions/windows';
 import {Swipeable} from '../components/Swipeable';
 import ConfigUtils from '../utils/ConfigUtils';
 import LocaleUtils from '../utils/LocaleUtils';
-import {registerSearchProvider, SearchResultType, unregisterSearchProvider} from '../utils/SearchProviders';
+import {TaskSearchProvider} from '../utils/SearchProviders';
 import ThemeUtils from '../utils/ThemeUtils';
 
 import './style/TopBar.css';
@@ -56,6 +57,7 @@ class TopBar extends React.Component {
         /** The menu items. Refer to the corresponding chapter of the viewer documentation and the sample config.json. */
         menuItems: PropTypes.array,
         openExternalUrl: PropTypes.func,
+        registerSearchProvider: PropTypes.func,
         /** Whether to register a search provider which allows searching menu tasks through the global search field. */
         registerTaskSearchProvider: PropTypes.bool,
         /** Options passed down to the search component. */
@@ -103,7 +105,8 @@ class TopBar extends React.Component {
         /** The toolbar. Refer to the corresponding chapter of the viewer documentation and the sample config.json. */
         toolbarItems: PropTypes.array,
         /** The keyboard shortcut prefix for triggering toolbar tasks. I.e. alt+shift. The task are then triggered by <prefix>+{1,2,3,...} for the 1st, 2nd, 3rd... toolbar icon. */
-        toolbarItemsShortcutPrefix: PropTypes.string
+        toolbarItemsShortcutPrefix: PropTypes.string,
+        unregisterSearchProvider: PropTypes.func
     };
     static defaultProps = {
         searchOptions: {
@@ -127,16 +130,14 @@ class TopBar extends React.Component {
             allowedMenuItems: ThemeUtils.allowedItems(this.props.menuItems, this.props.currentTheme)
         });
         if (this.props.registerTaskSearchProvider) {
-            registerSearchProvider("tasksearch", {
+            this.props.registerSearchProvider("tasksearch2d", {
                 label: LocaleUtils.tr("search.tasks"),
                 onSearch: this.searchTasks
             });
         }
     }
     componentWillUnmount() {
-        if (this.props.registerTaskSearchProvider) {
-            unregisterSearchProvider("tasksearch");
-        }
+        this.props.unregisterSearchProvider("tasksearch2d");
     }
     componentDidUpdate(prevProps) {
         if (this.props.currentTheme !== prevProps.currentTheme) {
@@ -275,6 +276,8 @@ export default (components) => {
     }), {
         toggleFullscreen: toggleFullscreen,
         openExternalUrl: openExternalUrl,
-        setTopbarHeight: setTopbarHeight
+        setTopbarHeight: setTopbarHeight,
+        registerSearchProvider: registerSearchProvider,
+        unregisterSearchProvider: unregisterSearchProvider
     })(TopBar);
 };

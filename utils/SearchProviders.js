@@ -513,7 +513,7 @@ export class FulltextSearch {
 
 /** ************************************************************************ **/
 
-const SearchProviders = {
+export const SearchProviders = {
     coordinates: {
         labelmsgid: "search.coordinates",
         onSearch: coordinatesSearch,
@@ -541,19 +541,7 @@ const SearchProviders = {
 
 /** ************************************************************************ **/
 
-const addedSearchProviders = new Set();
-
-export function registerSearchProvider(key, config) {
-    SearchProviders[key] = config;
-    addedSearchProviders.add(key);
-}
-
-export function unregisterSearchProvider(key) {
-    delete SearchProviders[key];
-    addedSearchProviders.delete(key);
-}
-
-export function collectSearchProviders(theme, layers, mapScale = null) {
+export function collectSearchProviders(theme, layers, mapScale, customSearchProviders) {
     // Collect active layers/search terms
     let searchTerms = [];
     const activeLayers = [];
@@ -571,7 +559,7 @@ export function collectSearchProviders(theme, layers, mapScale = null) {
     const availableProviders = {};
     const themeLayerNames = layers.map(layer => layer.role === LayerRole.THEME ? layer.params.LAYERS : "").join(",").split(",").filter(entry => entry);
     const providerKeys = new Set();
-    const enabledProviders = [...(theme?.searchProviders || []), ...addedSearchProviders];
+    const enabledProviders = [...(theme?.searchProviders || []), ...customSearchProviders];
     for (let entry of enabledProviders) {
         if (typeof entry === 'string') {
             entry = {provider: entry};

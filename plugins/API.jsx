@@ -19,7 +19,10 @@ import * as displayActions from '../actions/display';
 import * as editingActions from '../actions/editing';
 import {LayerRole} from '../actions/layers';
 import * as layerActions from '../actions/layers';
-import {registerCustomPlugin, unregisterCustomPlugin} from '../actions/localConfig';
+import {
+    registerCustomPlugin, unregisterCustomPlugin,
+    registerSearchProvider, unregisterSearchProvider
+} from '../actions/localConfig';
 import * as localeActions from '../actions/locale';
 import * as locateActions from '../actions/locate';
 import * as mapActions from '../actions/map';
@@ -384,12 +387,14 @@ class API extends React.Component {
         click: PropTypes.object,
         mapCrs: PropTypes.string,
         registerCustomPlugin: PropTypes.func,
+        registerSearchProvider: PropTypes.func,
         removeLayer: PropTypes.func,
         replacePlaceholderLayer: PropTypes.func,
         setCurrentTask: PropTypes.func,
         setLayerLoading: PropTypes.func,
         state: PropTypes.object,
-        unregisterCustomPlugin: PropTypes.func
+        unregisterCustomPlugin: PropTypes.func,
+        unregisterSearchProvider: PropTypes.func
     };
     static defaultProps = {
         allowedMessageOrigins: []
@@ -499,6 +504,23 @@ class API extends React.Component {
     removePlugin = (name) => {
         PluginStore.removeCustomPlugin(name);
         this.props.unregisterCustomPlugin(name);
+    };
+    /**
+     * Add a custom search provider
+     *
+     * * `name`: The provider name
+     * * `provider`: The search provider object, see [docs.qwc.app](https://docs.qwc.app/master/topics/Search/)
+     */
+    addSearchProvider = (name, provider) => {
+        this.props.registerSearchProvider(name, provider);
+    };
+    /**
+     * Remove a custom search provider
+     *
+     * * `name`: The provider name
+     */
+    removeSearchProvider = (name) => {
+        this.props.unregisterSearchProvider(name);
     };
     /**
      * Add custom attribute calculator
@@ -674,5 +696,7 @@ export default connect(state => ({
 }), {
     registerCustomPlugin: registerCustomPlugin,
     unregisterCustomPlugin: unregisterCustomPlugin,
+    registerSearchProvider: registerSearchProvider,
+    unregisterSearchProvider: unregisterSearchProvider,
     ...actionFunctions
 })(API);

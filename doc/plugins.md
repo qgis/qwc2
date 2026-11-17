@@ -244,6 +244,19 @@ Remove custom plugin
 
 * `name`: The identifier
 
+**addSearchProvider(name,provider)**
+
+Add a custom search provider
+
+* `name`: The provider name
+* `provider`: The search provider object, see [docs.qwc.app](https://docs.qwc.app/master/topics/Search/)
+
+**removeSearchProvider(name)**
+
+Remove a custom search provider
+
+* `name`: The provider name
+
 **addIdentifyAttributeCalculator(name,calcFunc,before)**
 
 Add custom attribute calculator

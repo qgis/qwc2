@@ -12,11 +12,16 @@ import {
     SET_COLOR_SCHEME, SET_USER_INFO_FIELDS,
     REGISTER_CUSTOM_PLUGIN,
     UNREGISTER_CUSTOM_PLUGIN,
-    UPDATE_CONFIG
+    UPDATE_CONFIG,
+    UNREGISTER_SEARCH_PROVIDER,
+    REGISTER_SEARCH_PROVIDER
 } from '../actions/localConfig';
 import {UrlParams} from '../utils/PermaLinkUtils';
 
-const defaultState = {};
+const defaultState = {
+    customPlugins: [],
+    customSearchProviders: []
+};
 
 export default function localConfig(state = defaultState, action) {
     switch (action.type) {
@@ -79,6 +84,18 @@ export default function localConfig(state = defaultState, action) {
         return {
             ...state,
             customPlugins: state.customPlugins.filter(el => el !== action.name)
+        };
+    }
+    case REGISTER_SEARCH_PROVIDER: {
+        return {
+            ...state,
+            customSearchProviders: [...state.customSearchProviders, action.name]
+        };
+    }
+    case UNREGISTER_SEARCH_PROVIDER: {
+        return {
+            ...state,
+            customSearchProviders: state.customSearchProviders.filter(el => el !== action.name)
         };
     }
     default:

@@ -17,17 +17,19 @@ import ThemeUtils from '../utils/ThemeUtils';
 export default createSelector(
     [
         state => state.theme.current,
-        state => state.theme,
+        state => state.theme.themes,
         state => state.layers.flat,
-        state => state.map.scale
-    ], (theme, themes, layers, mapScale) => {
+        state => state.map.scale,
+        state => state.storeName,
+        state => state.localConfig.customSearchProviders
+    ], (theme, themes, layers, mapScale, storeName, customSearchProviders) => {
         // Collect active layers/search terms
-        const availableProviders = collectSearchProviders(theme, layers, mapScale);
+        const availableProviders = collectSearchProviders(theme, layers, mapScale, customSearchProviders);
         if (ConfigUtils.getConfigProp("searchThemes", theme)) {
             availableProviders.themes = {
                 labelmsgid: LocaleUtils.trmsg("search.themes"),
                 onSearch: (text, options, callback) => {
-                    callback({results: ThemeUtils.searchThemes(themes.themes, text)});
+                    callback({results: ThemeUtils.searchThemes(themes, text)});
                 }
             };
         }
@@ -35,7 +37,7 @@ export default createSelector(
             availableProviders.themelayers = {
                 labelmsgid: LocaleUtils.trmsg("search.themelayers"),
                 onSearch: (text, options, callback) => {
-                    callback({results: ThemeUtils.searchThemeLayers(themes.themes, text)});
+                    callback({results: ThemeUtils.searchThemeLayers(themes, text)});
                 }
             };
         }
