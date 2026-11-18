@@ -54,9 +54,9 @@ export default class CreateTool3D extends React.Component {
                 </div>
                 <div className="redlining-control">
                     <span>{LocaleUtils.tr("redlining.size")}:&nbsp;</span>
-                    <NumberInput max={99} min={1} mobile
+                    <NumberInput decimals={1} max={99} min={1} mobile
                         onChange={this.props.baseSizeChanged}
-                        value={this.props.baseSize}/>
+                        step={1} value={this.props.baseSize} />
                 </div>
             </div>
         );
