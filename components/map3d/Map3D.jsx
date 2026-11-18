@@ -912,7 +912,13 @@ class Map3D extends React.Component {
         const extent = new Extent(crs, bounds[0], bounds[2], bounds[1], bounds[3]);
         this.map = new Map({
             extent: extent,
-            backgroundColor: "white"
+            backgroundColor: "white",
+            terrain: {
+                skirts: {
+                    enabled: true,
+                    depth: 0
+                }
+            }
         });
         this.instance.add(this.map);
 
