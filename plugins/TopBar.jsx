@@ -132,6 +132,7 @@ class TopBar extends React.Component {
             this.props.registerSearchProvider("tasksearch2d", {
                 label: LocaleUtils.tr("search.tasks"),
                 onSearch: (text, params, callback) => TaskSearchProvider.search(text, params, callback, this.state.allowedMenuItems),
+                view: "2D"
             });
         }
     }

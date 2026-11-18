@@ -13,6 +13,7 @@ import classNames from 'classnames';
 import PropTypes from 'prop-types';
 
 import {toggleFullscreen, ViewMode} from '../../actions/display';
+import {registerSearchProvider, unregisterSearchProvider} from '../../actions/localConfig';
 import {openExternalUrl, setTopbarHeight} from '../../actions/windows';
 import AppMenu from '../../components/AppMenu';
 import FullscreenSwitcher from '../../components/FullscreenSwitcher';
@@ -21,6 +22,7 @@ import {Swipeable} from '../../components/Swipeable';
 import Toolbar from '../../components/Toolbar';
 import ConfigUtils from '../../utils/ConfigUtils';
 import LocaleUtils from '../../utils/LocaleUtils';
+import {TaskSearchProvider} from '../../utils/SearchProviders';
 import ThemeUtils from '../../utils/ThemeUtils';
 
 
@@ -37,6 +39,7 @@ class TopBar3D extends React.Component {
          * these will be displayed only in fullsceen 3D mode. */
         menuItems: PropTypes.array,
         openExternalUrl: PropTypes.func,
+        registerSearchProvider: PropTypes.func,
         sceneContext: PropTypes.object,
         /** Options passed down to the search component. */
         searchOptions: PropTypes.shape({
@@ -50,6 +53,7 @@ class TopBar3D extends React.Component {
          * You can also include entries for 2D plugins which are compatible with the 3D view (i.e. `ThemeSwitcher`, `Share`, etc.),
          * these will be displayed only in fullsceen 3D mode. */
         toolbarItems: PropTypes.array,
+        unregisterSearchProvider: PropTypes.func,
         viewMode: PropTypes.number
     };
     static defaultProps = {
@@ -71,31 +75,42 @@ class TopBar3D extends React.Component {
                 allowedMenuItems: ThemeUtils.allowedItems(this.props.menuItems, this.props.currentTheme, this.filter2DItems)
             });
         }
+        const config2D = ConfigUtils.getPluginConfig("TopBar")?.cfg || {};
+        if (config2D.registerTaskSearchProvider) {
+            this.props.registerSearchProvider("tasksearch3d", {
+                label: LocaleUtils.tr("search.tasks"),
+                onSearch: (text, params, callback) => TaskSearchProvider.search(text, params, callback, this.state.allowedMenuItems),
+                view: "3D"
+            });
+        }
+    }
+    componentWillUnmount() {
+        this.props.unregisterSearchProvider("tasksearch3d");
     }
     filter2DItems = (item) => {
         const pluginConf = ConfigUtils.getPluginConfig(item.key);
         return item.key.endsWith("3D") || (this.props.viewMode === ViewMode._3DFullscreen && pluginConf.availableIn3D);
     };
     render() {
-        const config = ConfigUtils.getPluginConfig("TopBar")?.cfg || {};
+        const config2D = ConfigUtils.getPluginConfig("TopBar")?.cfg || {};
         let logo;
         const assetsPath = ConfigUtils.getAssetsPath();
         const isMobile = ConfigUtils.isMobile();
         if (isMobile) {
-            logo = assetsPath + "/img/logo-mobile." + (config.logoFormat || "svg");
+            logo = assetsPath + "/img/logo-mobile." + (config2D.logoFormat || "svg");
         } else {
-            logo = assetsPath + "/img/logo."  + (config.logoFormat || "svg");
+            logo = assetsPath + "/img/logo."  + (config2D.logoFormat || "svg");
         }
-        let logoEl = (<img className="topbar-logo" src={config.logoSrc || logo} />);
-        if (config.logoUrl) {
-            logoEl = (<a href={config.logoUrl} rel="noreferrer" target="_blank">{logoEl}</a>);
+        let logoEl = (<img className="topbar-logo" src={config2D.logoSrc || logo} />);
+        if (config2D.logoUrl) {
+            logoEl = (<a href={config2D.logoUrl} rel="noreferrer" target="_blank">{logoEl}</a>);
         }
 
         // Validate appMenuDisplayMode
-        let appMenuDisplayMode = config.appMenuDisplayMode;
-        if (ConfigUtils.isMobile() || !["normal", "compact", "icononly"].includes(config.appMenuDisplayMode)) {
+        let appMenuDisplayMode = config2D.appMenuDisplayMode;
+        if (ConfigUtils.isMobile() || !["normal", "compact", "icononly"].includes(config2D.appMenuDisplayMode)) {
             appMenuDisplayMode = "normal";
-        } else if (config.appMenuCompact) {
+        } else if (config2D.appMenuCompact) {
             appMenuDisplayMode = "compact";
         }
 
@@ -121,14 +136,14 @@ class TopBar3D extends React.Component {
                             toolbarItems={this.state.allowedToolbarItems} />
                     </div>
                     <AppMenu
-                        appMenuClearsTask={config.appMenuClearsTask}
-                        appMenuShortcut={config.appMenuShortcut}
+                        appMenuClearsTask={config2D.appMenuClearsTask}
+                        appMenuShortcut={config2D.appMenuShortcut}
                         buttonLabel={LocaleUtils.tr("appmenu.menulabel")}
                         menuDisplayMode={appMenuDisplayMode}
                         menuItems={this.state.allowedMenuItems}
                         openExternalUrl={this.openUrl}
-                        showFilterField={config.appMenuFilterField}
-                        showOnStartup={config.appMenuVisibleOnStartup} />
+                        showFilterField={config2D.appMenuFilterField}
+                        showOnStartup={config2D.appMenuVisibleOnStartup} />
                     {this.props.viewMode === ViewMode._3DFullscreen ? (
                         <FullscreenSwitcher />
                     ) : null}
@@ -172,5 +187,7 @@ export default connect((state) => ({
 }), {
     setTopbarHeight: setTopbarHeight,
     toggleFullscreen: toggleFullscreen,
-    openExternalUrl: openExternalUrl
+    openExternalUrl: openExternalUrl,
+    registerSearchProvider: registerSearchProvider,
+    unregisterSearchProvider: unregisterSearchProvider
 })(TopBar3D);

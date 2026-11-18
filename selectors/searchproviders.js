@@ -20,11 +20,11 @@ export default createSelector(
         state => state.theme.themes,
         state => state.layers.flat,
         state => state.map.scale,
-        state => state.storeName,
-        state => state.localConfig.customSearchProviders
-    ], (theme, themes, layers, mapScale, storeName, customSearchProviders) => {
+        state => state.localConfig.customSearchProviders,
+        (state, ownProps) => ownProps.view ?? "2D"
+    ], (theme, themes, layers, mapScale, customSearchProviders, view) => {
         // Collect active layers/search terms
-        const availableProviders = collectSearchProviders(theme, layers, mapScale, customSearchProviders);
+        const availableProviders = collectSearchProviders(theme, layers, mapScale, view, customSearchProviders);
         if (ConfigUtils.getConfigProp("searchThemes", theme)) {
             availableProviders.themes = {
                 labelmsgid: LocaleUtils.trmsg("search.themes"),

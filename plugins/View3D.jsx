@@ -17,6 +17,7 @@ import * as displayExports from '../actions/display';
 import {setViewMode, ViewMode} from '../actions/display';
 import * as layersExports from '../actions/layers';
 import {LayerRole, addLayerFeatures, removeLayer} from '../actions/layers';
+import * as localConfigExports from '../actions/localConfig';
 import {panTo, zoomToPoint} from '../actions/map';
 import * as mapExports from '../actions/map';
 import * as themeExports from '../actions/theme';
@@ -154,11 +155,12 @@ class View3D extends React.Component {
         const layersActions = Object.values(layersExports).filter(x => typeof(x) === 'string');
         const mapActions = Object.values(mapExports).filter(x => typeof(x) === 'string');
         const themeActions = Object.values(themeExports).filter(x => typeof(x) === 'string');
+        const localConfigActions = Object.values(localConfigExports).filter(x => typeof(x) === 'string');
         const bookmark = forwardReducer("bookmark", bookmarkActions, "SYNC_BOOKMARK_FROM_PARENT_STORE");
         const display = forwardReducer("display", displayActions, "SYNC_DISPLAY_FROM_PARENT_STORE");
         const layers = forwardReducer("layers", layersActions, "SYNC_LAYERS_FROM_PARENT_STORE");
         const map = forwardReducer("map", mapActions, "SYNC_MAP_FROM_PARENT_STORE");
-        const localConfig = forwardReducer("localConfig", [], "SYNC_LOCAL_CONFIG_FROM_PARENT_STORE");
+        const localConfig = forwardReducer("localConfig", localConfigActions, "SYNC_LOCAL_CONFIG_FROM_PARENT_STORE");
         const theme = forwardReducer("theme", themeActions, "SYNC_THEME_FROM_PARENT_STORE");
         this.store = createStore({display, bookmark, layers, localConfig, map, processNotifications, theme, task, windows});
 

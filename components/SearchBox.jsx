@@ -18,7 +18,7 @@ import {v4 as uuidv4} from 'uuid';
 
 import {LayerRole, addLayerFeatures, addThemeSublayer, changeLayerProperty, removeLayer, replacePlaceholderLayer, addLayer} from '../actions/layers';
 import {logAction} from '../actions/logging';
-import {panTo, zoomToExtent, zoomToPoint} from '../actions/map';
+import {zoomToExtent} from '../actions/map';
 import {setCurrentSearchResult} from '../actions/search';
 import {setCurrentTask} from '../actions/task';
 import {setCurrentTheme} from '../actions/theme';
@@ -51,14 +51,13 @@ import './style/SearchBox.css';
 class SearchBox extends React.Component {
     static propTypes = {
         addLayer: PropTypes.func,
-        addLayerFeatures: PropTypes.func,
         addThemeSublayer: PropTypes.func,
         changeLayerProperty: PropTypes.func,
+        clearHighlight: PropTypes.func,
         layers: PropTypes.array,
         logAction: PropTypes.func,
         map: PropTypes.object,
         openExternalUrl: PropTypes.func,
-        panTo: PropTypes.func,
         removeLayer: PropTypes.func,
         replacePlaceholderLayer: PropTypes.func,
         searchOptions: PropTypes.shape({
@@ -81,12 +80,13 @@ class SearchBox extends React.Component {
         setCurrentSearchResult: PropTypes.func,
         setCurrentTask: PropTypes.func,
         setCurrentTheme: PropTypes.func,
+        showHighlight: PropTypes.func,
         showNotification: PropTypes.func,
         startupParams: PropTypes.object,
         theme: PropTypes.object,
         themes: PropTypes.object,
-        zoomToExtent: PropTypes.func,
-        zoomToPoint: PropTypes.func
+        view: PropTypes.string,
+        zoomToExtent: PropTypes.func
     };
     state = {
         searchText: "",
@@ -109,22 +109,31 @@ class SearchBox extends React.Component {
         super(props);
         this.searchBox = null;
         this.searchTimeout = null;
+        this.initialized = false;
+        this.layerTreeTask = props.view === "3D" ? "LayerTree3D" : "LayerTree";
     }
     componentDidUpdate(prevProps, prevState) {
         // Restore highlight from URL as soon as theme is loaded
-        if (this.props.theme && !prevProps.theme) {
-            const hp = this.props.startupParams.hp;
-            const hf = this.props.startupParams.hf;
-            const st = this.props.startupParams.st || this.props.startupParams.ht || "";
-            if (hp && (hf || st)) {
-                this.setState({searchText: st});
-                FulltextSearch.handleHighlightParameters(hp, hf, st, (item, result) => {
-                    this.showResultGeometry(item, result, this.props.startupParams.s);
-                });
-            } else {
-                this.setState({searchText: st}, () => this.startSearch(null, true));
+        if (this.props.theme && !this.initialized) {
+            this.initialized = true;
+            const searchRestored = ConfigUtils.getSessionConfig("searchRestored");
+            // Restore search in 3D view if it is the current fullscreen view, else restore it in the 2D view
+            const inActiveView = (this.props.startupParams.v === "3d" && this.props.view === "3D") || this.props.view === "2D";
+            if (!searchRestored && inActiveView) {
+                ConfigUtils.setSessionConfig("searchRestored", true);
+                const hp = this.props.startupParams.hp;
+                const hf = this.props.startupParams.hf;
+                const st = this.props.startupParams.st || this.props.startupParams.ht || "";
+                if (hp && (hf || st)) {
+                    this.setState({searchText: st});
+                    FulltextSearch.handleHighlightParameters(hp, hf, st, (item, result) => {
+                        this.showResultGeometry(item, result, this.props.startupParams.s);
+                    });
+                } else {
+                    this.setState({searchText: st}, () => this.startSearch(null, true));
+                }
+                UrlParams.updateParams({hp: undefined, hf: undefined, ht: undefined, st: undefined});
             }
-            UrlParams.updateParams({hp: undefined, hf: undefined, ht: undefined, st: undefined});
             this.loadFilterRegions();
         } else if (this.props.theme !== prevProps.theme) {
             this.clear();
@@ -523,7 +532,7 @@ class SearchBox extends React.Component {
                 this.addExternalLayer(result.layer, asGroup);
             }
             // Show layer tree to notify user that something has happened
-            this.props.setCurrentTask('LayerTree');
+            this.props.setCurrentTask(this.layerTreeTask);
         } else if (this.props.searchProviders[provider].getLayerDefinition) {
             this.props.searchProviders[provider].getLayerDefinition(result, (layer) => {
                 if (layer) {
@@ -535,7 +544,7 @@ class SearchBox extends React.Component {
                         this.addExternalLayer(layer, asGroup);
                     }
                     // Show layer tree to notify user that something has happened
-                    this.props.setCurrentTask('LayerTree');
+                    this.props.setCurrentTask(this.layerTreeTask);
                 }
             }, Request);
         }
@@ -576,7 +585,7 @@ class SearchBox extends React.Component {
     selectThemeResult = (provider, group, result) => {
         this.props.setCurrentTheme(result.theme, this.props.themes);
         if (this.props.searchOptions.showLayerAfterChangeTheme) {
-            this.props.setCurrentTask('LayerTree');
+            this.props.setCurrentTask(this.layerTreeTask);
         }
     };
     selectTaskResult = (provider, group, result) => {
@@ -706,9 +715,7 @@ class SearchBox extends React.Component {
         this.setState({filterOptionsVisible: visible});
     };
     searchTextChanged = (text, expandSections = false, provider = null) => {
-        if (this.props.layers.find(layer => layer.id === 'searchselection')) {
-            this.props.removeLayer('searchselection');
-        }
+        this.props.clearHighlight();
         const newState = {searchText: text, expandedLayerGroup: null, activeLayerInfo: null, pendingSearches: [], searchSession: null};
         if (expandSections) {
             newState.collapsedSections = {};
@@ -738,7 +745,7 @@ class SearchBox extends React.Component {
         this.props.setCurrentSearchResult(null);
         this.blur();
         this.setState({searchText: '', searchResults: {}, selectedProvider: '', filterRegionName: "", filterGeometry: null, resultsVisible: false});
-        this.props.removeLayer('searchselection');
+        this.props.clearHighlight();
         UrlParams.updateParams({hp: undefined, hf: undefined, st: undefined});
     };
     startSearch = (provider = null, uniquePlaceResult = false) => {
@@ -874,7 +881,7 @@ class SearchBox extends React.Component {
             this.props.zoomToExtent(layer.bbox.bounds, layer.bbox.crs);
         }
         // Show layer tree to notify user that something has happened
-        this.props.setCurrentTask('LayerTree');
+        this.props.setCurrentTask(this.layerTreeTask);
     };
     showResultGeometry = (item, response, scale = undefined) => {
         // Collect highlight features
@@ -893,10 +900,6 @@ class SearchBox extends React.Component {
         const mapCrs = this.props.map.projection;
         const showMarkers = !response?.hidemarker && this.props.searchOptions.showHighlightMarker;
         const label = (item.label ?? item.text ?? '').replace(/<\/?\w+\s*\/?>/g, '');
-        const layer = {
-            id: "searchselection",
-            role: LayerRole.SELECTION
-        };
         const highlightFeatures = [];
         features.forEach(feature => {
             feature.geometry = VectorLayerUtils.reprojectGeometry(feature.geometry, response.crs ?? mapCrs, mapCrs);
@@ -944,7 +947,7 @@ class SearchBox extends React.Component {
         }
         // Mark first feature as searchmarker
         highlightFeatures[0].id = 'searchmarker';
-        this.props.addLayerFeatures(layer, highlightFeatures, true);
+        this.props.showHighlight(highlightFeatures);
 
         // Zoom to result bbox
         const bbox = response?.bbox ? CoordinatesUtils.reprojectBbox(
@@ -972,17 +975,23 @@ class SearchBox extends React.Component {
 }
 
 export default connect(
-    createSelector([state => state, searchProvidersSelector], (state, searchProviders) => ({
+    createSelector([
+        state => state,
+        searchProvidersSelector
+    ], (state, searchProviders) => ({
         map: state.map,
         layers: state.layers.flat,
         theme: state.theme.current,
         themes: state.theme.themes,
         selection: state.selection,
         searchProviders: searchProviders,
-        startupParams: state.localConfig.startupParams
+        startupParams: state.localConfig.startupParams,
+        viewMode: state.display.viewMode
     })), {
         addThemeSublayer: addThemeSublayer,
         addLayer: addLayer,
+        showHighlight: features => addLayerFeatures({id: "searchselection", role: LayerRole.SELECTION}, features, true),
+        clearHighlight: () => removeLayer("searchselection"),
         addLayerFeatures: addLayerFeatures,
         changeLayerProperty: changeLayerProperty,
         removeLayer: removeLayer,
@@ -990,11 +999,15 @@ export default connect(
         setCurrentSearchResult: setCurrentSearchResult,
         setCurrentTask: setCurrentTask,
         zoomToExtent: zoomToExtent,
-        zoomToPoint: zoomToPoint,
-        panTo: panTo,
         logAction: logAction,
         setCurrentTheme: setCurrentTheme,
         showNotification: showNotification,
         openExternalUrl: openExternalUrl
-    }
+    },
+    // Make ownProps overwrite state/dispatch props
+    (stateProps, dispatchProps, ownProps) => ({
+        ...stateProps,
+        ...dispatchProps,
+        ...ownProps
+    })
 )(SearchBox);

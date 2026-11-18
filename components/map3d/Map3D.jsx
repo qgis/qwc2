@@ -243,7 +243,7 @@ class Map3D extends React.Component {
 
         // Update 2D color layers
         const sync2denabled = this.state.sceneContext.settings.sync2dlayers && !prevState.sceneContext.settings.sync2dlayers;
-        if (this.focusedMap === "map" && (this.props.layers !== prevProps.layers || sync2denabled)) {
+        if (this.props.layers !== prevProps.layers || sync2denabled) {
             this.setState((state) => ({
                 sceneContext: {
                     ...state.sceneContext,

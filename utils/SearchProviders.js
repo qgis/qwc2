@@ -576,7 +576,7 @@ export const SearchProviders = {
 
 /** ************************************************************************ **/
 
-export function collectSearchProviders(theme, layers, mapScale, customSearchProviders) {
+export function collectSearchProviders(theme, layers, mapScale, view, customSearchProviders) {
     // Collect active layers/search terms
     let searchTerms = [];
     const activeLayers = [];
@@ -606,6 +606,9 @@ export function collectSearchProviders(theme, layers, mapScale, customSearchProv
         const provider = searchProviders[entry.provider];
         if (provider) {
             if (provider.requiresLayer && !themeLayerNames.includes(provider.requiresLayer)) {
+                continue;
+            }
+            if (provider.view !== undefined && provider.view !== view) {
                 continue;
             }
             let key = entry.key ?? entry.provider;
