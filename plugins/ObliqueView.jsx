@@ -289,9 +289,10 @@ class ObliqueView extends React.Component {
         const zoom = this.props.scales.reduce((best, v, i) =>
             Math.abs(v - targetScale) < Math.abs(this.props.scales[best] - targetScale) ? i : best, 0
         );
+        const mapCenter = CoordinatesUtils.reproject(this.props.map.center, this.props.map.projection, datasetConfig.crs);
         this.map.setView(new ol.View({
             projection: projection,
-            center: ol.extent.getCenter(datasetConfig.extent),
+            center: mapCenter,
             rotation: this.getRotation() / 180 * Math.PI,
             zoom: zoom,
             resolutions: MapUtils.getResolutionsForScales(this.props.scales, datasetConfig.crs),
