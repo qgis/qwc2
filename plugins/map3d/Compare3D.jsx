@@ -32,8 +32,13 @@ import './style/Compare3D.css';
 class Compare3D extends React.Component {
     static propTypes = {
         active: PropTypes.bool,
+        /** Scale factor for the arrow size. */
+        arrowScale: PropTypes.number,
         sceneContext: PropTypes.object,
         setCurrentTask: PropTypes.func
+    };
+    static defaultProps = {
+        arrowScale: 1
     };
     state = {
         enabled: false,
@@ -54,11 +59,14 @@ class Compare3D extends React.Component {
             gltf.scene.renderOrder = 9999999; // Ensures it is rendered last
 
             const leftArrow = gltf.scene.clone();
-            leftArrow.position.y = -4;
+            const s = this.props.arrowScale;
+            leftArrow.position.y = -4 * s;
             leftArrow.rotation.z = - 0.5 * Math.PI;
+            leftArrow.scale.set(s, s, s);
             const rightArrow = gltf.scene.clone();
-            rightArrow.position.y = 4;
+            rightArrow.position.y = 4 * s;
             rightArrow.rotation.z = 0.5 * Math.PI;
+            rightArrow.scale.set(s, s, s);
             this.arrows = new Group();
             this.arrows.add(leftArrow);
             this.arrows.add(rightArrow);

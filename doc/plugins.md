@@ -1487,6 +1487,10 @@ Bottom bar of the 3D map, displaying coordinates, projection, etc.
 
 Split-screen and compare objects in the 3D map.
 
+| Property | Type | Description | Default value |
+|----------|------|-------------|---------------|
+| arrowScale | `number` | Scale factor for the arrow size. | `1` |
+
 ## Draw3D<a name="draw3d"></a>
 
 Draw objects in the 3D map.
