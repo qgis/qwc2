@@ -31,6 +31,7 @@
     display: flex;
     align-items: center;
     padding: 0.25em;
+    cursor: pointer;
 }
 
 #Compare3D div.compare3d-item-toggleall {
@@ -40,6 +41,10 @@
 #Compare3D span.compare3d-item-checkbox {
     margin-right: 0.5em;
     flex: 0 0 auto;
+}
+
+#Compare3D div.compare3d-group-children {
+    margin-left: 1em;
 }
 
 #Compare3D div.compare3d-title {

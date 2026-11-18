@@ -244,8 +244,9 @@ class Compare3D extends React.Component {
     }
     renderBody = () => {
         const sceneContext = this.props.sceneContext;
+        const terrain = {type: "terrain", objectId: "__terrain", title: LocaleUtils.tr("map3d.terrain")};
         const objects = [
-            {type: "terrain", objectId: "__terrain", title: LocaleUtils.tr("map3d.terrain")},
+            terrain,
             ...Object.values(sceneContext.objectTree).filter(entry => entry.objectId !== undefined)
         ];
         return (
@@ -276,17 +277,8 @@ class Compare3D extends React.Component {
                                     <Icon className="compare3d-item-checkbox" disabled={!this.state.enabled} icon={toggleAllIcon} />
                                     <span>{LocaleUtils.tr("compare3d.toggleall")}</span>
                                 </div>
-                                {objects.map(entry => (
-                                    <div
-                                        className="compare3d-item"
-                                        key={entry.objectId}
-                                        onClick={this.state.enabled ? () => this.toggleObject(section, entry.objectId) : null}
-                                        {...withTooltip(entry.title ?? entry.objectId)}
-                                    >
-                                        <Icon className="compare3d-item-checkbox" disabled={!this.state.enabled} icon={clipState[entry.objectId]?.[section] ? "unchecked" : "checked"} />
-                                        <span>{entry.title ?? entry.objectId}</span>
-                                    </div>
-                                ))}
+                                {this.renderTreeEntry(terrain, section)}
+                                {sceneContext.objectTree.null.children.map(child => this.renderTreeEntry(sceneContext.objectTree[child], section))}
                             </div>
                         );
                     })}
@@ -311,6 +303,37 @@ class Compare3D extends React.Component {
             </div>
         );
     };
+    renderTreeEntry = (entry, section, path = []) => {
+        if (entry.children) {
+            const checkState = this.groupCheckState(section, entry);
+            return (
+                <div className="compare3d-group" key={path.join(":")}>
+                    <div
+                        className="compare3d-item" {...withTooltip(entry.title ?? entry.objectId)}
+                        onClick={this.state.enabled ? () => this.toggleGroup(section, entry, checkState === "checked") : null}
+                    >
+                        <Icon className="compare3d-item-checkbox" disabled={!this.state.enabled} icon={checkState} />
+                        <span>{entry.title}</span>
+                    </div>
+                    <div className="compare3d-group-children">
+                        {entry.children.map((child, idx) => this.renderTreeEntry(this.props.sceneContext.objectTree[child], section, [...path, idx]))}
+                    </div>
+                </div>
+            );
+        } else {
+            return (
+                <div
+                    className="compare3d-item"
+                    key={entry.objectId}
+                    onClick={this.state.enabled ? () => this.toggleObject(section, entry.objectId) : null}
+                    {...withTooltip(entry.title ?? entry.objectId)}
+                >
+                    <Icon className="compare3d-item-checkbox" disabled={!this.state.enabled} icon={this.state.clippedObjects[entry.objectId]?.[section] ? "unchecked" : "checked"} />
+                    <span>{entry.title ?? entry.objectId}</span>
+                </div>
+            );
+        }
+    };
     toggleCompare = () => {
         this.setState(state => {
             const newState = {enabled: !state.enabled};
@@ -332,6 +355,45 @@ class Compare3D extends React.Component {
             }
             return newState;
         });
+    };
+    toggleGroup = (section, group, newState) => {
+        this.setState(state => {
+            const newClippedObjects = {...state.clippedObjects};
+            const objectTree = this.props.sceneContext.objectTree;
+            const toggleChildren = (entry) => {
+                if (entry.children) {
+                    entry.children.forEach(child => toggleChildren(objectTree[child]));
+                } else {
+                    newClippedObjects[entry.objectId] = {
+                        ...newClippedObjects[entry.objectId],
+                        [section]: newState
+                    };
+                }
+            };
+            toggleChildren(group);
+            return {clippedObjects: newClippedObjects};
+        });
+    };
+    groupCheckState = (section, group) => {
+        let checkedCount = 0;
+        let totCount = 0;
+        const objectTree = this.props.sceneContext.objectTree;
+        const countChecked = (entry) => {
+            if (entry.children) {
+                entry.children.forEach(child => countChecked(objectTree[child]));
+            } else {
+                totCount += 1;
+                checkedCount += this.state.clippedObjects[entry.objectId]?.[section] ? 1 : 0;
+            }
+        };
+        countChecked(group);
+        if (checkedCount === 0) {
+            return "checked";
+        } else if (checkedCount === totCount) {
+            return "unchecked";
+        } else {
+            return "tristate";
+        }
     };
     toggleObject = (section, objectId) => {
         this.setState(state => ({
