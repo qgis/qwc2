@@ -34,8 +34,7 @@ class ImportLayer extends React.Component {
         addLayer: PropTypes.func,
         addLayerFeatures: PropTypes.func,
         mapCrs: PropTypes.string,
-        theme: PropTypes.object,
-        themes: PropTypes.object
+        theme: PropTypes.object
     };
     state = {
         type: 'URL',
@@ -261,8 +260,7 @@ class ImportLayer extends React.Component {
 }
 
 export default connect((state) => ({
-    mapCrs: state.map.projection,
-    themes: state.theme.themes
+    mapCrs: state.map.projection
 }), {
     addLayer: addLayer,
     addLayerFeatures: addLayerFeatures
