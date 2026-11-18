@@ -9,6 +9,7 @@
 
 import isEmpty from 'lodash.isempty';
 
+import LayerRegistry from '../components/map/layers/index';
 import ConfigUtils from './ConfigUtils';
 import CoordinatesUtils from './CoordinatesUtils';
 import {UrlParams} from './PermaLinkUtils';
@@ -148,7 +149,7 @@ const MapUtils = {
      * Compute the scale or resolution matching a (possibly fractional) zoom level.
      *
      * @param list {Array} List of scales or resolutions.
-     * @param zoomLevel (number) Zoom level (integer or fractional).
+     * @param zoomLevel {number} Zoom level (integer or fractional).
      * @return Scale of resolution matching zoomLevel
      */
     computeForZoom(list, zoomLevel) {
@@ -168,7 +169,7 @@ const MapUtils = {
      * Compute the exact, fractional zoom level matching the specified scale or resolution.
      *
      * @param list {Array} List of scales or resolutions.
-     * @param value (number) Scale or resolution.
+     * @param value {number} Scale or resolution.
      * @return Fractional zoom level matching the specified scale or resolution.
      */
     computeFractionalZoom(list, value) {
@@ -235,6 +236,45 @@ const MapUtils = {
         }
         if (!isEmpty(newParams)) {
             UrlParams.updateParams(newParams);
+        }
+    },
+
+    /**
+     * Add a layer directly to the map, bypassing the redux state
+     * @param options {object} The layer options
+     * @param layer {ol.layer.Layer} A previous layer object to re-use
+     * @returns An ol.layer.Layer
+     */
+    addUnmanagedLayer(options, layer = null) {
+        const layerCreator = LayerRegistry[options.type ?? 'vector'];
+        if (!layerCreator) {
+            return null;
+        }
+        const map = MapUtils.getHook(MapUtils.GET_MAP);
+        if (!layer) {
+            layer = layerCreator.create(options, map);
+            map.addLayer(layer);
+        } else {
+            const oldOptions = layer.get('options');
+            layerCreator.update(layer, options, oldOptions, map);
+            if (layer.get('inMap') === false) {
+                map.addLayer(layer);
+            }
+        }
+        layer.set('inMap', true, false);
+        layer.set('options', options, true);
+        layer.setZIndex(options.zIndex ?? 1000);
+        return layer;
+    },
+    /**
+     * Remove a layer created via MapUtils.addUnmanagedLayer from the map
+     *
+     * @param layer {ol.layer.Layer} The layer to remove
+     */
+    removeUnmanagedLayer(layer) {
+        if (layer) {
+            MapUtils.getHook(MapUtils.GET_MAP).removeLayer(layer);
+            layer.set('inMap', false, false);
         }
     }
 };
