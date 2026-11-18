@@ -33,10 +33,10 @@ class Panoramax extends React.Component {
         addLayer: PropTypes.func,
         addLayerFeatures: PropTypes.func,
         geometry: PropTypes.shape({
-            initialWidth: PropTypes.number,
-            initialHeight: PropTypes.number,
-            initialX: PropTypes.number,
-            initialY: PropTypes.number,
+            initialWidth: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
+            initialHeight: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
+            initialX: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
+            initialY: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
             initiallyDocked: PropTypes.bool,
             side: PropTypes.string
         }),

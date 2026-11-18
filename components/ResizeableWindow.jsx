@@ -47,10 +47,10 @@ class ResizeableWindow extends React.Component {
         hideDockIcon: PropTypes.bool,
         hideTitleBar: PropTypes.bool,
         icon: PropTypes.string,
-        initialHeight: PropTypes.number,
-        initialWidth: PropTypes.number,
-        initialX: PropTypes.number,
-        initialY: PropTypes.number,
+        initialHeight: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
+        initialWidth: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
+        initialX: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
+        initialY: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
         initiallyDocked: PropTypes.bool,
         initiallyMinimized: PropTypes.bool,
         mapMargins: PropTypes.object,
@@ -383,15 +383,17 @@ class ResizeableWindow extends React.Component {
             return;
         }
         const withinMapContainer = !!container.closest('.map-container');
-        const width = Math.min(this.props.initialWidth, container.offsetWidth);
-        const height = Math.min(this.props.initialHeight, container.offsetHeight);
+        const initialX = this.transformPercentage(this.props.initialX, container.offsetWidth);
+        const initialY = this.transformPercentage(this.props.initialY, container.offsetHeight);
+        const width = Math.min(this.transformPercentage(this.props.initialWidth, container.offsetWidth), container.offsetWidth);
+        const height = Math.min(this.transformPercentage(this.props.initialHeight, container.offsetHeight), container.offsetHeight);
         let geometry = null;
         if (WINDOW_GEOMETRIES[this.props.title]) {
             geometry = WINDOW_GEOMETRIES[this.props.title];
         } else {
             geometry = {
-                x: this.props.initialX !== null ? this.computeInitialX(container, this.props.initialX) : Math.max(0, Math.round(0.5 * (container.offsetWidth - width))),
-                y: this.props.initialY !== null ? this.computeInitialY(container, this.props.initialY) : Math.max(0, Math.round(0.5 * (container.offsetHeight - height))),
+                x: initialX !== null ? this.computeInitialX(container, initialX, width) : Math.max(0, Math.round(0.5 * (container.offsetWidth - width))),
+                y: initialY !== null ? this.computeInitialY(container, initialY, height) : Math.max(0, Math.round(0.5 * (container.offsetHeight - height))),
                 width: width,
                 height: height,
                 docked: this.props.initiallyDocked,
@@ -406,11 +408,22 @@ class ResizeableWindow extends React.Component {
         }
         this.setState({geometry: geometry, withinMapContainer: withinMapContainer});
     };
-    computeInitialX = (container, x) => {
-        return x > 0 || Object.is(x, 0) ? x : container.offsetWidth - this.props.initialWidth - Math.abs(x);
+    transformPercentage = (size, containerSize) => {
+        if (typeof size === "string") {
+            if (size.endsWith("%")) {
+                return containerSize * parseFloat(size.slice(0, -1)) / 100;
+            } else {
+                return parseFloat(size);
+            }
+        } else {
+            return size;
+        }
     };
-    computeInitialY = (container, y) => {
-        return y > 0 || Object.is(y, 0) ? y : container.offsetHeight - this.props.initialHeight - Math.abs(y);
+    computeInitialX = (container, x, initialWidth) => {
+        return x > 0 || Object.is(x, 0) ? x : container.offsetWidth - initialWidth - Math.abs(x);
+    };
+    computeInitialY = (container, y, initialHeight) => {
+        return y > 0 || Object.is(y, 0) ? y : container.offsetHeight - initialHeight - Math.abs(y);
     };
     renderExternalWindow = () => {
         return ReactDOM.createPortal((

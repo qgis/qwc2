@@ -67,10 +67,10 @@ class IdentifyTool extends React.Component {
         exportGeometry: PropTypes.bool,
         /** Default window geometry with size, position and docking status. Positive position values (including '0') are related to top (InitialY) and left (InitialX), negative values (including '-0') to bottom (InitialY) and right (InitialX). */
         geometry: PropTypes.shape({
-            initialWidth: PropTypes.number,
-            initialHeight: PropTypes.number,
-            initialX: PropTypes.number,
-            initialY: PropTypes.number,
+            initialWidth: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
+            initialHeight: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
+            initialX: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
+            initialY: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
             initiallyDocked: PropTypes.bool,
             side: PropTypes.string,
             minimizeable: PropTypes.bool

@@ -93,10 +93,10 @@ class LayerTree extends React.Component {
         infoInSettings: PropTypes.bool,
         /** Default layer info window geometry with size, position and docking status. */
         layerInfoGeometry: PropTypes.shape({
-            initialWidth: PropTypes.number,
-            initialHeight: PropTypes.number,
-            initialX: PropTypes.number,
-            initialY: PropTypes.number,
+            initialWidth: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
+            initialHeight: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
+            initialX: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
+            initialY: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
             initiallyDocked: PropTypes.bool
         }),
         layers: PropTypes.array,
