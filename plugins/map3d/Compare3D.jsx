@@ -244,7 +244,7 @@ class Compare3D extends React.Component {
     }
     renderBody = () => {
         const sceneContext = this.props.sceneContext;
-        const terrain = {type: "terrain", objectId: "__terrain", title: LocaleUtils.tr("map3d.terrain")};
+        const terrain = {type: "terrain", objectId: "__terrain", title: LocaleUtils.tr("map3d.terrain"), visibility: true};
         const objects = [
             terrain,
             ...Object.values(sceneContext.objectTree).filter(entry => entry.objectId !== undefined)
@@ -306,7 +306,10 @@ class Compare3D extends React.Component {
     renderTreeEntry = (entry, section, path = []) => {
         if (entry.children) {
             const checkState = this.groupCheckState(section, entry);
-            return (
+            const children = entry.children.map((child, idx) => (
+                this.renderTreeEntry(this.props.sceneContext.objectTree[child], section, [...path, idx])
+            )).filter(Boolean);
+            return children.length > 0 ? (
                 <div className="compare3d-group" key={path.join(":")}>
                     <div
                         className="compare3d-item" {...withTooltip(entry.title ?? entry.objectId)}
@@ -316,11 +319,11 @@ class Compare3D extends React.Component {
                         <span>{entry.title}</span>
                     </div>
                     <div className="compare3d-group-children">
-                        {entry.children.map((child, idx) => this.renderTreeEntry(this.props.sceneContext.objectTree[child], section, [...path, idx]))}
+                        {children}
                     </div>
                 </div>
-            );
-        } else {
+            ) : null;
+        } else if (entry.visibility) {
             return (
                 <div
                     className="compare3d-item"
@@ -332,6 +335,8 @@ class Compare3D extends React.Component {
                     <span>{entry.title ?? entry.objectId}</span>
                 </div>
             );
+        } else {
+            return null;
         }
     };
     toggleCompare = () => {
