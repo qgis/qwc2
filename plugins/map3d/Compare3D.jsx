@@ -239,7 +239,7 @@ class Compare3D extends React.Component {
                 </SideBar>
             ),
             this.state.enabled ? (
-                <MessageBar>
+                <MessageBar key="MessageBar">
                     <div role="body">
                         {LocaleUtils.tr("compare3d.info_message")}&nbsp;
                         <Button onClick={() => this.props.setCurrentTask("Compare3D")}>
