@@ -18,7 +18,9 @@ import {LayerRole, addLayer} from '../actions/layers';
 import {setUserInfoFields} from '../actions/localConfig';
 import {setCurrentTask} from '../actions/task';
 import {setCurrentTheme, setThemeLayersList} from '../actions/theme';
+import {showNotification} from '../actions/windows';
 import ConfigUtils from '../utils/ConfigUtils';
+import LayerUtils from '../utils/LayerUtils';
 import LocaleUtils from '../utils/LocaleUtils';
 import MiscUtils from '../utils/MiscUtils';
 import Request from '../utils/Request';
@@ -47,6 +49,7 @@ class ThemeList extends React.Component {
         setUserInfoFields: PropTypes.func,
         showDefaultThemeSelector: PropTypes.bool,
         showLayerAfterChangeTheme: PropTypes.bool,
+        showNotification: PropTypes.func,
         themes: PropTypes.object
     };
     state = {
@@ -135,7 +138,7 @@ class ThemeList extends React.Component {
                         return (
                             <div className={activeThemeId === item.id ? "theme-item theme-item-active" : "theme-item"}
                                 key={item.id}
-                                onClick={() => this.setTheme(item)}
+                                onClick={ev => item.addOnly && !item.restricted ? this.addThemeLayers(ev, item) : this.setTheme(item)}
                                 {...withTooltip(tooltip)}
                             >
                                 <div className="theme-item-title">
@@ -160,9 +163,9 @@ class ThemeList extends React.Component {
                                 {!item.restricted ? (
                                     <div className="theme-item-icons">
                                         {this.props.allowAddingOtherThemeLayers ? (<Icon icon="layers" onClick={ev => this.getThemeLayersToList(ev, item)} title={addLayersTitle} />) : null}
-                                        {this.props.allowAddingOtherThemes ? (<Icon icon="plus" onClick={ev => this.addThemeLayers(ev, item)} title={addTitle} />) : null}
-                                        <Icon icon="open_link" onClick={ev => this.openInTab(ev, item.id)} title={openTabTitle} />
-                                        {this.props.showDefaultThemeSelector && username  ? (<Icon className={ (this.extractThemeId(this.props.defaultUrlParams) === item.id ? "icon-active" : "")} icon="new" onClick={ev => this.changeDefaultUrlParams(ev, item.id)} title={changeDefaultUrlTitle} />) : null }
+                                        {this.props.allowAddingOtherThemes || item.addOnly ? (<Icon icon="plus" onClick={ev => this.addThemeLayers(ev, item)} title={addTitle} />) : null}
+                                        {!item.addOnly ? (<Icon icon="open_link" onClick={ev => this.openInTab(ev, item.id)} title={openTabTitle} />) : null}
+                                        {this.props.showDefaultThemeSelector && username && !item.addOnly ? (<Icon className={ (this.extractThemeId(this.props.defaultUrlParams) === item.id ? "icon-active" : "")} icon="new" onClick={ev => this.changeDefaultUrlParams(ev, item.id)} title={changeDefaultUrlTitle} />) : null }
                                     </div>
                                 ) : (
                                     <div className="theme-item-restricted-overlay">
@@ -253,7 +256,12 @@ class ThemeList extends React.Component {
     };
     addThemeLayers = (ev, theme) => {
         ev.stopPropagation();
-        this.props.addLayer(ThemeUtils.createThemeLayer(theme, this.props.themes, LayerRole.USERLAYER));
+        const layer = ThemeUtils.createThemeLayer(theme, this.props.themes, LayerRole.USERLAYER);
+        if (LayerUtils.findLayerWithSublayers(this.props.layers, layer)) {
+            this.props.showNotification("existinglayer", LocaleUtils.tr("search.existinglayer") + ": " + theme.title);
+        } else {
+            this.props.addLayer(layer);
+        }
         // Show layer tree to notify user that something has happened
         this.props.setCurrentTask('LayerTree');
     };
@@ -300,5 +308,6 @@ export default connect(selector, {
     addLayer: addLayer,
     setActiveLayerInfo: setActiveLayerInfo,
     setThemeLayersList: setThemeLayersList,
-    setUserInfoFields: setUserInfoFields
+    setUserInfoFields: setUserInfoFields,
+    showNotification: showNotification
 })(ThemeList);

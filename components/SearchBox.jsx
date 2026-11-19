@@ -440,9 +440,9 @@ class SearchBox extends React.Component {
         return [(
             <div className="searchbox-result" key={key} onClick={ConfigUtils.getPluginConfig("LayerCatalog")?.cfg?.toggleGroupOnClick && result.sublayers ? toggleLayerGroup : () => selectResult(provider, group, result)} style={{borderLeft: `${level}em solid transparent`}}>
                 {icon}
-                {result.theme ? (<Icon className="searchbox-result-openicon" icon="open" />) : null}
+                {result.theme && !result.theme.addOnly ? (<Icon className="searchbox-result-openicon" icon="open" />) : null}
                 <span className="searchbox-result-label" dangerouslySetInnerHTML={{__html: MiscUtils.sanitizeHtml(result.text).replace(/<br\s*\/>/ig, ' ')}} {...withTooltip(result.label ?? result.text, {}, 'pointer')} />
-                {result.theme && addThemes ? (<Icon icon="plus" onClick={(ev) => {MiscUtils.killEvent(ev); this.selectLayerResult(provider, group, result); }} title={LocaleUtils.tr("themeswitcher.addtotheme")}/>) : null}
+                {result.theme && (addThemes || result.theme.addOnly) ? (<Icon icon="plus" onClick={(ev) => {MiscUtils.killEvent(ev); this.selectLayerResult(provider, group, result); }} title={LocaleUtils.tr("themeswitcher.addtotheme")}/>) : null}
                 {this.props.searchOptions.allowAddLayerAsGroup && result.sublayers ? (<Icon icon="group" onClick={(ev) => {MiscUtils.killEvent(ev); this.selectLayerResult(provider, group, result, true); }} title={LocaleUtils.tr("importlayer.asgroup")} />) : null}
                 {result.info ? <Icon icon="info-sign" onClick={(ev) => this.toggleLayerInfo(ev, provider, group, result, key, parent)} /> : null}
                 {result.layer.link ? <Icon className="searchbox-entry-link" icon="info-sign" onClick={ev => this.openUrl(ev, result.layer.link, result.target, result.label ?? result.text)} title={LocaleUtils.tr("layercatalog.openlink")} /> : null}
@@ -461,9 +461,9 @@ class SearchBox extends React.Component {
         return (
             <div className="searchbox-result" key={provider + ":" + group.id + ":" + result.id} onClick={() => this.selectThemeResult(provider, group, result)}>
                 {result.thumbnail ? (<img className="searchbox-result-thumbnail" onError={(ev) => this.loadFallbackResultImage(ev, group.type)} src={result.thumbnail} />) : null}
-                <Icon className="searchbox-result-openicon" icon="open" />
+                {result.theme.addOnly ? null : (<Icon className="searchbox-result-openicon" icon="open" />)}
                 <span className="searchbox-result-label" dangerouslySetInnerHTML={{__html: MiscUtils.sanitizeHtml(result.text).replace(/<br\s*\/>/ig, ' ')}} title={result.label ?? result.text} />
-                {result.theme && addThemes ? (<Icon icon="plus" onClick={(ev) => {MiscUtils.killEvent(ev); this.addThemeLayers(result.layer);}} title={LocaleUtils.tr("themeswitcher.addtotheme")}/>) : null}
+                {result.theme && (addThemes || result.theme.addOnly) ? (<Icon icon="plus" onClick={(ev) => {MiscUtils.killEvent(ev); this.addThemeLayers(result.layer);}} title={LocaleUtils.tr("themeswitcher.addtotheme")}/>) : null}
             </div>
         );
     };
@@ -583,6 +583,10 @@ class SearchBox extends React.Component {
         }
     };
     selectThemeResult = (provider, group, result) => {
+        if (result.theme.addOnly) {
+            this.addThemeLayers(result.layer);
+            return;
+        }
         this.props.setCurrentTheme(result.theme, this.props.themes);
         if (this.props.searchOptions.showLayerAfterChangeTheme) {
             this.props.setCurrentTask(this.layerTreeTask);
@@ -863,11 +867,7 @@ class SearchBox extends React.Component {
     };
     addThemeLayers = (layer) => {
         // Check if layer is already in the LayerTree
-        const sublayers = LayerUtils.getSublayerNames(layer);
-        const existing = this.props.layers.find(l => {
-            return l.type === layer.type && l.url === layer.url && !isEmpty(LayerUtils.getSublayerNames(l).filter(v => sublayers.includes(v)));
-        });
-        if (existing) {
+        if (LayerUtils.findLayerWithSublayers(this.props.layers, layer)) {
             const existingLayerName = (layer.sublayers || []).length === 1 ? layer.sublayers[0].title : layer.title;
             const text = LocaleUtils.tr("search.existinglayer") + ": " + existingLayerName;
             this.props.showNotification("existinglayer", text);

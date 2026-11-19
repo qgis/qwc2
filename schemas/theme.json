@@ -75,6 +75,10 @@
     },
     "type": "object",
     "properties": {
+        "addOnly": {
+            "type": "boolean",
+            "description": "Whether the theme can only be added to the current map as additional layers, but not opened as a theme of its own."
+        },
         "additionalMouseCrs": {
             "type": "array",
             "description": "Additional projections for displaying the mouse position, as EPSG codes. WGS84 and mapCrs are available by default, other projections must be defined in config.json.",
