@@ -134,6 +134,7 @@ class RedliningSupport extends React.Component {
         );
         if (recreateInteraction) {
             // Commit to previous layer in case layer changed
+            this.commitUnfinishedSketch(prevProps.redlining);
             this.reset(prevProps.redlining);
             this.createInteraction();
         }
@@ -673,7 +674,8 @@ class RedliningSupport extends React.Component {
             if (
                 (featureObj.shape === "Text" && !featureObj.properties.label) ||
                 (featureObj.shape === "Circle" && featureObj.circleParams.radius === 0) ||
-                (featureObj.geometry?.type === "Polygon" && feature.getGeometry().getArea() === 0)
+                (featureObj.geometry?.type === "Polygon" && feature.getGeometry().getArea() === 0) ||
+                (featureObj.geometry?.type === "LineString" && new Set(featureObj.geometry.coordinates.map(String)).size < 2)
             ) {
                 if (!newFeature) {
                     this.props.removeLayerFeatures(redliningProps.layer, [featureObj.id]);
@@ -704,6 +706,27 @@ class RedliningSupport extends React.Component {
         this.props.addLayerFeatures(layer, featureObjects);
         this.updateRedliningState();
         return featureObjects;
+    };
+    commitUnfinishedSketch = (redliningProps) => {
+        // While sketching, picking is false and the sketch is the only selected feature
+        const feature = !this.picking ? this.selectedFeatures[0] : null;
+        const geometry = feature?.getGeometry();
+        const shape = feature?.get('shape');
+        if (shape !== 'LineString' && shape !== 'Polygon') {
+            return;
+        }
+        // Sketch coordinates end with the floating vertex under the pointer (polygon ring: floating vertex, then closing vertex)
+        const coordinates = geometry.getCoordinates();
+        if (shape === 'LineString' && coordinates.length >= 3) {
+            coordinates.splice(-1, 1);
+            geometry.setCoordinates(coordinates);
+        } else if (shape === 'Polygon' && coordinates[0].length >= 5) {
+            coordinates[0].splice(-2, 1);
+            geometry.setCoordinates(coordinates);
+        } else {
+            return;
+        }
+        this.commitFeatures([feature], redliningProps, true);
     };
     reset = (redliningProps) => {
         this.setState({showRecordLocation: false, showSegmentInput: false});
