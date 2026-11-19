@@ -272,7 +272,8 @@ class MapControls3D extends React.Component {
         const lkat = this.fpcontrols.lookAt;
         const h = this.fpcontrols.personHeight;
         UrlParams.updateParams({v3d: [cpos.x, cpos.y, cpos.z, lkat.x, lkat.y, lkat.z, h].map(v => v.toFixed(1)).join(",")});
-        this.props.onCameraChanged([cpos.x, cpos.y, cpos.z], null);
+        const az = ((-this.fpcontrols.getAzimuthalAngle() * 180 / Math.PI) % 360 + 360) % 360;
+        this.props.onCameraChanged([cpos.x, cpos.y, cpos.z], null, CAMERA_FOV, az);
     };
     restoreView = (viewState) => {
         if (viewState.camera && viewState.target) {

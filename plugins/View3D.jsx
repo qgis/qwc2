@@ -10,6 +10,7 @@ import React from 'react';
 import {connect, Provider} from 'react-redux';
 
 import isEmpty from 'lodash.isempty';
+import ol from 'openlayers';
 import PropTypes from 'prop-types';
 
 import * as bookmarkExports from '../actions/bookmark';
@@ -24,7 +25,11 @@ import PluginsContainer from '../components/PluginsContainer';
 import ResizeableWindow from '../components/ResizeableWindow';
 import Spinner from '../components/widgets/Spinner';
 import ReducerIndex from '../reducers/index';
-import personIcon from '../resources/person.png';
+import personIconE from '../resources/person_e.svg';
+import personIconN from '../resources/person_n.svg';
+import personIconNE from '../resources/person_ne.svg';
+import personIconS from '../resources/person_s.svg';
+import personIconSE from '../resources/person_se.svg';
 import {createStore, getStore} from '../stores/StandardStore';
 import ConfigUtils from '../utils/ConfigUtils';
 import LocaleUtils from '../utils/LocaleUtils';
@@ -238,7 +243,7 @@ class View3D extends React.Component {
             this.map3dComponentRef = null;
             this.setState({componentLoaded: false});
             if (this.firstPersonMarker) {
-                MapUtils.removeSelectionLayer(this.firstPersonMarker);
+                MapUtils.removeUnmanagedLayer(this.firstPersonMarker);
                 this.firstPersonMarker = null;
             }
         }
@@ -377,7 +382,7 @@ class View3D extends React.Component {
         }
         this.setState({windowDetached: geometry.detached});
     };
-    onCameraChanged = (center, camera, fov) => {
+    onCameraChanged = (center, camera, fov, az) => {
         // Note: If camera pos is NULL, we are in first-person-view
         if (this.state.viewsLocked && this.focusedMap === "map3d") {
             let rotation = undefined;
@@ -394,31 +399,44 @@ class View3D extends React.Component {
                 const zoom = MapUtils.getZoomForExtent(bbox, this.props.map.resolutions, this.props.map.size, 0, this.props.map.scales.length - 1);
                 this.props.zoomToPoint(center.slice(0, 2), zoom, this.props.theme.mapCrs, rotation);
                 if (this.firstPersonMarker) {
-                    MapUtils.removeSelectionLayer(this.firstPersonMarker);
+                    MapUtils.removeUnmanagedLayer(this.firstPersonMarker);
                     this.firstPersonMarker = null;
                 }
             } else {
                 this.props.panTo(center.slice(0, 2), this.props.theme.mapCrs, rotation);
                 if (!this.firstPersonMarker) {
-                    this.firstPersonMarker = MapUtils.addSelectionLayer({
+                    const options = {
+                        type: 'vector',
                         features: [{
+                            id: 'person',
                             geometry: {
                                 type: 'Point',
                                 coordinates: center.slice(0, 2)
                             },
-                            crs: this.props.theme.mapCrs,
-                            styleName: 'marker',
-                            styleOptions: {
-                                iconSrc: personIcon
-                            }
-                        }]
-                    });
+                            properties: { az: az }
+                        }],
+                        styleFunction: (f) => {
+                            const img = (baseIcon, flip = false) => (
+                                new ol.style.Icon({src: baseIcon, scale: [flip ? -2 : 2, 2]})
+                            );
+                            return new ol.style.Style({
+                                image: [
+                                    img(personIconN), img(personIconNE),
+                                    img(personIconE), img(personIconSE), img(personIconS),
+                                    img(personIconSE, true), img(personIconE, true), img(personIconNE, true)
+                                ][Math.round(f.get('az') / 45) % 8]
+                            });
+                        }
+                    };
+                    this.firstPersonMarker = MapUtils.addUnmanagedLayer(options);
                 } else {
-                    this.firstPersonMarker.getSource().getFeatures()[0].getGeometry().setCoordinates(center.slice(0, 2));
+                    const markerFeature = this.firstPersonMarker.getSource().getFeatures()[0];
+                    markerFeature.set('az', az, false);
+                    markerFeature.getGeometry().setCoordinates(center);
                 }
             }
         } else if (this.firstPersonMarker) {
-            MapUtils.removeSelectionLayer(this.firstPersonMarker);
+            MapUtils.removeUnmanagedLayer(this.firstPersonMarker);
             this.firstPersonMarker = null;
         }
     };
@@ -433,7 +451,7 @@ class View3D extends React.Component {
     setLockViews = () => {
         this.setState(state => ({viewsLocked: !state.viewsLocked}));
         if (this.firstPersonMarker) {
-            MapUtils.removeSelectionLayer(this.firstPersonMarker);
+            MapUtils.removeUnmanagedLayer(this.firstPersonMarker);
             this.firstPersonMarker = null;
         }
     };

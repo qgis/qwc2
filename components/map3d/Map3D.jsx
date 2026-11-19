@@ -857,9 +857,9 @@ class Map3D extends React.Component {
             ) : null
         ];
     }
-    onCameraChanged = (center, camera, fov) => {
+    onCameraChanged = (center, camera, fov, az) => {
         this.state.sceneContext.eventDispatcher.dispatchEvent({type: 'cameraChanged'});
-        this.props.onCameraChanged(center, camera, fov);
+        this.props.onCameraChanged(center, camera, fov, az);
     };
     renderBaseLayer = () => {
         const baseLayer = this.state.sceneContext.baseLayers.find(e => e.visibility === true);
