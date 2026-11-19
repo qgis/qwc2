@@ -48,6 +48,20 @@ export default function withTooltip(tooltipContents, props = {}, align = 'center
             tooltip.style.left = `${Math.min(tooltip.srcPos.x + 5, appRect.right - width - 5)}px`;
         }
     };
+    const hideTooltip = (ev, target = undefined) => {
+        props.onMouseLeave?.(ev);
+        target = target ?? ev.currentTarget;
+        clearTimeout(target.tooltipTimeout);
+        delete target.tooltipTimeout;
+        const tooltip = target.popoverTargetElement;
+        if (tooltip) {
+            tooltip.hidePopover();
+            tooltip.remove();
+            target.popoverTargetElement = null;
+            target.observer.disconnect();
+            delete target.observer;
+        }
+    };
     const scheduleShowTooltip = (ev) => {
         props.onMouseMove?.(ev);
         if (!tooltipContents) {
@@ -75,21 +89,18 @@ export default function withTooltip(tooltipContents, props = {}, align = 'center
                 tooltip.srcPos = srcPos;
                 target.popoverTargetElement = tooltip;
                 target.popoverTargetAction = 'show';
+                target.observer = new MutationObserver(() => {
+                    if (!target.isConnected) {
+                        // Trigger element was removed from the DOM
+                        hideTooltip(null, target);
+                    }
+                });
+                target.observer.observe(ev.view.document.body, { childList: true, subtree: true });
                 MiscUtils.appContainer(target).appendChild(tooltip);
                 updateTooltip(target);
             }
             target.tooltipTimeout = null;
         }, delay);
-    };
-    const hideTooltip = (ev) => {
-        props.onMouseLeave?.(ev);
-        clearTimeout(ev.currentTarget.tooltipTimeout);
-        const tooltip = ev.currentTarget.popoverTargetElement;
-        if (tooltip) {
-            tooltip.hidePopover();
-            tooltip.remove();
-            ev.currentTarget.popoverTargetElement = null;
-        }
     };
     const onRef = (el) => {
         props.ref?.(el);
