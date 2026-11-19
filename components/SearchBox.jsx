@@ -766,7 +766,8 @@ class SearchBox extends React.Component {
         this.setState({
             searchResults: {query_text: searchText},
             searchSession: searchSession,
-            pendingSearches: Object.keys(availableProviders)
+            pendingSearches: Object.keys(availableProviders),
+            resultsVisible: true
         });
         const searchParams = {
             mapcrs: this.props.map.projection,
@@ -810,7 +811,6 @@ class SearchBox extends React.Component {
                         }
                     }
                     return {
-                        resultsVisible: true,
                         searchResults: searchResults,
                         pendingSearches: newPendingSearches
                     };
