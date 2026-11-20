@@ -305,7 +305,7 @@
                 "boolean",
                 "null"
             ],
-            "description": "Whether map tips are enabled by default. If null or not set, defaultMapTips applies."
+            "description": "Whether map tips are enabled by default. If `null`, the map tips control will not be visible. If not defined, `defaultMapTips` applies."
         },
         "minSearchScaleDenom": {
             "type": "number",

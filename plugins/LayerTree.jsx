@@ -197,8 +197,8 @@ class LayerTree extends React.Component {
         this.visibilityButton = null;
     }
     componentDidUpdate(prevProps) {
-        if (this.props.theme.mapTips !== undefined && this.props.theme.mapTips !== prevProps.theme.mapTips) {
-            this.props.toggleMapTips(this.props.theme.mapTips && !ConfigUtils.isMobile());
+        if (this.props.allowMapTips && !ConfigUtils.isMobile() && this.props.theme.mapTips !== prevProps.theme.mapTips) {
+            this.props.toggleMapTips(this.props.theme.mapTips === true);
         }
         if (this.props.layers !== prevProps.layers) {
             this.setState(state => ({activePreset: LayerUtils.getActiveVisibilityPreset(this.props.layers, state.visibilityPresets)}));
@@ -550,16 +550,9 @@ class LayerTree extends React.Component {
         });
     };
     renderBody = () => {
-        const maptipcheckboxstate = this.props.mapTipsEnabled === true ? 'checked' : 'unchecked';
         let maptipCheckbox = null;
-        let maptipsEnabled = false;
-        if (this.props.theme.mapTips !== undefined) {
-            maptipsEnabled = this.props.theme.mapTips !== null && this.props.allowMapTips;
-        } else {
-            maptipsEnabled = this.props.allowMapTips;
-        }
-
-        if (!ConfigUtils.isMobile() && maptipsEnabled) {
+        if (this.props.allowMapTips && !ConfigUtils.isMobile() && this.props.theme.mapTips !== null) {
+            const maptipcheckboxstate = this.props.mapTipsEnabled === true ? 'checked' : 'unchecked';
             maptipCheckbox = (
                 <div className="layertree-option">
                     <Icon icon={maptipcheckboxstate} onClick={this.toggleMapTips} />

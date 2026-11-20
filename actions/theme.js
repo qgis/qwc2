@@ -182,7 +182,7 @@ export function setCurrentTheme(theme, themes, preserve = true, initialExtent = 
             printGrid: theme.printGrid ?? themes.defaultPrintGrid,
             searchProviders: theme.searchProviders ?? themes.defaultSearchProviders,
             backgroundLayers: theme.backgroundLayers ?? themes.defaultBackgroundLayers ?? [],
-            mapTips: theme.mapTips ?? themes.defaultMapTips,
+            mapTips: theme.mapTips === undefined ? themes.defaultMapTips : theme.mapTips,
             defaultDisplayCrs: theme.defaultDisplayCrs || themes.defaultDisplayCrs
         };
 
