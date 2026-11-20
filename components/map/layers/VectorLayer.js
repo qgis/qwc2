@@ -8,12 +8,13 @@
  */
 
 import ol from 'openlayers';
+import {v4 as uuidv4} from 'uuid';
 
 import FeatureStyles from '../../../utils/FeatureStyles';
 
 
 function featureFromFeatureObj(format, featureObj, options, mapCrs, segmentize) {
-    const feature = format.readFeature({...featureObj, type: "Feature"});
+    const feature = format.readFeature({...featureObj, type: "Feature", id: featureObj.id ?? uuidv4()});
     let featureCrs = featureObj.crs ?? options.projection ?? mapCrs;
     if (featureCrs.type === "name") {
         featureCrs = featureCrs.properties.name;
@@ -49,7 +50,7 @@ export function createFeatures(options, mapCrs, segmentize = false) {
 export function updateFeatures(source, newOptions, oldOptions, mapCrs, segmentize = false) {
     const format = new ol.format.GeoJSON();
     const newIds = new Set((newOptions.features || []).map(f => f.id));
-    const oldIds = new Set((oldOptions.features || []).map(f => f.id));
+    const oldIds = new Set(source.getFeatures().map(f => f.getId()));
 
     // Remove removed features
     [...oldIds].filter(id => !newIds.has(id)).forEach(id => {
@@ -63,11 +64,11 @@ export function updateFeatures(source, newOptions, oldOptions, mapCrs, segmentiz
     const oldFeaturesMap = (oldOptions.features || []).reduce((res, f) => ({...res, [f.id]: f}), {});
     const newFeatures = [];
     for (const featureObj of newOptions.features) {
-        if (oldFeaturesMap[featureObj.id] && oldFeaturesMap[featureObj.id] === featureObj) {
+        if (featureObj.id && oldFeaturesMap[featureObj.id] && oldFeaturesMap[featureObj.id] === featureObj) {
             // Unchanged, continue
             continue;
         }
-        if (oldFeaturesMap[featureObj.id] && oldFeaturesMap[featureObj.id] !== featureObj) {
+        if (featureObj.id && oldFeaturesMap[featureObj.id] && oldFeaturesMap[featureObj.id] !== featureObj) {
             // Changed, remove
             const oldFeature = source.getFeatureById(featureObj.id);
             if (oldFeature) {
