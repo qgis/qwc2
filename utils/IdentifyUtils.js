@@ -79,6 +79,7 @@ function identifyRequestParams(layer, queryLayers, projection, params) {
             info_format: format,
             with_geometry: true,
             with_maptip: false,
+            WMS_PRECISION: CoordinatesUtils.getUnits(projection) === 'degrees' ? 5 : 1,
             with_htmlcontent: true,
             ...layer.dimensionValues,
             ...cleanParams
