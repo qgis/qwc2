@@ -115,7 +115,7 @@ export default class SearchWidget extends React.Component {
     };
     renderItem = (group, item) => {
         return (
-            <div className="search-widget-results-item" key={group.id + ":" + item.id} onClick={() => this.resultSelected(group, item)} {...withTooltip(item.text)}>{item.text}</div>
+            <div className="search-widget-results-item" key={group.id + ":" + item.id} onClick={() => this.resultSelected(group, item)} {...withTooltip(item.text, {}, 'pointer')}>{item.text}</div>
         );
     };
     textChanged = (ev) => {
