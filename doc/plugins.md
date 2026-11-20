@@ -304,6 +304,7 @@ The exporter configuration is an object of the shape
    id: "<id>",
    title: "<title>",
    allowClipboard: <true|false>,
+   isAvailable: (results) => <true|false>,
    export: (features, callback) => {
      callback({
        data: <blob>, type: "<mimeType>", filename: "<filename>"
@@ -311,6 +312,9 @@ The exporter configuration is an object of the shape
    }
  }
 ```
+
+`isAvailable` is optional. It is called with the current identify results (`{layerId: [features]}`) and
+returns `false` to hide the exporter for these results. It can only narrow the formats allowed by `enableExport`.
 
 **removeIdentifyExporter(name)**
 

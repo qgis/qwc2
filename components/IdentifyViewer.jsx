@@ -275,7 +275,9 @@ class IdentifyViewer extends React.Component {
         this.export({[layer]: [result]});
     };
     export = (json, clipboard = false) => {
-        const exporter = this.getExporters().find(entry => entry.id === this.state.exportFormat);
+        const enabledExporters = this.getEnabledExporters();
+        const exportFormat = this.getExportFormat(enabledExporters);
+        const exporter = enabledExporters.find(entry => entry.id === exportFormat);
         if (exporter) {
             if (!this.props.exportGeometry) {
                 json = Object.entries(json).reduce((res, [layerId, features]) => (
@@ -292,7 +294,7 @@ class IdentifyViewer extends React.Component {
         }
     };
     renderResultTree = () => {
-        const exportEnabled = this.props.enableExport === true || !isEmpty(this.props.enableExport);
+        const exportEnabled = this.isExportEnabled();
         return (<div className="identify-results-tree" ref={el => { this.resultsTreeRef = el; }} style={{maxHeight: this.state.currentResult ? '10em' : 'initial'}}>
             {Object.entries(this.props.identifyResults).map(([layerid, features]) => {
                 if (features.length === 0) {
@@ -622,7 +624,7 @@ class IdentifyViewer extends React.Component {
         const enabledSettings = {
             showLayerSelector: this.props.showLayerSelector,
             paginatedDisplayMode: this.props.resultDisplayMode === 'paginated',
-            exportEnabled: this.props.enableExport === true || !isEmpty(this.props.enableExport),
+            exportEnabled: this.isExportEnabled(),
             reportsEnabled: this.props.enableAggregatedReports && Object.keys(this.state.reports).length > 0
         };
         const haveSettings = Object.values(enabledSettings).find(Boolean) !== undefined;
@@ -644,9 +646,9 @@ class IdentifyViewer extends React.Component {
         );
     };
     renderSettingsMenu = (enabledSettings) => {
-        const exporters = Object.fromEntries(this.getExporters().map(exporter => ([exporter.id, exporter])));
-        const enabledExporters = Array.isArray(this.props.enableExport) ? this.props.enableExport.filter(id => id in exporters) : Object.keys(exporters);
-        const clipboardExportDisabled = exporters[this.state.exportFormat]?.allowClipboard !== true;
+        const enabledExporters = this.getEnabledExporters();
+        const exportFormat = this.getExportFormat(enabledExporters);
+        const clipboardExportDisabled = enabledExporters.find(exporter => exporter.id === exportFormat)?.allowClipboard !== true;
         const [layerUrl, layerName] = this.state.selectedLayer.split('#');
         const match = LayerUtils.searchLayer(this.props.layers, 'url', layerUrl, 'name', layerName);
         const haveAttributeTable = (
@@ -695,9 +697,9 @@ class IdentifyViewer extends React.Component {
                                 <td>{LocaleUtils.tr("common.export")}:</td>
                                 <td>
                                     <div className="controlgroup">
-                                        <select className="controlgroup-expanditem" onChange={ev => this.setState({exportFormat: ev.target.value})} value={this.state.exportFormat}>
-                                            {enabledExporters.map(id => (
-                                                <option key={id} value={id}>{exporters[id].title ?? LocaleUtils.tr(exporters[id].titleMsgId)}</option>
+                                        <select className="controlgroup-expanditem" onChange={ev => this.setState({exportFormat: ev.target.value})} value={exportFormat}>
+                                            {enabledExporters.map(exporter => (
+                                                <option key={exporter.id} value={exporter.id}>{exporter.title ?? LocaleUtils.tr(exporter.titleMsgId)}</option>
                                             ))}
                                         </select>
                                         <Button onClick={() => this.exportResults()} title={LocaleUtils.tr("common.download")}>
@@ -754,7 +756,27 @@ class IdentifyViewer extends React.Component {
         return [
             ...IdentifyExporters,
             ...Object.values(window.qwc2?.__identifyExportes || [])
-        ];
+        ].filter(exporter => {
+            try {
+                return !exporter.isAvailable || exporter.isAvailable(this.props.identifyResults);
+            } catch (e) {
+                // eslint-disable-next-line no-console
+                console.warn("Identify exporter isAvailable failed for " + exporter.id, e);
+                return false;
+            }
+        });
+    };
+    isExportEnabled = () => {
+        return (this.props.enableExport === true || !isEmpty(this.props.enableExport)) && this.getEnabledExporters().length > 0;
+    };
+    // Available exporters, restricted and ordered by enableExport
+    getEnabledExporters = () => {
+        const exporters = this.getExporters();
+        return Array.isArray(this.props.enableExport) ? this.props.enableExport.map(id => exporters.find(exporter => exporter.id === id)).filter(Boolean) : exporters;
+    };
+    // Falls back to the first offered format if the selected one is not available for the current results
+    getExportFormat = (enabledExporters) => {
+        return enabledExporters.some(exporter => exporter.id === this.state.exportFormat) ? this.state.exportFormat : enabledExporters[0]?.id;
     };
     collectFeatureReportTemplates = (entry) => {
         let reports = {};
