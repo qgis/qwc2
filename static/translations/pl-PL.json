@@ -271,7 +271,8 @@
     },
     "featuresearch": {
       "query": "Kwerenda",
-      "title": "Wyszukiwanie właściwości"
+      "title": "Wyszukiwanie właściwości",
+      "typetofilter": ""
     },
     "fileselector": {
       "files": "pliki",
