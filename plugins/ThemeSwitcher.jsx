@@ -37,7 +37,7 @@ class ThemeSwitcher extends React.Component {
         currentTask: PropTypes.object,
         /** Whether to expand theme groups by default. */
         expandGroups: PropTypes.bool,
-        /** Whether to hide the add theme button. Note: the button will also be hidden if the global option `allowAddingOtherThemes` is `false`. */
+        /** Whether to hide the add theme button. Note: the button will also be hidden if the global option `allowAddingOtherThemes` is `false`. Themes flagged `addOnly` always show it. */
         hideAddThemeButton: PropTypes.bool,
         /** Whether to hide the add theme layers button. Note: the button will also be hidden if the global option `allowAddingOtherThemes` is `false`. */
         hideAddThemeLayersButton: PropTypes.bool,

@@ -531,6 +531,9 @@ function getTheme(config, configItem, result, resultItem, proxy) {
             } else if (configItem.minSearchScale) { // Legacy name
                 resultItem.minSearchScaleDenom = configItem.minSearchScale;
             }
+            if (configItem.addOnly) {
+                resultItem.addOnly = true;
+            }
             if (configItem.themeInfoLinks) {
                 resultItem.themeInfoLinks = configItem.themeInfoLinks;
             }

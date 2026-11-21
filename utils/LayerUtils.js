@@ -617,6 +617,10 @@ const LayerUtils = {
     layerTreeCount(layer) {
         return isEmpty(layer.sublayers) ? 1 : layer.sublayers.reduce((sum, sublayer) => sum + LayerUtils.layerTreeCount(sublayer), 0);
     },
+    findLayerWithSublayers(layers, layer) {
+        const sublayers = LayerUtils.getSublayerNames(layer);
+        return layers.find(l => l.type === layer.type && l.url === layer.url && !isEmpty(LayerUtils.getSublayerNames(l).filter(v => sublayers.includes(v))));
+    },
     getSublayerNames(layer, toplevel = true, filter = null) {
         return [(toplevel && layer.sublayers) || (filter && !filter(layer)) ? null : layer.name].concat((layer.sublayers || []).reduce((list, sublayer) => {
             return list.concat([...this.getSublayerNames(sublayer, false, filter)]);
