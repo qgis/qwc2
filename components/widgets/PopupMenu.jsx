@@ -23,6 +23,7 @@ export default class PopupMenu extends React.PureComponent {
         anchor: PropTypes.object,
         children: PropTypes.oneOfType([PropTypes.node, PropTypes.func]),
         className: PropTypes.string,
+        container: PropTypes.object,
         disabledItemClass: PropTypes.string,
         keepMenuOpen: PropTypes.bool,
         onClose: PropTypes.func,
@@ -48,7 +49,7 @@ export default class PopupMenu extends React.PureComponent {
         this.container.style.zIndex = 100000;
         this.container.style.pointerEvents = 'none';
         this.menuEl = null;
-        const root = MiscUtils.appContainer(this.props.anchor);
+        const root = this.props.container ?? MiscUtils.appContainer(this.props.anchor);
         root.appendChild(this.container);
         // Delay one cycle
         setTimeout(() => doc.addEventListener('pointerdown', this.checkCloseMenu, {capture: true}), 0);
@@ -62,7 +63,7 @@ export default class PopupMenu extends React.PureComponent {
         }
     }
     componentWillUnmount() {
-        const root = MiscUtils.appContainer(this.props.anchor);
+        const root = this.props.container ?? MiscUtils.appContainer(this.props.anchor);
         root.removeChild(this.container);
         if (this.props.anchor?.nodeName === "INPUT") {
             this.props.anchor.removeEventListener('keydown', this.keyNav);

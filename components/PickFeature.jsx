@@ -211,6 +211,7 @@ class PickFeature extends React.Component {
             resultsMenu = (
                 <PopupMenu
                     className="PickFeatureMenu"
+                    container={MiscUtils.appContainer(MapUtils.getHook(MapUtils.GET_MAP).getTargetElement())}
                     key="PickResultMenu"
                     onClose={this.onClose}
                     x={this.state.clickPos[0]} y={this.state.clickPos[1]}
