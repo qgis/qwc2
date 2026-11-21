@@ -574,6 +574,7 @@ class API extends React.Component {
      *    id: "<id>",
      *    title: "<title>",
      *    allowClipboard: <true|false>,
+     *    isAvailable: (results) => <true|false>,
      *    export: (features, callback) => {
      *      callback({
      *        data: <blob>, type: "<mimeType>", filename: "<filename>"
@@ -581,6 +582,9 @@ class API extends React.Component {
      *    }
      *  }
      * ```
+     *
+     * `isAvailable` is optional. It is called with the current identify results (`{layerId: [features]}`) and
+     * returns `false` to hide the exporter for these results. It can only narrow the formats allowed by `enableExport`.
      */
     addIdentifyExporter = (name, exporterConfig) => {
         window.qwc2.__identifyExportes[name] = exporterConfig;
