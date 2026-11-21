@@ -234,7 +234,7 @@ class IdentifyTool extends React.Component {
             if (!isEmpty(this.props.click.features)) {
                 this.props.click.features.forEach((feature) => {
                     const layer = this.props.layers.find(l => l.id === feature.layerId);
-                    if (layer?.role === LayerRole.USERLAYER) {
+                    if (layer?.role === LayerRole.USERLAYER && !layer.layertreehidden) {
                         const queryFeature = {...(layer.features?.find?.(f => f.id === feature.id) ?? feature)};
                         if (!queryFeature?.properties) {
                             return;
