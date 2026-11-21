@@ -15,7 +15,7 @@ import PropTypes from 'prop-types';
 import {createSelector} from 'reselect';
 import {v4 as uuidv4} from 'uuid';
 
-import {LayerRole, addLayerFeatures, removeLayer} from '../actions/layers';
+import {LayerRole, addLayerFeatures} from '../actions/layers';
 import {zoomToExtent} from '../actions/map';
 import {setCurrentTask} from '../actions/task';
 import Icon from '../components/Icon';
@@ -32,6 +32,7 @@ import searchProvidersSelector from '../selectors/searchproviders';
 import ConfigUtils from '../utils/ConfigUtils';
 import CoordinatesUtils from '../utils/CoordinatesUtils';
 import LocaleUtils from '../utils/LocaleUtils';
+import MapUtils from '../utils/MapUtils';
 import MeasureUtils from '../utils/MeasureUtils';
 import RoutingInterface from '../utils/RoutingInterface';
 import withTooltip from '../utils/Tooltip';
@@ -65,7 +66,6 @@ class Routing extends React.Component {
         layers: PropTypes.array,
         locatePos: PropTypes.array,
         mapCrs: PropTypes.string,
-        removeLayer: PropTypes.func,
         searchProviders: PropTypes.object,
         setCurrentTask: PropTypes.func,
         /** Whether to label the routing waypoint pins with the route point number. */
@@ -160,13 +160,15 @@ class Routing extends React.Component {
             result: null
         },
         searchProviders: [],
-        searchParams: {},
-        highlightId: null
+        searchParams: {}
     };
     constructor(props) {
         super(props);
         this.recomputeTimeout = null;
         this.state.mode = this.props.enabledModes[0];
+        this.routehighlight = null;
+        this.routemarkers = null;
+        this.leghighlight = null;
     }
     componentDidUpdate(prevProps, prevState) {
         // Recollect search providers
@@ -209,8 +211,8 @@ class Routing extends React.Component {
         }
         // Window closed
         if (!this.state.visible && prevState.visible) {
-            this.props.removeLayer("routinggeometries");
-            this.props.removeLayer("routingmarkers");
+            MapUtils.removeUnmanagedLayer(this.routemarkers);
+            MapUtils.removeUnmanagedLayer(this.routehighlight);
             this.updateRouteConfig({points: [{text: '', pos: null, crs: null}, {text: '', pos: null, crs: null}], result: null}, false);
             this.updateIsoConfig({point: {text: '', pos: null, crs: null}, result: null}, false);
         }
@@ -220,8 +222,8 @@ class Routing extends React.Component {
         }
         // Tab changed
         if (this.state.currentTab !== prevState.currentTab) {
-            this.props.removeLayer("routinggeometries");
-            this.props.removeLayer("routingmarkers");
+            MapUtils.removeUnmanagedLayer(this.routemarkers);
+            MapUtils.removeUnmanagedLayer(this.routehighlight);
             this.recomputeIfNeeded();
         }
         // Mode changed
@@ -466,30 +468,27 @@ class Routing extends React.Component {
         }
     };
     highlightRouteSection = (id, entry, leg) => {
-        this.setState({highlightId: id});
-        const feature = {
-            type: "Feature",
-            crs: "EPSG:4326",
-            geometry: {
-                type: "LineString",
-                coordinates: leg.coordinates.slice(entry.geom_indices[0], entry.geom_indices[1] + 1)
-            }
-        };
-        const sellayer = {
-            id: "routingselection",
-            role: LayerRole.SELECTION,
+        this.leghighlight = MapUtils.addUnmanagedLayer({
+            features: [{
+                crs: "EPSG:4326",
+                geometry: {
+                    type: "LineString",
+                    coordinates: leg.coordinates.slice(entry.geom_indices[0], entry.geom_indices[1] + 1)
+                }
+            }],
             styleOptions: {
                 strokeWidth: 3,
                 strokeColor: [255, 255, 0, 1],
                 strokeDash: []
-            }
-        };
-        this.props.addLayerFeatures(sellayer, [feature], true);
+            },
+            zIndex: 1001
+        }, this.leghighlight);
+        this.leghighlightId = id;
     };
     clearRouteSectionHighlight = (id) => {
-        if (this.state.highlightId === id) {
-            this.setState({highlightId: null});
-            this.props.removeLayer("routingselection");
+        if (this.leghighlightId === id) {
+            this.leghighlightId = null;
+            MapUtils.removeUnmanagedLayer(this.leghighlight);
         }
     };
     renderIsochroneWidget = () => {
@@ -687,8 +686,8 @@ class Routing extends React.Component {
             points: newPoints,
             result: null
         }}));
-        this.props.removeLayer("routinggeometries");
-        this.props.removeLayer("routingmarkers");
+        MapUtils.removeUnmanagedLayer(this.routemarkers);
+        MapUtils.removeUnmanagedLayer(this.routehighlight);
         this.recomputeIfNeeded();
     };
     reverseRoutePts = () => {
@@ -724,13 +723,7 @@ class Routing extends React.Component {
         } else {
             points = this.state.isoConfig.points;
         }
-        const layer = {
-            id: "routingmarkers",
-            role: LayerRole.MARKER,
-            styleName: 'marker'
-        };
         const features = points.filter(point => point.pos).map((point, idx) => ({
-            type: "Feature",
             crs: point.crs,
             geometry: {
                 type: "Point",
@@ -740,13 +733,16 @@ class Routing extends React.Component {
                 label: this.props.showPinLabels && this.state.routeConfig.result ? String(idx + 1) : null
             }
         }));
-        this.props.addLayerFeatures(layer, features, true);
+        this.routemarkers = MapUtils.addUnmanagedLayer({
+            styleName: 'marker',
+            features,
+            zIndex: 1002
+        }, this.routemarkers);
     };
     computeRoute = () => {
         const locations = this.state.routeConfig.points.filter(entry => entry.pos).map(entry => {
             return CoordinatesUtils.reproject(entry.pos, entry.crs, "EPSG:4326");
         });
-        this.props.removeLayer("routinggeometries");
         this.updateRouteConfig({busy: locations.length >= 2, result: null}, false);
         if (locations.length < 2) {
             return;
@@ -771,33 +767,27 @@ class Routing extends React.Component {
         RoutingInterface.computeRoute(this.state.mode, locations, settings, (success, result) => {
             if (success) {
                 // Add routing leg geometries
-                const layer = {
-                    id: "routinggeometries",
-                    role: LayerRole.SELECTION,
-                    styleName: "default",
+                const features = result.legs.map(leg =>
+                    leg.maneuvers.map(man => ({
+                        crs: "EPSG:4326",
+                        styleOptions: {
+                            strokeColor: man.color
+                        },
+                        geometry: {
+                            type: "LineString",
+                            coordinates: leg.coordinates.slice(man.geom_indices[0], man.geom_indices[1] + 1)
+                        }
+                    }))
+                ).flat();
+                this.routehighlight = MapUtils.addUnmanagedLayer({
+                    features,
                     styleOptions: {
                         strokeColor: [10, 10, 255, 1],
                         strokeWidth: 4,
                         strokeDash: []
-                    }
-                };
-                const features = [];
-                result.legs.forEach(leg => {
-                    leg.maneuvers.forEach(man => {
-                        features.push({
-                            type: "Feature",
-                            crs: "EPSG:4326",
-                            styleOptions: {
-                                strokeColor: man.color
-                            },
-                            geometry: {
-                                type: "LineString",
-                                coordinates: leg.coordinates.slice(man.geom_indices[0], man.geom_indices[1] + 1)
-                            }
-                        });
-                    });
-                });
-                this.props.addLayerFeatures(layer, features, true);
+                    },
+                    zIndex: 1000
+                }, this.routehighlight);
 
                 // Reorder locations based on routing result, keeping null entries
                 const {points, nullPoints} = this.state.routeConfig.points.reduce((res, point, idx) => {
@@ -825,7 +815,7 @@ class Routing extends React.Component {
         const locations = this.state.isoConfig.points.filter(entry => entry.pos).map(entry => {
             return CoordinatesUtils.reproject(entry.pos, entry.crs, "EPSG:4326");
         });
-        this.props.removeLayer("routinggeometries");
+        MapUtils.removeUnmanagedLayer(this.routehighlight);
         this.updateIsoConfig({busy: true, result: null}, false);
         const unitsFactor = this.props.units[this.state.isoConfig.mode][this.state.isoConfig.units[this.state.isoConfig.mode]];
         const contourOptions = {
@@ -834,25 +824,22 @@ class Routing extends React.Component {
         };
         RoutingInterface.computeIsochrone(this.state.mode, locations, contourOptions, this.state.settings[this.state.mode], (success, result) => {
             if (success) {
-                const layer = {
-                    id: "routinggeometries",
-                    role: LayerRole.SELECTION,
-                    styleOptions: {
-                        strokeColor: [10, 10, 255, 1],
-                        fillColor: [10, 10, 255, 0.5],
-                        strokeWidth: 4,
-                        strokeDash: []
-                    }
-                };
                 const features = result.areas.map(area => ({
-                    type: "Feature",
                     crs: "EPSG:4326",
                     geometry: {
                         type: "Polygon",
                         coordinates: [area]
                     }
                 }));
-                this.props.addLayerFeatures(layer, features, true);
+                this.routehighlight = MapUtils.addUnmanagedLayer({
+                    features,
+                    styleOptions: {
+                        strokeColor: [10, 10, 255, 1],
+                        fillColor: [10, 10, 255, 0.5],
+                        strokeWidth: 4,
+                        strokeDash: []
+                    }
+                }, this.routehighlight);
                 if (this.props.zoomAuto) {
                     this.props.zoomToExtent(result.bounds, "EPSG:4326", -0.5);
                 }
@@ -958,7 +945,6 @@ export default connect(createSelector([state => state, searchProvidersSelector],
     theme: state.theme.current
 })), {
     addLayerFeatures: addLayerFeatures,
-    removeLayer: removeLayer,
     setCurrentTask: setCurrentTask,
     zoomToExtent: zoomToExtent
 })(Routing);

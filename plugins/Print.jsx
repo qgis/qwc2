@@ -16,7 +16,7 @@ import JSZip from 'jszip';
 import isEmpty from 'lodash.isempty';
 import PropTypes from 'prop-types';
 
-import {LayerRole, addLayerFeatures, clearLayer} from '../actions/layers';
+import {LayerRole} from '../actions/layers';
 import {setSnappingConfig} from '../actions/map';
 import Icon from '../components/Icon';
 import PickFeature from '../components/PickFeature';
@@ -33,6 +33,7 @@ import ConfigUtils from '../utils/ConfigUtils';
 import CoordinatesUtils from '../utils/CoordinatesUtils';
 import LayerUtils from '../utils/LayerUtils';
 import LocaleUtils from '../utils/LocaleUtils';
+import MapUtils from '../utils/MapUtils';
 import MiscUtils from '../utils/MiscUtils';
 import Request from '../utils/Request';
 import VectorLayerUtils from '../utils/VectorLayerUtils';
@@ -48,10 +49,8 @@ import './style/Print.css';
 class Print extends React.Component {
     static propTypes = {
         active: PropTypes.bool,
-        addLayerFeatures: PropTypes.func,
         /** Whether to allow GeoPDF export. Requires QGIS Server 3.32 or newer. */
         allowGeoPdfExport: PropTypes.bool,
-        clearLayer: PropTypes.func,
         /** The default print dpi.  */
         defaultDpi: PropTypes.number,
         /** The factor to apply to the map scale to determine the initial print map scale.  */
@@ -140,6 +139,7 @@ class Print extends React.Component {
         this.state.grid = props.gridInitiallyEnabled;
         this.state.dpi = props.defaultDpi;
         this.state.selectedFormat = props.formats[0];
+        this.atlasSelection = null;
     }
     componentDidUpdate(prevProps, prevState) {
         if (prevProps.theme !== this.props.theme) {
@@ -160,14 +160,9 @@ class Print extends React.Component {
         }
         if (this.state.atlasFeatures !== prevState.atlasFeatures) {
             if (!isEmpty(this.state.atlasFeatures)) {
-                const layer = {
-                    id: "print-pick-selection",
-                    role: LayerRole.SELECTION,
-                    skipPrint: true
-                };
-                this.props.addLayerFeatures(layer, this.state.atlasFeatures, true);
+                this.atlasSelection = MapUtils.addUnmanagedLayer({features: this.state.atlasFeatures}, this.atlasSelection);
             } else if (!isEmpty(prevState.atlasFeatures)) {
-                this.props.clearLayer("print-pick-selection");
+                MapUtils.removeUnmanagedLayer(this.atlasSelection);
             }
         }
         if (this.state.printSeriesEnabled && this.state.selectedFormat !== 'application/pdf') {
@@ -934,7 +929,5 @@ const selector = (state) => ({
 });
 
 export default connect(selector, {
-    addLayerFeatures: addLayerFeatures,
-    clearLayer: clearLayer,
     setSnappingConfig: setSnappingConfig
 })(Print);

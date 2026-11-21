@@ -16,10 +16,12 @@ import polygonIntersectTest from 'polygon-intersect-test';
 import PropTypes from 'prop-types';
 import {v4 as uuidv4} from 'uuid';
 
-import {LayerRole, addLayerFeatures, clearLayer} from '../actions/layers';
+import {LayerRole} from '../actions/layers';
+import {defaultHighlightStyle} from '../utils/FeatureStyles';
 import IdentifyUtils from '../utils/IdentifyUtils';
 import LocaleUtils from '../utils/LocaleUtils';
 import MapUtils from '../utils/MapUtils';
+import MiscUtils from '../utils/MiscUtils';
 import VectorLayerUtils from '../utils/VectorLayerUtils';
 import MapSelection from './MapSelection';
 import PopupMenu from './widgets/PopupMenu';
@@ -30,8 +32,6 @@ import './style/PickFeature.css';
 
 class PickFeature extends React.Component {
     static propTypes = {
-        addLayerFeatures: PropTypes.func,
-        clearLayer: PropTypes.func,
         /** Optional: Function which accepts a GeoJSON feature and returns whether it should be accepted (true) or discarded (false) */
         featureFilter: PropTypes.func,
         featurePicked: PropTypes.func,
@@ -70,13 +70,14 @@ class PickFeature extends React.Component {
         pickResults: null,
         clickPos: null,
         mapPos: null,
-        highlightedFeature: null,
         pendingQueries: 0,
         reqId: null
     };
     constructor(props) {
         super(props);
         this.state = PickFeature.defaultState;
+        this.highlight = null;
+        this.highlightId = null;
     }
     componentDidUpdate(prevProps, prevState) {
         if (this.state.pickGeom && this.state.pickGeom !== prevState.pickGeom) {
@@ -223,15 +224,15 @@ class PickFeature extends React.Component {
                                 <div
                                     key={key}
                                     onClick={() => this.props.featurePicked(entry.layer, entry.feature, entry.mapName, this.state.mapPos)}
-                                    onMouseOut={() => this.clearHighlight(key, entry.feature)}
-                                    onMouseOver={() => this.highlightFeature(key, entry.feature)}
+                                    onMouseEnter={() => this.highlightFeature(key, entry.feature)}
+                                    onMouseLeave={() => this.clearHighlight(key)}
                                 >
                                     {(entry.layertitle ?? entry.layer) + ": " + (entry.feature.displayname ?? entry.feature.id)}
                                 </div>
                             );
                         })
                     ) : (
-                        <div className="pick-feature-menu-querying" key="spinner"><Spinner />{LocaleUtils.tr("pickfeature.querying")}</div>
+                        <div className="pick-feature-menu-querying" disabled key="spinner"><Spinner />{LocaleUtils.tr("pickfeature.querying")}</div>
                     )}
                 </PopupMenu>
             );
@@ -248,29 +249,22 @@ class PickFeature extends React.Component {
         )];
     }
     highlightFeature = (key, feature) => {
-        const layer = {
-            id: "pick-feature-selection",
-            role: LayerRole.SELECTION
-        };
-        this.props.addLayerFeatures(layer, [feature], true);
-        this.setState({highlightedFeature: key});
+        this.highlight = MapUtils.addUnmanagedLayer({features: [feature], styleOptions: defaultHighlightStyle()}, this.highlight);
+        this.highlightId = key;
     };
-    clearHighlight = (key, feature) => {
-        if (this.state.highlightedFeature === key) {
-            this.setState({highlightFeature: null});
-            this.props.clearLayer("pick-feature-selection");
+    clearHighlight = (key) => {
+        if (key && this.highlightId === key) {
+            MapUtils.removeUnmanagedLayer(this.highlight);
+            this.highlightId = null;
         }
     };
     onClose = () => {
         this.setState(PickFeature.defaultState);
-        this.props.clearLayer("pick-feature-selection");
+        this.clearHighlight(this.highlightId);
     };
 }
 
 export default connect((state) => ({
     layers: state.layers.flat,
     map: state.map
-}), {
-    addLayerFeatures: addLayerFeatures,
-    clearLayer: clearLayer
-})(PickFeature);
+}))(PickFeature);

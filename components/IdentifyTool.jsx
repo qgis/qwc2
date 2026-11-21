@@ -16,7 +16,7 @@ import isEmpty from 'lodash.isempty';
 import PropTypes from 'prop-types';
 import {v4 as uuidv4} from 'uuid';
 
-import {LayerRole, addLayer, addLayerFeatures, addMarker, removeMarker, removeLayer} from '../actions/layers';
+import {LayerRole, addLayer, addMarker, removeMarker, removeLayer} from '../actions/layers';
 import {zoomToExtent, zoomToPoint} from '../actions/map';
 import {setCurrentTask} from '../actions/task';
 import IdentifyViewer from '../components/IdentifyViewer';
@@ -44,7 +44,6 @@ import './style/IdentifyTool.css';
 class IdentifyTool extends React.Component {
     static propTypes = {
         addLayer: PropTypes.func,
-        addLayerFeatures: PropTypes.func,
         addMarker: PropTypes.func,
         /** Whether to append results by default (without having to press `CTRL` when clicking). */
         appendResultsByDefault: PropTypes.bool,
@@ -149,7 +148,7 @@ class IdentifyTool extends React.Component {
         this.fileinput.addEventListener("change", this.fileSelected);
         this.pendingIdentifyFilter = null;
         this.permalinkStateKey = this.props.taskId.toLowerCase() + "resultstate";
-        this.markerid = uuidv4();
+        this.marker = null;
         registerPermalinkDataStoreHook(this.permalinkStateKey, this.storeIdentifyResults);
         props.setToolRef(this);
     }
@@ -214,7 +213,7 @@ class IdentifyTool extends React.Component {
     };
     identifyPoint = (clickPoint) => {
         if (this.props.showPointQueryMarker) {
-            this.props.addMarker(this.markerid, clickPoint, '', this.props.map.projection);
+            this.marker = MapUtils.addUnmanagedLayer(VectorLayerUtils.createMarkerOptions(clickPoint), this.marker);
         }
         this.setState((state) => {
             // Remove any search selection layer to avoid confusion
@@ -257,9 +256,7 @@ class IdentifyTool extends React.Component {
         });
     };
     identifyRegion = (filterGeom, center) => {
-        if (this.props.showPointQueryMarker) {
-            this.props.removeMarker(this.markerid);
-        }
+        MapUtils.removeUnmanagedLayer(this.marker);
         const queryableLayers = IdentifyUtils.getQueryLayers(this.props.layers, this.props.map);
         const poly = filterGeom.coordinates[0];
         if (poly.length < 3) {
@@ -376,7 +373,7 @@ class IdentifyTool extends React.Component {
             });
             const pendingRequests = state.pendingRequests.filter(x => x !== reqId);
             if (pendingRequests.length === 0 && isEmpty(identifyResults) && this.props.showPointQueryMarker && this.props.onlyShowDialogWithResults) {
-                this.props.removeMarker(this.markerid);
+                MapUtils.removeUnmanagedLayer(this.marker);
             }
             return {
                 identifyResults: identifyResults,
@@ -409,9 +406,7 @@ class IdentifyTool extends React.Component {
         }
     };
     clearResults = () => {
-        if (this.props.showPointQueryMarker) {
-            this.props.removeMarker(this.markerid);
-        }
+        MapUtils.removeUnmanagedLayer(this.marker);
         this.setState({identifyResults: null, pendingRequests: [], filterGeom: null, filterGeomModifiers: {}});
     };
     updateRadius = (radius, units) => {
@@ -716,7 +711,6 @@ export default connect((state) => {
     };
 }, {
     addLayer: addLayer,
-    addLayerFeatures: addLayerFeatures,
     addMarker: addMarker,
     removeMarker: removeMarker,
     removeLayer: removeLayer,

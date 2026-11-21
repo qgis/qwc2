@@ -12,9 +12,9 @@ import {connect} from 'react-redux';
 import PropTypes from 'prop-types';
 
 import {setEditContext} from '../actions/editing';
-import {LayerRole, addLayerFeatures, removeLayer} from '../actions/layers';
 import {getFeatureTemplate} from '../utils/EditingUtils';
 import LocaleUtils from '../utils/LocaleUtils';
+import MapUtils from '../utils/MapUtils';
 import AttributeForm from './AttributeForm';
 import Icon from './Icon';
 import Button from './widgets/Button';
@@ -24,7 +24,6 @@ import './style/LinkFeatureForm.css';
 class LinkFeatureForm extends React.Component {
     static propTypes = {
         action: PropTypes.string,
-        addLayerFeatures: PropTypes.func,
         editConfig: PropTypes.object,
         editContextId: PropTypes.string,
         editing: PropTypes.object,
@@ -38,15 +37,18 @@ class LinkFeatureForm extends React.Component {
         parentContextId: PropTypes.string,
         pickFilter: PropTypes.func,
         readOnly: PropTypes.bool,
-        removeLayer: PropTypes.func,
         setEditContext: PropTypes.func,
         translations: PropTypes.object
     };
     state = {
         editContext: {},
-        pickedFeatures: null,
-        highlightedFeature: null
+        pickedFeatures: null
     };
+    constructor(props) {
+        super(props);
+        this.highlight = null;
+        this.highlightId = null;
+    }
     componentDidMount() {
         if (this.props.action === 'Edit') {
             if (this.props.feature) {
@@ -189,17 +191,13 @@ class LinkFeatureForm extends React.Component {
         this.props.finished(editContext.action === 'Pick' ? editContext.feature : null);
     };
     hoverFeature = (feature) => {
-        const layer = {
-            id: this.props.editContextId + "-pick-selection",
-            role: LayerRole.SELECTION
-        };
-        this.props.addLayerFeatures(layer, [feature], true);
-        this.setState({highlightedFeature: feature.id});
+        this.highlight = MapUtils.addUnmanagedLayer({features: [feature]}, this.highlight);
+        this.highlightId = feature.id;
     };
     unhoverFeature = (feature) => {
-        if (this.state.highlightedFeature === feature.id) {
-            this.props.removeLayer(this.props.editContextId + "-pick-selection");
-            this.setState({highlightedFeature: null});
+        if (this.highlightId === feature.id) {
+            MapUtils.removeUnmanagedLayer(this.highlight);
+            this.highlightId = null;
         }
     };
     pickFeatureSelected = (feature) => {
@@ -227,7 +225,5 @@ export default connect((state) => ({
     editing: state.editing,
     map: state.map
 }), {
-    addLayerFeatures: addLayerFeatures,
-    removeLayer: removeLayer,
     setEditContext: setEditContext
 })(LinkFeatureForm);

@@ -16,7 +16,7 @@ import ol from 'openlayers';
 import PropTypes from 'prop-types';
 import {v4 as uuidv4} from 'uuid';
 
-import {LayerRole, addLayerFeatures, removeLayer} from '../actions/layers';
+import {LayerRole} from '../actions/layers';
 import {openExternalUrl} from '../actions/windows';
 import {MapContainerPortalContext} from '../components/PluginsContainer';
 import IdentifyUtils from '../utils/IdentifyUtils';
@@ -36,7 +36,6 @@ class MapTip extends React.Component {
     static contextType = MapContainerPortalContext;
 
     static propTypes = {
-        addLayerFeatures: PropTypes.func,
         /** The maximum number of feature maptips to display for a single layer. */
         layerFeatureCount: PropTypes.number,
         layers: PropTypes.array,
@@ -47,7 +46,6 @@ class MapTip extends React.Component {
         /** The maximum height of the maptip popop bubble, as a CSS string. */
         maxWidth: PropTypes.string,
         openExternalUrl: PropTypes.func,
-        removeLayer: PropTypes.func,
         /** Whether to show the maptip feature selection on the map or not */
         showFeatureSelection: PropTypes.bool
     };
@@ -63,6 +61,10 @@ class MapTip extends React.Component {
         mousePos: null,
         pos: null
     };
+    constructor(props) {
+        super(props);
+        this.maptipselection = null;
+    }
     componentDidMount() {
         MapUtils.getHook(MapUtils.ADD_POINTER_MOVE_LISTENER)(this.getMapMousePos);
     }
@@ -102,7 +104,7 @@ class MapTip extends React.Component {
         clearTimeout(this.timeoutId);
         this.timeoutId = null;
         if (this.state.pos) {
-            this.props.removeLayer('maptipselection');
+            MapUtils.removeUnmanagedLayer(this.maptipselection);
             this.setState({maptips: {}, maptipsOrder: [], pos: null});
         }
     };
@@ -144,11 +146,7 @@ class MapTip extends React.Component {
                         mapTips.push(...sublayerFeatures.map(feature => feature.properties.maptip));
                     }
                     if (this.props.showFeatureSelection && !isEmpty(features)) {
-                        const sellayer = {
-                            id: "maptipselection",
-                            role: LayerRole.SELECTION
-                        };
-                        this.props.addLayerFeatures(sellayer, features, true);
+                        this.maptipselection = MapUtils.addUnmanagedLayer({features}, this.maptipselection);
                     }
                     this.setState((state) => ({
                         pos: pos,
@@ -248,7 +246,5 @@ export default connect((state) => ({
     layers: state.layers.flat,
     map: state.map
 }), {
-    addLayerFeatures: addLayerFeatures,
-    removeLayer: removeLayer,
     openExternalUrl: openExternalUrl
 })(MapTip);

@@ -14,9 +14,8 @@ import intersect from '@turf/intersect';
 import FileSaver from 'file-saver';
 import isEmpty from 'lodash.isempty';
 import PropTypes from 'prop-types';
-import {v4 as uuidv4} from 'uuid';
 
-import {LayerRole, addLayerFeatures, removeLayer, refreshLayer} from '../actions/layers';
+import {refreshLayer} from '../actions/layers';
 import {zoomToExtent, zoomToPoint} from '../actions/map';
 import {setCurrentTask, setCurrentTaskBlocked} from '../actions/task';
 import EditComboField from '../components/EditComboField';
@@ -49,7 +48,6 @@ import './style/AttributeTableWidget.css';
 
 class AttributeTableWidget extends React.Component {
     static propTypes = {
-        addLayerFeatures: PropTypes.func,
         /** Whether to allow adding records for datasets which have a geometry column. */
         allowAddForGeometryLayers: PropTypes.bool,
         /** Whether to use the automatic table layout algorithm (slower). */
@@ -68,7 +66,6 @@ class AttributeTableWidget extends React.Component {
         mapScales: PropTypes.array,
         readOnly: PropTypes.bool,
         refreshLayer: PropTypes.func,
-        removeLayer: PropTypes.func,
         setCurrentTask: PropTypes.func,
         setCurrentTaskBlocked: PropTypes.func,
         /** Whether to show column filter fields. */
@@ -139,8 +136,8 @@ class AttributeTableWidget extends React.Component {
         this.attribTableContents = null;
         this.state.limitToExtent = props.limitToExtent;
         this.filterWarningShown = false;
-        this.selectionLayerId = uuidv4();
-        this.highlightLayerId = uuidv4();
+        this.highlightLayer = null;
+        this.selectionLayer = null;
     }
     componentDidMount() {
         if (this.props.initialLayer) {
@@ -165,29 +162,21 @@ class AttributeTableWidget extends React.Component {
             } else if (this.state.filterVal) {
                 features = this.state.features;
             }
-            const layer = {
-                id: this.highlightLayerId,
-                role: LayerRole.SELECTION,
-                zIndex: 100000
-            };
-            this.props.addLayerFeatures(layer, features, true);
+            this.selectionLayer = MapUtils.addUnmanagedLayer({features}, this.selectionLayer);
         }
         if (this.state.hoveredFeature !== prevState.hoveredFeature) {
-            const layer = {
-                id: this.selectionLayerId,
-                role: LayerRole.SELECTION,
-                styleOptions: defaultHighlightStyle(),
-                zIndex: 100001
-            };
-            this.props.addLayerFeatures(layer, this.state.hoveredFeature ? [this.state.hoveredFeature] : [], true);
+            const features = this.state.hoveredFeature ? [this.state.hoveredFeature] : [];
+            this.highlightLayer = MapUtils.addUnmanagedLayer({
+                features, styleOptions: defaultHighlightStyle(), zIndex: 1001
+            }, this.highlightLayer);
         }
         if (this.state.loadedLayer !== prevState.loadedLayer && this.props.showDisplayFieldOnly) {
             this.setState(state => ({filterField: state.curEditConfig.displayField}));
         }
     }
     componentWillUnmount() {
-        this.props.removeLayer(this.highlightLayerId);
-        this.props.removeLayer(this.selectionLayerId);
+        MapUtils.removeUnmanagedLayer(this.selectionLayer);
+        MapUtils.removeUnmanagedLayer(this.highlightLayer);
     }
     render() {
         const captchaRequired = ConfigUtils.getConfigProp("editServiceCaptchaSiteKey") && !ConfigUtils.getConfigProp("username");
@@ -980,9 +969,7 @@ export default connect((state) => ({
     mapCrs: state.map.projection,
     mapScales: state.map.scales
 }), {
-    addLayerFeatures: addLayerFeatures,
     refreshLayer: refreshLayer,
-    removeLayer: removeLayer,
     setCurrentTask: setCurrentTask,
     setCurrentTaskBlocked: setCurrentTaskBlocked,
     zoomToExtent: zoomToExtent,

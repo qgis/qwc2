@@ -14,7 +14,7 @@ import isEmpty from 'lodash.isempty';
 import mime from 'mime';
 import PropTypes from 'prop-types';
 
-import {LayerRole, addLayerFeatures, clearLayer, changeLayerProperty} from '../actions/layers';
+import {changeLayerProperty} from '../actions/layers';
 import Icon from '../components/Icon';
 import MapSelection from '../components/MapSelection';
 import PickFeature from '../components/PickFeature';
@@ -27,6 +27,7 @@ import ConfigUtils from '../utils/ConfigUtils';
 import IdentifyUtils from '../utils/IdentifyUtils';
 import LayerUtils from '../utils/LayerUtils';
 import LocaleUtils from '../utils/LocaleUtils';
+import MapUtils from '../utils/MapUtils';
 import Request from '../utils/Request';
 import VectorLayerUtils from '../utils/VectorLayerUtils';
 
@@ -44,9 +45,7 @@ import './style/Reports.css';
  */
 class Reports extends React.Component {
     static propTypes = {
-        addLayerFeatures: PropTypes.func,
         changeLayerProperty: PropTypes.func,
-        clearLayer: PropTypes.func,
         layers: PropTypes.array,
         map: PropTypes.object,
         /** The side of the application on which to display the sidebar. */
@@ -63,18 +62,14 @@ class Reports extends React.Component {
     constructor(props) {
         super(props);
         this.state = {...Reports.defaultState};
+        this.selection = null;
     }
     componentDidUpdate(prevProps, prevState) {
         if (this.state.reportFeatures !== prevState.reportFeatures) {
             if (!isEmpty(this.state.reportFeatures)) {
-                const layer = {
-                    id: "report-pick-selection",
-                    role: LayerRole.SELECTION,
-                    skipPrint: true
-                };
-                this.props.addLayerFeatures(layer, this.state.reportFeatures, true);
+                this.selection = MapUtils.addUnmanagedLayer({features: this.state.reportFeatures}, this.selection);
             } else if (!isEmpty(prevState.reportFeatures)) {
-                this.props.clearLayer("report-pick-selection");
+                MapUtils.removeUnmanagedLayer(this.selection);
             }
         }
     }
@@ -164,7 +159,7 @@ class Reports extends React.Component {
         this.setState({reports, featureSelectionMode: 'Pick'});
     };
     onHide = () => {
-        this.props.clearLayer("report-pick-selection");
+        MapUtils.removeUnmanagedLayer(this.selection);
         this.setState({...Reports.defaultState});
     };
     selectReportFeature = (layer, feature) => {
@@ -204,7 +199,7 @@ class Reports extends React.Component {
         IdentifyUtils.sendRequest(request, (response) => {
             if (response) {
                 const result = IdentifyUtils.parseResponse(response, layer, request.params.info_format, center, this.props.map.projection);
-                this.setState((state) => ({reportFeatures: result[layerName]}));
+                this.setState({reportFeatures: result[layerName]});
             }
         });
     };
@@ -243,7 +238,5 @@ export default connect(state => ({
     layers: state.layers.flat,
     map: state.map
 }), {
-    addLayerFeatures: addLayerFeatures,
-    changeLayerProperty: changeLayerProperty,
-    clearLayer: clearLayer
+    changeLayerProperty: changeLayerProperty
 })(Reports);

@@ -14,7 +14,6 @@ import PropTypes from 'prop-types';
 import {v4 as uuidv4} from 'uuid';
 
 import {setEditContext, clearEditContext} from '../actions/editing';
-import {addLayerFeatures, LayerRole, removeLayer} from '../actions/layers';
 import {setCurrentTask} from '../actions/task';
 import AttributeForm from '../components/AttributeForm';
 import IdentifyResult from '../components/IdentifyResult';
@@ -26,6 +25,7 @@ import EditingInterface from '../utils/EditingInterface';
 import IdentifyUtils from '../utils/IdentifyUtils';
 import LayerUtils from '../utils/LayerUtils';
 import LocaleUtils from '../utils/LocaleUtils';
+import MapUtils from '../utils/MapUtils';
 
 import './style/FeatureForm.css';
 
@@ -46,7 +46,6 @@ import './style/FeatureForm.css';
  */
 class FeatureForm extends React.Component {
     static propTypes = {
-        addLayerFeatures: PropTypes.func,
         clearEditContext: PropTypes.func,
         click: PropTypes.object,
         currentEditContext: PropTypes.string,
@@ -69,7 +68,6 @@ class FeatureForm extends React.Component {
         iface: PropTypes.object,
         layers: PropTypes.array,
         map: PropTypes.object,
-        removeLayer: PropTypes.func,
         setCurrentTask: PropTypes.func,
         setEditContext: PropTypes.func,
         startupParams: PropTypes.object,
@@ -94,7 +92,7 @@ class FeatureForm extends React.Component {
     constructor(props) {
         super(props);
         this.state = FeatureForm.defaultState;
-        this.selectionLayerId = uuidv4();
+        this.selection = null;
     }
     componentDidMount() {
         if (this.props.enabled) {
@@ -112,7 +110,7 @@ class FeatureForm extends React.Component {
             }
         } else if (this.props.theme !== prevProps.theme || !this.props.enabled && prevProps.enabled) {
             this.clearResults();
-            this.props.removeLayer(this.selectionLayerId);
+            MapUtils.removeUnmanagedLayer(this.selection);
         }
 
         if (this.props.enabled && isEmpty(this.state.pendingRequests) && !this.props.editContext.changed) {
@@ -308,14 +306,10 @@ class FeatureForm extends React.Component {
             } else {
                 // This is a GetFeatureInfo result, highlight
                 this.props.clearEditContext('FeatureForm');
-                const layer = {
-                    id: this.selectionLayerId,
-                    role: LayerRole.SELECTION
-                };
-                this.props.addLayerFeatures(layer, [this.state.pickedFeatures[selectedFeature]], true);
+                this.selection = MapUtils.addUnmanagedLayer({features: [this.state.pickedFeatures[selectedFeature]]}, this.selection);
             }
         } else {
-            this.props.removeLayer(this.selectionLayerId);
+            MapUtils.removeUnmanagedLayer(this.selection);
             this.props.clearEditContext('FeatureForm');
         }
         this.setState({selectedFeature: selectedFeature});
@@ -365,7 +359,5 @@ export default (iface = EditingInterface) => connect((state) => {
 {
     setCurrentTask: setCurrentTask,
     clearEditContext: clearEditContext,
-    setEditContext: setEditContext,
-    addLayerFeatures: addLayerFeatures,
-    removeLayer: removeLayer
+    setEditContext: setEditContext
 })(FeatureForm);

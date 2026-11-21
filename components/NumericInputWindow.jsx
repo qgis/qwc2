@@ -11,10 +11,10 @@ import {connect} from 'react-redux';
 
 import PropTypes from 'prop-types';
 
-import {addLayerFeatures, LayerRole, removeLayer} from '../actions/layers';
 import ConfigUtils from '../utils/ConfigUtils';
 import CoordinatesUtils from '../utils/CoordinatesUtils';
 import LocaleUtils from '../utils/LocaleUtils';
+import MapUtils from '../utils/MapUtils';
 import VectorLayerUtils from '../utils/VectorLayerUtils';
 import Icon from './Icon';
 import ResizeableWindow from './ResizeableWindow';
@@ -26,13 +26,11 @@ import './style/NumericInputWindow.css';
 
 class NumericInputWindow extends React.Component {
     static propTypes = {
-        addLayerFeatures: PropTypes.func,
         displayCrs: PropTypes.string,
         feature: PropTypes.object,
         mapCrs: PropTypes.string,
         onClose: PropTypes.func,
-        onFeatureChanged: PropTypes.func,
-        removeLayer: PropTypes.func
+        onFeatureChanged: PropTypes.func
     };
     state = {
         highlightedNode: null,
@@ -40,12 +38,16 @@ class NumericInputWindow extends React.Component {
         feature: null,
         geometry: null
     };
+    constructor(props) {
+        super(props);
+        this.sellayer = null;
+    }
     componentDidMount() {
         this.componentDidUpdate({});
     }
     componentDidUpdate(prevProps) {
-        if (prevProps.feature && this.props.feature?.id !== prevProps.feature?.id) {
-            this.props.removeLayer("numericinputselection");
+        if (this.props.feature?.id !== prevProps.feature?.id) {
+            MapUtils.removeUnmanagedLayer(this.sellayer);
         }
     }
     static getDerivedStateFromProps(nextProps, state) {
@@ -191,7 +193,7 @@ class NumericInputWindow extends React.Component {
             newCoordinates.splice(idx, 0, this.computeInsPoint(newCoordinates, idx));
         }
         this.coordinatesChanged(newCoordinates);
-        this.props.removeLayer("numericinputselection");
+        MapUtils.removeUnmanagedLayer(this.sellayer);
     };
     removeCoordinate = (idx) => {
         const newCoordinates = [...this.state.geometry.coordinates];
@@ -202,7 +204,7 @@ class NumericInputWindow extends React.Component {
             newCoordinates.splice(idx, 1);
         }
         this.coordinatesChanged(newCoordinates);
-        this.props.removeLayer("numericinputselection");
+        MapUtils.removeUnmanagedLayer(this.sellayer);
     };
     highlightListCoordinate = (idx, newpoint = null) => {
         const isPolygon = this.state.feature.shape === 'Polygon';
@@ -210,22 +212,19 @@ class NumericInputWindow extends React.Component {
         const point = CoordinatesUtils.reproject(newpoint || (isPolygon ? coordinates[0][idx] : coordinates[idx]), this.state.displayCrs, this.props.mapCrs);
         this.setState({highlightedNode: idx});
         const feature = {
+            id: "marker",
             type: "Feature",
             geometry: {
                 type: "Point",
                 coordinates: point
             }
         };
-        const sellayer = {
-            id: "numericinputselection",
-            role: LayerRole.SELECTION
-        };
-        this.props.addLayerFeatures(sellayer, [feature], true);
+        this.sellayer = MapUtils.addUnmanagedLayer({features: [feature]}, this.sellayer);
     };
     clearListCoordinateHighlight = (idx) => {
         if (this.state.highlightedNode === idx) {
             this.setState({highlightedNode: null});
-            this.props.removeLayer("numericinputselection");
+            MapUtils.removeUnmanagedLayer(this.sellayer);
         }
     };
     renderCircleInputForm = () => {
@@ -325,7 +324,4 @@ class NumericInputWindow extends React.Component {
 export default connect((state) => ({
     displayCrs: state.map.displayCrs,
     mapCrs: state.map.projection
-}), {
-    addLayerFeatures: addLayerFeatures,
-    removeLayer: removeLayer
-})(NumericInputWindow);
+}))(NumericInputWindow);

@@ -13,7 +13,7 @@ import FileSaver from 'file-saver';
 import isEmpty from 'lodash.isempty';
 import PropTypes from 'prop-types';
 
-import {LayerRole, addThemeSublayer, addLayerFeatures, removeLayer} from '../../actions/layers';
+import {addThemeSublayer} from '../../actions/layers';
 import {logAction} from '../../actions/logging';
 import {zoomToPoint} from '../../actions/map';
 import {setCurrentTask} from '../../actions/task';
@@ -110,14 +110,12 @@ import './style/PlotInfoTool.css';
  */
 class PlotInfoTool extends React.Component {
     static propTypes = {
-        addLayerFeatures: PropTypes.func,
         addThemeSublayer: PropTypes.func,
         currentTask: PropTypes.string,
         customInfoComponents: PropTypes.object,
         infoQueries: PropTypes.array,
         logAction: PropTypes.func,
         map: PropTypes.object,
-        removeLayer: PropTypes.func,
         setCurrentTask: PropTypes.func,
         theme: PropTypes.object,
         themeLayerRestorer: PropTypes.func,
@@ -138,6 +136,10 @@ class PlotInfoTool extends React.Component {
         expandedInfoData: null,
         pendingPdfs: []
     };
+    constructor(props) {
+        super(props);
+        this.selection = null;
+    }
     componentDidUpdate(prevProps, prevState) {
         if (this.props.theme && !prevProps.theme) {
             if (UrlParams.getParam('realty') !== undefined) {
@@ -163,10 +165,6 @@ class PlotInfoTool extends React.Component {
                 this.state.plotInfo !== prevState.plotInfo ||
                 this.state.currentPlot !== prevState.currentPlot
             ) {
-                const layer = {
-                    id: "plotselection",
-                    role: LayerRole.SELECTION
-                };
                 const wkt = this.state.plotInfo[this.state.currentPlot].geom;
                 const feature = VectorLayerUtils.wktToGeoJSON(wkt, "EPSG:2056", this.props.map.projection);
                 feature.styleName = 'default';
@@ -176,10 +174,10 @@ class PlotInfoTool extends React.Component {
                     strokeWidth: 8,
                     strokeDash: []
                 };
-                this.props.addLayerFeatures(layer, [feature], true);
+                this.selection = MapUtils.addUnmanagedLayer({features: [feature]}, this.selection);
             }
         } else if (prevState.plotInfo && !this.state.plotInfo) {
-            this.props.removeLayer("plotselection");
+            MapUtils.removeUnmanagedLayer(this.selection);
         }
     }
     render() {
@@ -405,8 +403,6 @@ export default connect(state => ({
 }), {
     setCurrentTask: setCurrentTask,
     addThemeSublayer: addThemeSublayer,
-    addLayerFeatures: addLayerFeatures,
-    removeLayer: removeLayer,
     zoomToPoint: zoomToPoint,
     logAction: logAction
 })(PlotInfoTool);

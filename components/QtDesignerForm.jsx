@@ -14,10 +14,10 @@ import isEmpty from 'lodash.isempty';
 import PropTypes from 'prop-types';
 import {v4 as uuidv4} from 'uuid';
 
-import {LayerRole, addLayerFeatures, removeLayer} from '../actions/layers';
 import ConfigUtils from '../utils/ConfigUtils';
 import {parseExpression} from '../utils/EditingUtils';
 import LocaleUtils from '../utils/LocaleUtils';
+import MapUtils from '../utils/MapUtils';
 import MiscUtils from '../utils/MiscUtils';
 import Request from '../utils/Request';
 import EditComboField from './EditComboField';
@@ -59,7 +59,6 @@ const vFitWidgets = ["QLabel", "QCheckBox", "QRadioButton", "Line", "QDateTimeEd
 
 class QtDesignerForm extends React.Component {
     static propTypes = {
-        addLayerFeatures: PropTypes.func,
         addRelationRecord: PropTypes.func,
         editConfig: PropTypes.object,
         editConfigs: PropTypes.object,
@@ -71,7 +70,6 @@ class QtDesignerForm extends React.Component {
         mapCrs: PropTypes.string,
         mapPrefix: PropTypes.string,
         readOnly: PropTypes.bool,
-        removeLayer: PropTypes.func,
         removeRelationRecord: PropTypes.func,
         reorderRelationRecord: PropTypes.func,
         report: PropTypes.bool,
@@ -97,14 +95,14 @@ class QtDesignerForm extends React.Component {
         super(props);
         this.state = QtDesignerForm.defaultState;
         this.form = null;
-        this.highlightLayerId = uuidv4();
-        this.highlightedFeature = null;
+        this.highlightId = null;
+        this.highlight = null;
     }
     componentDidMount() {
         this.componentDidUpdate({});
     }
     componentWillUnmount() {
-        this.props.removeLayer(this.highlightLayerId);
+        MapUtils.removeUnmanagedLayer(this.highlight);
     }
     componentDidUpdate(prevProps) {
         // Query form
@@ -905,17 +903,13 @@ class QtDesignerForm extends React.Component {
         return this.props.translations?.layers?.[layerName]?.fields?.[fieldName] ?? fieldName;
     };
     setHighlight = (key, feature) => {
-        this.highlightedFeature = key;
-        const layer = {
-            id: this.highlightLayerId,
-            role: LayerRole.SELECTION
-        };
-        this.props.addLayerFeatures(layer, [feature], true);
+        this.highlightId = key;
+        this.highlight = MapUtils.addUnmanagedLayer({features: [feature]}, this.highlight);
     };
     clearHighlight = (key) => {
-        if (this.highlightedFeature === key) {
-            this.highlightedFeature = null;
-            this.props.removeLayer(this.highlightLayerId);
+        if (this.highlightId === key) {
+            this.highlightId = null;
+            MapUtils.removeUnmanagedLayer(this.highlight);
         }
     };
 }
@@ -923,7 +917,4 @@ class QtDesignerForm extends React.Component {
 export default connect((state) => ({
     locale: state.locale.current,
     editConfigs: state.layers.editConfigs
-}), {
-    addLayerFeatures: addLayerFeatures,
-    removeLayer: removeLayer
-})(QtDesignerForm);
+}))(QtDesignerForm);

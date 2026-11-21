@@ -674,6 +674,21 @@ const VectorLayerUtils = {
             break;
         }
         return center;
+    },
+    createMarkerOptions(pos, label = '', crs = null, zIndex = 2000) {
+        return {
+            type: 'vector',
+            features: [{
+                geometry: {
+                    type: 'Point',
+                    coordinates: pos
+                },
+                properties: {label},
+                crs: crs,
+                styleName: 'marker'
+            }],
+            zIndex: zIndex
+        };
     }
 };
 

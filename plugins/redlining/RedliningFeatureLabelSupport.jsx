@@ -19,6 +19,7 @@ import ComboBox from '../../components/widgets/ComboBox';
 import TextInput from '../../components/widgets/TextInput';
 import {parseExpression} from '../../utils/EditingUtils';
 import LocaleUtils from '../../utils/LocaleUtils';
+import MapUtils from '../../utils/MapUtils';
 
 
 class RedliningFeatureLabelSupport extends React.Component {
@@ -35,14 +36,18 @@ class RedliningFeatureLabelSupport extends React.Component {
         cur: null,
         currentProfile: null
     };
+    constructor(props) {
+        super(props);
+        this.labelfeaturehighlight = null;
+    }
     componentDidUpdate(prevProps) {
         if (this.props.redlining.action !== "FeatureLabel" && prevProps.redlining.action === "FeatureLabel") {
             this.setState({cur: null, currentProfile: null});
-            this.props.removeLayer("__redliningfeaturelabelhighlight");
+            MapUtils.removeUnmanagedLayer(this.labelfeaturehighlight);
         }
     }
     componentWillUnmount() {
-        this.props.removeLayer("__redliningfeaturelabelhighlight");
+        MapUtils.removeUnmanagedLayer(this.labelfeaturehighlight);
     }
     render() {
         let control = null;
@@ -79,11 +84,7 @@ class RedliningFeatureLabelSupport extends React.Component {
         )];
     }
     featurePicked = (layer, feature, map, mapPos) => {
-        const sellayer = {
-            id: "__redliningfeaturelabelhighlight",
-            role: LayerRole.SELECTION
-        };
-        this.props.addLayerFeatures(sellayer, [feature], true);
+        this.labelfeaturehighlight = MapUtils.addUnmanagedLayer({features: [feature]}, this.labelfeaturehighlight);
         const profiles = [...(this.props.layers.find(l => l.wms_name === map)?.labelProfiles?.[layer] ?? [])];
         profiles.push({name: "__custom", expression: "", title: LocaleUtils.tr("common.custom")});
         this.setState({cur: {layer, feature, map, profiles, mapPos}, currentProfile: profiles[0].name}, this.updateLabelFeature);
