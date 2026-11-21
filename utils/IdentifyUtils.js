@@ -397,7 +397,7 @@ const IdentifyUtils = {
         const result = {};
         (response.features || []).map(feature => {
             // qwc-ogc-service returns layername/layertitle, QGIS returns id=<layername>.<id>
-            const idparts = feature.id.split('.').reverse();
+            const idparts = feature.id ? feature.id.split('.').reverse() : [];
             const layername = feature.layername ?? idparts[1] ?? layer.name;
             const layertitle = feature.layertitle ?? idparts[1] ?? layer.title;
 
