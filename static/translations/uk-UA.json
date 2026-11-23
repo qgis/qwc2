@@ -363,6 +363,7 @@
       "nofeatures": "Жоден об’єкт не доступний для імпорту",
       "noresults": "",
       "notgeopdf": "",
+      "shpimportfailed": "",
       "shpreprojectionerror": "",
       "supportedformats": "",
       "unknownproj": "",

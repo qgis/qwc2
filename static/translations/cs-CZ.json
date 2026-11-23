@@ -363,6 +363,7 @@
       "nofeatures": "Žádné prvku nebyly importovány.",
       "noresults": "Bez výsledku nebo nevalidní URL",
       "notgeopdf": "",
+      "shpimportfailed": "",
       "shpreprojectionerror": "",
       "supportedformats": "",
       "unknownproj": "",

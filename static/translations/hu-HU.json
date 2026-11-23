@@ -363,6 +363,7 @@
       "nofeatures": "Nem sikerült az importálás.",
       "noresults": "",
       "notgeopdf": "",
+      "shpimportfailed": "",
       "shpreprojectionerror": "",
       "supportedformats": "",
       "unknownproj": "",

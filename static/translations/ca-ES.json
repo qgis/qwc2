@@ -363,6 +363,7 @@
       "nofeatures": "No s'han pogut importar els elements.",
       "noresults": "Sense resultats o l'adreça URL no és vàlida",
       "notgeopdf": "El fitxer seleccionat no sembla ser un GeoPDF.",
+      "shpimportfailed": "",
       "shpreprojectionerror": "La geometria del Shapefile no s'ha pogut reproyectar i pot estar desplaçada.",
       "supportedformats": "Formats suportats: KML, GeoJSON, GeoPDF, DXF, SHP (en zip)",
       "unknownproj": "El GeoPDF seleccionat utilitza una projecció desconeguda: {0}.",

@@ -363,6 +363,7 @@
       "nofeatures": "Objecten konden niet geïmporteerd worden",
       "noresults": "Geen resultaten of ongeldige URL",
       "notgeopdf": "Het geselecteerde bestand lijkt geen GeoPDF te zijn.",
+      "shpimportfailed": "",
       "shpreprojectionerror": "",
       "supportedformats": "",
       "unknownproj": "De geselecteerde GeoPDF gebruikt een onbekende projectie: {0}.",
