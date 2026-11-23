@@ -12,9 +12,10 @@ import FileSaver from 'file-saver';
 import isEmpty from 'lodash.isempty';
 import mime from 'mime';
 import PropTypes from 'prop-types';
+import {v4 as uuidv4} from 'uuid';
 
 import {setActiveLayerInfo} from '../actions/layerinfo';
-import {LayerRole, changeLayerProperty} from '../actions/layers';
+import {LayerRole, addLayerFeatures, removeLayer, changeLayerProperty} from '../actions/layers';
 import {zoomToExtent} from '../actions/map';
 import {setCurrentTask} from '../actions/task';
 import {openExternalUrl} from '../actions/windows';
@@ -42,6 +43,7 @@ import './style/IdentifyViewer.css';
 
 class IdentifyViewer extends React.Component {
     static propTypes = {
+        addLayerFeatures: PropTypes.func,
         changeLayerProperty: PropTypes.func,
         collapsible: PropTypes.bool,
         editConfigs: PropTypes.object,
@@ -55,6 +57,7 @@ class IdentifyViewer extends React.Component {
         longAttributesDisplay: PropTypes.oneOf(['ellipsis', 'wrap']),
         mapCrs: PropTypes.string,
         openExternalUrl: PropTypes.func,
+        removeLayer: PropTypes.func,
         replaceImageUrls: PropTypes.bool,
         resultDisplayMode: PropTypes.string,
         resultGridSize: PropTypes.number,
@@ -108,7 +111,7 @@ class IdentifyViewer extends React.Component {
         this.bodyEl = null;
         this.state.exportFormat = !Array.isArray(props.enableExport) ? 'geojson' : props.enableExport[0];
         this.state.multiViewEnabled = props.resultMultiDisplay;
-        this.selectionLayer = null;
+        this.selectionLayerId = uuidv4();
         this.highlightLayer = null;
         this.memoizer = new Memoizer();
     }
@@ -116,8 +119,11 @@ class IdentifyViewer extends React.Component {
         this.onResultsUpdated({});
         if (this.props.highlightAllResults && this.props.showHighlight) {
             const results = this.state.selectedLayer !== '' ? {[this.state.selectedLayer]: this.props.identifyResults[this.state.selectedLayer]} : this.props.identifyResults;
-            const features = Object.values(results).flat().map(f => ({id: f.id, geometry: f.geometry}));
-            this.selectionLayer = MapUtils.addUnmanagedLayer({features}, this.selectionLayer);
+            const layer = {
+                id: this.selectionLayerId,
+                role: LayerRole.SELECTION
+            };
+            this.props.addLayerFeatures(layer, Object.values(results).flat(), true);
         }
     }
     componentDidUpdate(prevProps, prevState) {
@@ -141,12 +147,14 @@ class IdentifyViewer extends React.Component {
         // Highlight features
         if (this.props.identifyResults !== prevProps.identifyResults || this.state.selectedLayer !== prevState.selectedLayer || this.props.showHighlight !== prevProps.showHighlight) {
             if (!this.props.showHighlight) {
-                MapUtils.removeUnmanagedLayer(this.selectionLayer);
-                this.selectionLayer = null;
+                this.props.removeLayer(this.selectionLayerId);
             } else if (this.props.highlightAllResults && this.props.showHighlight) {
                 const results = this.state.selectedLayer !== '' ? {[this.state.selectedLayer]: this.props.identifyResults[this.state.selectedLayer]} : this.props.identifyResults;
-                const features = Object.values(results).flat().map(f => ({id: f.id, geometry: f.geometry}));
-                this.selectionLayer = MapUtils.addUnmanagedLayer({features}, this.selectionLayer);
+                const layer = {
+                    id: this.selectionLayerId,
+                    role: LayerRole.SELECTION
+                };
+                this.props.addLayerFeatures(layer, Object.values(results).flat(), true);
             }
         }
         // Update current result highlighting
@@ -159,7 +167,7 @@ class IdentifyViewer extends React.Component {
         }
     }
     componentWillUnmount() {
-        MapUtils.removeUnmanagedLayer(this.selectionLayer);
+        this.props.removeLayer(this.selectionLayerId);
         MapUtils.removeUnmanagedLayer(this.highlightLayer);
     }
     getCurrentResultFeature = () => {
@@ -837,7 +845,9 @@ const selector = (state) => ({
 });
 
 export default connect(selector, {
+    addLayerFeatures: addLayerFeatures,
     changeLayerProperty: changeLayerProperty,
+    removeLayer: removeLayer,
     setActiveLayerInfo: setActiveLayerInfo,
     setCurrentTask: setCurrentTask,
     openExternalUrl: openExternalUrl,
