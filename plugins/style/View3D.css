@@ -16,3 +16,21 @@ div.view3d-busy-overlay > div.spinner {
     height: 4em;
     margin-right: 1em;
 }
+
+div.view3d-fp-marker {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: calc(-1 * var(--qwc-topbar-height));
+    bottom: calc(-1 * var(--qwc-bottombar-height));
+    z-index: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    pointer-events: none;
+}
+
+div.view3d-fp-marker > img {
+    width: 48px;
+    height: auto;
+}

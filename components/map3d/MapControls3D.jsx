@@ -195,29 +195,34 @@ class MapControls3D extends React.Component {
         this.setViewToExtent(bounds);
     };
     setViewToExtent = (bounds, angle = 0) => {
-        this.leaveFirstPerson();
-
-        const fov = CAMERA_FOV / 180 * Math.PI;
-        const cameraHeight = (bounds[2] - bounds[0]) / (2 * Math.tan(fov / 2));
-
         const center = {
             x: 0.5 * (bounds[0] + bounds[2]),
             y: 0.5 * (bounds[1] + bounds[3])
         };
-        const camerapos = new Vector3(center.x, center.y, cameraHeight);
-        const target = new Vector3(center.x, center.y, 0);
-        const h = this.props.sceneContext.getTerrainHeightFromMap([center.x, center.y]);
-        // Fall back to getTerrainHeightFromDTM if map is not yet loaded
-        if (h === undefined) {
-            this.props.sceneContext.getTerrainHeightFromDTM([center.x, center.y]).then(h2 =>  {
-                camerapos.z += h2;
-                target.z += h2;
-                this.controls.animateTo(camerapos, target, angle);
-            });
+        if (this.state.firstPerson) {
+            // Center FP camera to bounds center
+            this.fpcontrols.panTo(center.x, center.y);
         } else {
-            camerapos.z += h;
-            target.z += h;
-            this.controls.animateTo(camerapos, target, angle);
+            this.leaveFirstPerson();
+
+            const fov = CAMERA_FOV / 180 * Math.PI;
+            const cameraHeight = (bounds[2] - bounds[0]) / (2 * Math.tan(fov / 2));
+
+            const camerapos = new Vector3(center.x, center.y, cameraHeight);
+            const target = new Vector3(center.x, center.y, 0);
+            const h = this.props.sceneContext.getTerrainHeightFromMap([center.x, center.y]);
+            // Fall back to getTerrainHeightFromDTM if map is not yet loaded
+            if (h === undefined) {
+                this.props.sceneContext.getTerrainHeightFromDTM([center.x, center.y]).then(h2 =>  {
+                    camerapos.z += h2;
+                    target.z += h2;
+                    this.controls.animateTo(camerapos, target, angle);
+                });
+            } else {
+                camerapos.z += h;
+                target.z += h;
+                this.controls.animateTo(camerapos, target, angle);
+            }
         }
     };
     pan = (ev, dx, dy) => {

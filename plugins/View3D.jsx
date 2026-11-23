@@ -7,10 +7,10 @@
  */
 
 import React from 'react';
+import ReactDOM from 'react-dom';
 import {connect, Provider} from 'react-redux';
 
 import isEmpty from 'lodash.isempty';
-import ol from 'openlayers';
 import PropTypes from 'prop-types';
 
 import * as bookmarkExports from '../actions/bookmark';
@@ -22,6 +22,7 @@ import {panTo, zoomToPoint} from '../actions/map';
 import * as mapExports from '../actions/map';
 import * as themeExports from '../actions/theme';
 import PluginsContainer from '../components/PluginsContainer';
+import {MapContainerPortalContext} from '../components/PluginsContainer';
 import ResizeableWindow from '../components/ResizeableWindow';
 import Spinner from '../components/widgets/Spinner';
 import ReducerIndex from '../reducers/index';
@@ -38,13 +39,13 @@ import {UrlParams} from '../utils/PermaLinkUtils';
 
 import './style/View3D.css';
 
-
 /**
  * Displays a 3D map view.
  *
  * See [3D View](../../topics/View3D).
  */
 class View3D extends React.Component {
+    static contextType = MapContainerPortalContext;
     static propTypes = {
         bookmark: PropTypes.object,
         /** The position of the navigation controls. Either `top` or `bottom`. */
@@ -126,14 +127,14 @@ class View3D extends React.Component {
         windowDetached: false,
         viewsLocked: false,
         storedState: null,
-        enabledState: this.EnabledState.DISABLED
+        enabledState: this.EnabledState.DISABLED,
+        fpAzimuth: null
     };
     constructor(props) {
         super(props);
         this.map3dComponent = null;
         this.map3dComponentRef = null;
         this.focusedMap = null;
-        this.firstPersonMarker = null;
         this.pendingViewState = null;
         // Subset of 2d reducers
         const {
@@ -241,11 +242,7 @@ class View3D extends React.Component {
             UrlParams.updateParams({v3d: undefined, bl3d: undefined});
             this.map3dComponent = null;
             this.map3dComponentRef = null;
-            this.setState({componentLoaded: false});
-            if (this.firstPersonMarker) {
-                MapUtils.removeUnmanagedLayer(this.firstPersonMarker);
-                this.firstPersonMarker = null;
-            }
+            this.setState({componentLoaded: false, fpAzimuth: null});
         }
         // Sync parts of parent store
         this.syncParentStore(prevProps);
@@ -318,7 +315,7 @@ class View3D extends React.Component {
             const pluginsConfig = this.props.viewMode === ViewMode._3DFullscreen ? this.props.localConfig.plugins[device].filter(entry => {
                 return entry.availableIn3D;
             }) : [];
-            return (
+            return [(
                 <ResizeableWindow
                     extraControls={extraControls}
                     fullscreen={this.props.viewMode === ViewMode._3DFullscreen}
@@ -369,10 +366,25 @@ class View3D extends React.Component {
                         </Provider>
                     ) : null}
                 </ResizeableWindow>
-            );
+            ),
+            this.state.fpAzimuth !== null && this.renderFPMarker()
+            ];
         }
         return null;
     }
+    renderFPMarker = () => {
+        const imgSrcFlip = [
+            [personIconN, false], [personIconNE, false], [personIconE, false],
+            [personIconSE, false], [personIconS, false],
+            [personIconSE, true], [personIconE, true], [personIconNE, true]
+        ][Math.round(this.state.fpAzimuth / 45) % 8];
+        const style = imgSrcFlip[1] ? {transform: 'scaleX(-1)'} : {};
+        return ReactDOM.createPortal((
+            <div className="view3d-fp-marker">
+                <img className="view3d-fp-marker" src={imgSrcFlip[0]} style={style} />
+            </div>
+        ), this.context);
+    };
     onClose = () => {
         this.props.setViewMode(ViewMode._2D);
     };
@@ -398,46 +410,13 @@ class View3D extends React.Component {
                 const bbox = [-0.5 * bboxWidth, 0, 0.5 * bboxWidth, 0];
                 const zoom = MapUtils.getZoomForExtent(bbox, this.props.map.resolutions, this.props.map.size, 0, this.props.map.scales.length - 1);
                 this.props.zoomToPoint(center.slice(0, 2), zoom, this.props.theme.mapCrs, rotation);
-                if (this.firstPersonMarker) {
-                    MapUtils.removeUnmanagedLayer(this.firstPersonMarker);
-                    this.firstPersonMarker = null;
+                if (this.state.fpAzimuth !== null) {
+                    this.setState({fpAzimuth: null});
                 }
             } else {
                 this.props.panTo(center.slice(0, 2), this.props.theme.mapCrs, rotation);
-                if (!this.firstPersonMarker) {
-                    const options = {
-                        type: 'vector',
-                        features: [{
-                            id: 'person',
-                            geometry: {
-                                type: 'Point',
-                                coordinates: center.slice(0, 2)
-                            },
-                            properties: { az: az }
-                        }],
-                        styleFunction: (f) => {
-                            const img = (baseIcon, flip = false) => (
-                                new ol.style.Icon({src: baseIcon, scale: [flip ? -2 : 2, 2]})
-                            );
-                            return new ol.style.Style({
-                                image: [
-                                    img(personIconN), img(personIconNE),
-                                    img(personIconE), img(personIconSE), img(personIconS),
-                                    img(personIconSE, true), img(personIconE, true), img(personIconNE, true)
-                                ][Math.round(f.get('az') / 45) % 8]
-                            });
-                        }
-                    };
-                    this.firstPersonMarker = MapUtils.addUnmanagedLayer(options);
-                } else {
-                    const markerFeature = this.firstPersonMarker.getSource().getFeatures()[0];
-                    markerFeature.set('az', az, false);
-                    markerFeature.getGeometry().setCoordinates(center);
-                }
+                this.setState({fpAzimuth: az});
             }
-        } else if (this.firstPersonMarker) {
-            MapUtils.removeUnmanagedLayer(this.firstPersonMarker);
-            this.firstPersonMarker = null;
         }
     };
     setRef = (ref) => {
@@ -449,11 +428,7 @@ class View3D extends React.Component {
         }
     };
     setLockViews = () => {
-        this.setState(state => ({viewsLocked: !state.viewsLocked}));
-        if (this.firstPersonMarker) {
-            MapUtils.removeUnmanagedLayer(this.firstPersonMarker);
-            this.firstPersonMarker = null;
-        }
+        this.setState(state => ({viewsLocked: !state.viewsLocked, fpAzimuth: null}));
     };
     setupMap = () => {
         if (this.map3dComponentRef) {

@@ -90,6 +90,21 @@ export default class FirstPersonControls3D extends Controls {
         this.object.lookAt(this.target);
         this.dispatchEvent({type: 'change'});
     }
+    panTo(x, y) {
+        this.target.x = x;
+        this.target.y = y;
+        let height = this.sceneContext.getTerrainHeightFromMap([x, y]) ?? 0;
+        const raycaster = new Raycaster();
+        raycaster.far = 5;
+        raycaster.set(new Vector3(x, y, height + + this.personHeight + 100), new Vector3(0, 0, -1));
+        const vinter = raycaster.intersectObjects(this.sceneContext.collisionObjects, true)[0];
+        if (vinter) {
+            height = vinter.point.z;
+        }
+        this.target.z = height + this.personHeight;
+        this._changed = true;
+        this.update();
+    }
     panView(dx, dy) {
         if (dx || dy) {
             this._pan(dx, dy);
@@ -109,7 +124,7 @@ export default class FirstPersonControls3D extends Controls {
     dispose() {
         this.disconnect();
     }
-    update( deltaTime = null ) {
+    update() {
         if (!this._changed) {
             return;
         }
