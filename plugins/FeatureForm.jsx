@@ -119,7 +119,7 @@ class FeatureForm extends React.Component {
                 this.queryFeatures(clickPoint);
             }
         }
-        if (isEmpty(this.state.pendingRequests) && !isEmpty(prevState.pendingRequests)) {
+        if (isEmpty(this.state.pendingRequests) && !isEmpty(prevState.pendingRequests && !isEmpty(this.state.pickedFeatures))) {
             // Select first result
             this.setSelectedFeature(Object.keys(this.state.pickedFeatures)[0]);
         }
