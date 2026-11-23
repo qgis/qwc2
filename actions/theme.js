@@ -45,28 +45,29 @@ export function setThemeLayersList(theme) {
     };
 }
 
-export function finishThemeSetup(dispatch, theme, themes, layerConfigs, preserve, prevLayers, prevTheme, permalinkLayers, externalLayerRestorer, visibleBgLayer, initialTask, initialVisibilityPreset) {
+export function finishThemeSetup(dispatch, theme, themes, layerConfigs, preserve, prevLayers, prevTheme, permalinkLayers, externalLayerRestorer, preservedBgLayer, initialTask, initialVisibilityPreset) {
     let layers = [];
     const externalLayers = {};
 
     let bgOpacity = 255;
     let m = null;
-    if (visibleBgLayer && (m = visibleBgLayer.match(/\[(\d+)\]$/))) {
+    if (preservedBgLayer && (m = preservedBgLayer.match(/\[(\d+)\]$/))) {
         bgOpacity = Math.round(255 - parseFloat(m[1]) / 100 * 255);
-        visibleBgLayer = visibleBgLayer.slice(0, m.index);
+        preservedBgLayer = preservedBgLayer.slice(0, m.index);
     }
 
     // Get current background layer if it needs to be preserved
-    if (preserve && visibleBgLayer === null && ConfigUtils.getConfigProp("preserveBackgroundOnThemeSwitch", theme) === true) {
-        visibleBgLayer = prevLayers.find(layer => layer.role === LayerRole.BACKGROUND && layer.visibility === true)?.name ?? null;
+    if (preserve && preservedBgLayer === null && ConfigUtils.getConfigProp("preserveBackgroundOnThemeSwitch", theme) === true) {
+        preservedBgLayer = prevLayers.find(layer => layer.role === LayerRole.BACKGROUND && layer.visibility === true)?.name ?? null;
     }
     // Create theme background layers
-    const bgLayers = ThemeUtils.createThemeBackgroundLayers(theme.backgroundLayers || [], themes, visibleBgLayer, externalLayers);
+    const bgLayers = ThemeUtils.createThemeBackgroundLayers(theme.backgroundLayers || [], themes, preservedBgLayer, externalLayers);
     const actuallyVisibleBgLayer = bgLayers.find(entry => entry.visibility)?.name;
-    if (!prevTheme && visibleBgLayer && actuallyVisibleBgLayer !== visibleBgLayer) {
-        dispatch(showNotification("missingbglayer", LocaleUtils.tr("app.missingbg", visibleBgLayer), NotificationType.WARN, true));
-    } else if (actuallyVisibleBgLayer !== visibleBgLayer) {
-        visibleBgLayer = null;
+    if (preservedBgLayer && actuallyVisibleBgLayer !== preservedBgLayer) {
+        if (!prevTheme) {
+            dispatch(showNotification("missingbglayer", LocaleUtils.tr("app.missingbg", preservedBgLayer), NotificationType.WARN, true));
+        }
+        preservedBgLayer = null;
     }
 
     // Remove old layers
@@ -76,7 +77,7 @@ export function finishThemeSetup(dispatch, theme, themes, layerConfigs, preserve
     prevLayers.forEach(layer => {
         if (layer.role === LayerRole.USERLAYER && preserveUserLayers) {
             ++insPos;
-        } else if (layer.role === LayerRole.BACKGROUND && layer.name === visibleBgLayer) {
+        } else if (layer.role === LayerRole.BACKGROUND && layer.name === preservedBgLayer) {
             bgLayerKept = true;
         } else {
             dispatch(removeLayer(layer.id));
@@ -107,7 +108,7 @@ export function finishThemeSetup(dispatch, theme, themes, layerConfigs, preserve
     // Add background layers for theme
     for (const bgLayer of bgLayers.reverse()) {
         // If previous visible BG layer kept, insert other BG layers around that layer
-        if (!(bgLayer.name === visibleBgLayer && bgLayerKept)) {
+        if (!(bgLayer.name === preservedBgLayer && bgLayerKept)) {
             dispatch(addLayer(bgLayer, insPos));
         }
         ++insPos;
