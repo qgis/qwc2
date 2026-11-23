@@ -769,11 +769,13 @@ class Map3D extends React.Component {
     loadTilesetStyle = (objectId, url) => {
         const applyTilesetStyle = (styleurl) => {
             const tiles3d = this.objectMap[objectId];
-            tiles3d.userData.tilesetStyle = this.tilesetStyles[styleurl];
-            tiles3d.tiles.group.children.forEach(group => {
-                Tiles3DStyle.applyTileStyle(group, tiles3d.userData, this.state.sceneContext);
-            });
-            this.instance.notifyChange(tiles3d);
+            if (tiles3d) {
+                tiles3d.userData.tilesetStyle = this.tilesetStyles[styleurl];
+                tiles3d.tiles.group.children.forEach(group => {
+                    Tiles3DStyle.applyTileStyle(group, tiles3d.userData, this.state.sceneContext);
+                });
+                this.instance.notifyChange(tiles3d);
+            }
         };
         if (this.tilesetStyles[url]) {
             applyTilesetStyle(url);
