@@ -15,7 +15,7 @@ import isEmpty from 'lodash.isempty';
 import PropTypes from 'prop-types';
 import {createSelector} from 'reselect';
 
-import {LayerRole, changeLayerProperty} from '../actions/layers';
+import {LayerRole, changeLayerProperty, setBackgroundOpacity} from '../actions/layers';
 import Icon from '../components/Icon';
 import MapButton from '../components/MapButton';
 import {MapButtonPortalContext} from '../components/PluginsContainer';
@@ -34,6 +34,7 @@ export class BackgroundSwitcher extends React.Component {
     static contextType = MapButtonPortalContext;
     static propTypes = {
         backgroundLayers: PropTypes.array,
+        bgOpacity: PropTypes.number,
         /** The button click action, either `select` or `cycle`. */
         buttonClickAction: PropTypes.string,
         /** The button display mode, either `button` or `thumbnail`. */
@@ -42,14 +43,18 @@ export class BackgroundSwitcher extends React.Component {
         nobgMsgId: PropTypes.string,
         /** The position slot index of the map button, from the bottom (0: bottom slot). */
         position: PropTypes.number,
+        setBackgroundOpacity: PropTypes.func,
         /** Whether to show the thumbnails of the group children when hovering a group item. */
-        showGroupThumbnails: PropTypes.bool
+        showGroupThumbnails: PropTypes.bool,
+        /** Whether to show a slider to control the background opacity. */
+        showOpacitySlider: PropTypes.bool
     };
     static defaultProps = {
         buttonClickAction: 'select',
         buttonDisplayMode: 'button',
         position: 0,
-        nobgMsgId: "bgswitcher.nobg"
+        nobgMsgId: "bgswitcher.nobg",
+        showOpacitySlider: true
     };
     state = {
         visible: false
@@ -99,6 +104,7 @@ export class BackgroundSwitcher extends React.Component {
                 >
                     <img src={thumbnail} />
                     {this.renderSwitcher(backgroundLayers, visibleBgLayer)}
+                    {this.props.showOpacitySlider && this.renderTransparenceSlider()}
                 </div>
             ), this.context);
         } else {
@@ -111,6 +117,7 @@ export class BackgroundSwitcher extends React.Component {
                     position={this.props.position} tooltip={LocaleUtils.tr("tooltip.background")}
                 >
                     {this.renderSwitcher(backgroundLayers, visibleBgLayer)}
+                    {this.props.showOpacitySlider && this.renderTransparenceSlider()}
                 </MapButton>
             );
         }
@@ -201,6 +208,21 @@ export class BackgroundSwitcher extends React.Component {
                 </div>
             </div>
         );
+    };
+    renderTransparenceSlider = () => {
+        const className = classnames({
+            "background-switcher-transparency": true,
+            "background-switcher-transparency-active": this.state.visible
+        });
+        return (
+            <div className={className}>
+                <Icon icon="transparency" />
+                <input max={255} min={0} onChange={this.changeTransparency} type="range" value={255 - this.props.bgOpacity} />
+            </div>
+        );
+    };
+    changeTransparency = (ev) => {
+        this.props.setBackgroundOpacity(255 - parseFloat(ev.target.value));
     };
     updateGroupItem = (ev, layer) => {
         const assetsPath = ConfigUtils.getAssetsPath();
@@ -294,16 +316,17 @@ export class BackgroundSwitcher extends React.Component {
 }
 
 const selector = createSelector([state => state.layers.flat], layers => {
-    const backgroundLayers = Object.values(layers.filter(layer => layer.role === LayerRole.BACKGROUND).reduce((res, l) => {
+    return Object.values(layers.filter(layer => layer.role === LayerRole.BACKGROUND).reduce((res, l) => {
         return {...res, ["_" + (l.group || l.name)]: l.group ? [l, ...(res["_" + l.group] || [])] : l};
     }, {})).reverse();
-    return {
-        backgroundLayers: backgroundLayers
-    };
 });
 
-export default connect(selector, {
+export default connect(createSelector([selector, state => state.layers.bgOpacity], (bgLayers, bgOpacity) => ({
+    backgroundLayers: bgLayers,
+    bgOpacity: bgOpacity
+})), {
     changeLayerVisibility: (layer, visibility) => {
         return changeLayerProperty(layer.id, "visibility", visibility);
-    }
+    },
+    setBackgroundOpacity: setBackgroundOpacity
 })(BackgroundSwitcher);

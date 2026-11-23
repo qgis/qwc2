@@ -351,6 +351,14 @@ const LayerUtils = {
         }
         return {id, type, url: layerUrl, name, opacity, style, visibility, tristate, omitFromQueryLayers};
     },
+    buildBgLayerUrlParam(layers, opacity, noBgValue = '') {
+        const bgLayer = layers.find(l => l.role === LayerRole.BACKGROUND && l.visibility);
+        if (bgLayer) {
+            return bgLayer.name + (opacity < 255 ? `[${Math.round((255 - opacity) / 255 * 100)}]` : '');
+        } else {
+            return noBgValue;
+        }
+    },
     pathEqualOrBelow(parent, child) {
         return isEqual(child.slice(0, parent.length), parent);
     },

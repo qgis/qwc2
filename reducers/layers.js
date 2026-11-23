@@ -20,6 +20,7 @@ import {
     REMOVE_LAYER,
     REORDER_LAYER,
     CHANGE_LAYER_PROPERTY,
+    SET_BACKGROUND_OPACITY,
     SET_LAYER_DIMENSIONS,
     ADD_LAYER_FEATURES,
     REMOVE_LAYER_FEATURES,
@@ -40,6 +41,7 @@ const defaultState = {
     flat: [],
     loading: [],
     swipe: null,
+    bgOpacity: 255,
     filter: {
         filterParams: null,
         filterGeom: null,
@@ -100,17 +102,22 @@ export default function layers(state = defaultState, action) {
                 if (newlayer.type === "wms") {
                     Object.assign(newlayer, LayerUtils.buildWMSLayerParams(newlayer, state.filter));
                 }
-                if (newlayer.role === LayerRole.BACKGROUND) {
-                    UrlParams.updateParams({bl: newlayer.visibility ? newlayer.name : ''});
-                }
                 return newlayer;
-            } else if (layer.role === LayerRole.BACKGROUND && backgroundVisibilityChanged) {
+            }  else if (layer.role === LayerRole.BACKGROUND && backgroundVisibilityChanged) {
                 return {...layer, visibility: false};
             }
             return layer;
         });
-        UrlParams.updateParams({l: LayerUtils.buildWMSLayerUrlParam(newLayers)});
+        if (targetLayer.role === LayerRole.BACKGROUND) {
+            UrlParams.updateParams({bl: LayerUtils.buildBgLayerUrlParam(newLayers, state.bgOpacity)});
+        } else {
+            UrlParams.updateParams({l: LayerUtils.buildWMSLayerUrlParam(newLayers)});
+        }
         return {...state, flat: newLayers};
+    }
+    case SET_BACKGROUND_OPACITY: {
+        UrlParams.updateParams({bl: LayerUtils.buildBgLayerUrlParam(state.flat, action.opacity)});
+        return {...state, bgOpacity: action.opacity};
     }
     case SET_LAYER_DIMENSIONS: {
         // Set dimensions for all layers with the same URL (i.e. if a WMS is split)
@@ -165,9 +172,10 @@ export default function layers(state = defaultState, action) {
             }
             return layer;
         });
-        UrlParams.updateParams({l: LayerUtils.buildWMSLayerUrlParam(newLayers)});
-        if (newLayer.role === LayerRole.BACKGROUND && newLayer.visibility) {
-            UrlParams.updateParams({bl: newLayer.name});
+        if (newLayer.role === LayerRole.BACKGROUND) {
+            UrlParams.updateParams({bl: LayerUtils.buildBgLayerUrlParam(newLayers, state.bgOpacity)});
+        } else {
+            UrlParams.updateParams({l: LayerUtils.buildWMSLayerUrlParam(newLayers)});
         }
         let newEditConfigs = state.editConfigs;
         if (newLayer.editConfig && newLayer.wms_name) {

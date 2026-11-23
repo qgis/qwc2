@@ -125,6 +125,7 @@ class Map3D extends React.Component {
         dtmUrl: null,
         dtmCrs: null,
         baseLayers: [],
+        baseLayerOpacity: 255,
         colorLayers: {},
         objectTree: {},
         collisionObjects: [],
@@ -146,6 +147,7 @@ class Map3D extends React.Component {
             removeLayer: (layerId) => {},
             updateColorLayer: (layerId, options, flags) => {},
             setBaseLayer: (layer, visibility) => {},
+            setBaseLayerOpacity: (opacity) => {},
 
             importTiles3D: (url, name, addToLayerTree = false, treeOptions = {}, showEditTool = false, matrix = null, label = null) => {},
             importObject3D: (dataOrUrl, name, addToLayerTree = false, treeOptions = {}, showEditTool = false) => {},
@@ -191,6 +193,7 @@ class Map3D extends React.Component {
         this.state.sceneContext.removeLayer = this.removeLayer;
         this.state.sceneContext.updateColorLayer = this.updateColorLayer;
         this.state.sceneContext.setBaseLayer = this.setBaseLayer;
+        this.state.sceneContext.setBaseLayerOpacity = this.setBaseLayerOpacity;
         this.state.sceneContext.importTiles3D = this.importTiles3D;
         this.state.sceneContext.importObject3D = this.importObject3D;
         this.state.sceneContext.addSceneObject = this.addSceneObject;
@@ -296,6 +299,12 @@ class Map3D extends React.Component {
                 entity.tiles.lruCache.maxBytesSize = 0.5 * gigabyteBytes * (1 + this.state.sceneContext.settings.sceneQuality / 100);
             });
         }
+        if (
+            this.state.sceneContext.baseLayers !== prevState.sceneContext.baseLayers ||
+            this.state.sceneContext.baseLayerOpacity !== prevState.sceneContext.baseLayerOpacity
+        ) {
+            UrlParams.updateParams({bl3d: LayerUtils.buildBgLayerUrlParam(this.state.sceneContext.baseLayers, this.state.sceneContext.baseLayerOpacity, 'null')});
+        }
     }
     setBaseLayer = (layer, visibility) => {
         const currentBaseLayer = this.state.sceneContext.baseLayers.find(l => l.visibility === true)?.name || null;
@@ -312,13 +321,20 @@ class Map3D extends React.Component {
             this.map.backgroundOpacity = visibility ? 1 : 0;
             this.instance.notifyChange(this.map);
         }
-        UrlParams.updateParams({bl3d: !visibility ? 'null' : layer.name});
         this.setState(state => ({
             sceneContext: {
                 ...state.sceneContext,
                 baseLayers: state.sceneContext.baseLayers.map(entry => (
                     {...entry, visibility: entry.name === layer.name ? visibility : false}
                 ))
+            }
+        }));
+    };
+    setBaseLayerOpacity = (opacity) => {
+        this.setState(state => ({
+            sceneContext: {
+                ...state.sceneContext,
+                baseLayerOpacity: opacity
             }
         }));
     };
@@ -863,8 +879,9 @@ class Map3D extends React.Component {
     };
     renderBaseLayer = () => {
         const baseLayer = this.state.sceneContext.baseLayers.find(e => e.visibility === true);
+        const opacity = baseLayer ? Math.round(baseLayer.opacity * this.state.sceneContext.baseLayerOpacity / 255) : 0;
         return !baseLayer ? null : (
-            <ColorLayer3D key={baseLayer.name} map={this.map} options={{id: "__baselayer", ...baseLayer}} sceneContext={this.state.sceneContext} />
+            <ColorLayer3D key={baseLayer.name} map={this.map} options={{id: "__baselayer", ...baseLayer, opacity}} sceneContext={this.state.sceneContext} />
         );
     };
     setupContainer = (el) => {
@@ -972,6 +989,7 @@ class Map3D extends React.Component {
         const baseLayers = ThemeUtils.createThemeBackgroundLayers(this.props.theme.map3d.basemaps || [], this.props.themes, null, externalLayers);
         baseLayers.unshift({
             type: "blank",
+            role: LayerRole.BACKGROUND,
             name: "",
             title: LocaleUtils.tr("bgswitcher.nobg")
         });
@@ -1388,8 +1406,13 @@ class Map3D extends React.Component {
         });
         this.state.sceneContext.restoreView(data);
         if ((data.baseLayer ?? null) !== null) {
-            const bl3d = data.baseLayer ?? "";
-
+            let bl3d = data.baseLayer ?? "";
+            let m = null;
+            if (bl3d && (m = bl3d.match(/\[(\d+)\]$/))) {
+                const bgOpacity = Math.round(255 - parseFloat(m[1]) / 100 * 255);
+                this.setBaseLayerOpacity(bgOpacity);
+                bl3d = bl3d.slice(0, m.index);
+            }
             this.setBaseLayer({name: bl3d}, bl3d !== "null");
         }
         this.state.sceneContext.scene.notifyChange();

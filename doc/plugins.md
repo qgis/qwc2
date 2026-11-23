@@ -411,6 +411,7 @@ Map button for switching the background layer.
 | buttonDisplayMode | `string` | The button display mode, either `button` or `thumbnail`. | `'button'` |
 | position | `number` | The position slot index of the map button, from the bottom (0: bottom slot). | `0` |
 | showGroupThumbnails | `bool` | Whether to show the thumbnails of the group children when hovering a group item. | `undefined` |
+| showOpacitySlider | `bool` | Whether to show a slider to control the background opacity. | `true` |
 
 ## Bookmark<a name="bookmark"></a>
 
@@ -1474,6 +1475,7 @@ Map button for switching the background layer of the 3D map.
 | buttonDisplayMode | `string` | The button display mode, either `button` or `thumbnail`. | `'button'` |
 | position | `number` | The position slot index of the map button, from the bottom (0: bottom slot). | `0` |
 | showGroupThumbnails | `bool` | Whether to show the thumbnails of the group children when hovering a group item. | `undefined` |
+| showOpacitySlider | `bool` | Whether to show a slider to control the background opacity. | `true` |
 
 ## BottomBar3D<a name="bottombar3d"></a>
 

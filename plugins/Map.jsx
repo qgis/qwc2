@@ -32,6 +32,7 @@ import './style/Map.css';
 class Map extends React.Component {
     static contextType = MapContainerPortalContext;
     static propTypes = {
+        bgOpacity: PropTypes.number,
         layers: PropTypes.array,
         loadingLayers: PropTypes.array,
         map: PropTypes.object,
@@ -244,9 +245,13 @@ class Map extends React.Component {
             for (let i = 0; usedKeys.has(key); ++i) {
                 key = layer.id + ":" + i;
             }
+            let options = layer;
+            if (layer.role === LayerRole.BACKGROUND) {
+                options = {...options, opacity: Math.round(options.opacity * this.props.bgOpacity / 255)};
+            }
             usedKeys.add(key);
             return (
-                <OlLayer key={key} options={layer} swipe={swipe ? this.props.swipe : null} zIndex={layer.zIndex ?? zIndex} />
+                <OlLayer key={key} options={options} swipe={swipe ? this.props.swipe : null} zIndex={layer.zIndex ?? zIndex} />
             );
         });
     };
@@ -292,6 +297,7 @@ export default (tools) => {
     return connect((state) => ({
         map: state.map,
         layers: state.layers.flat,
+        bgOpacity: state.layers.bgOpacity,
         loadingLayers: state.layers.loading,
         swipe: state.layers.swipe,
         theme: state.theme.current,

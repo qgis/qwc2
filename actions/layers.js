@@ -23,6 +23,7 @@ export const ADD_THEME_SUBLAYER = 'ADD_THEME_SUBLAYER';
 export const REMOVE_LAYER_FEATURES = 'REMOVE_LAYER_FEATURES';
 export const CLEAR_LAYER = 'CLEAR_LAYER';
 export const CHANGE_LAYER_PROPERTY = 'CHANGE_LAYER_PROPERTY';
+export const SET_BACKGROUND_OPACITY = 'SET_BACKGROUND_OPACITY';
 export const SET_LAYER_DIMENSIONS = 'SET_LAYER_DIMENSIONS';
 export const SET_LAYER_METADATA = 'SET_LAYER_METADATA';
 export const REFRESH_LAYER = 'REFRESH_LAYER';
@@ -136,6 +137,13 @@ export function changeLayerProperty(layerId, property, newvalue, sublayerpath = 
         newvalue,
         sublayerpath,
         recurseDirection
+    };
+}
+
+export function setBackgroundOpacity(opacity) {
+    return {
+        type: SET_BACKGROUND_OPACITY,
+        opacity
     };
 }
 

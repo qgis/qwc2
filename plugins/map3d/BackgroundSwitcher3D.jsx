@@ -29,12 +29,15 @@ export default class BackgroundSwitcher3D extends React.Component {
         position: PropTypes.number,
         sceneContext: PropTypes.object,
         /** Whether to show the thumbnails of the group children when hovering a group item. */
-        showGroupThumbnails: PropTypes.bool
+        showGroupThumbnails: PropTypes.bool,
+        /** Whether to show a slider to control the background opacity. */
+        showOpacitySlider: PropTypes.bool
     };
     static defaultProps = {
         buttonClickAction: 'select',
         buttonDisplayMode: 'button',
-        position: 0
+        position: 0,
+        showOpacitySlider: true
     };
     render() {
         const backgroundLayers = Object.values(this.props.sceneContext.baseLayers.reduce((res, l) => {
@@ -43,10 +46,13 @@ export default class BackgroundSwitcher3D extends React.Component {
         return (
             <BackgroundSwitcher
                 backgroundLayers={backgroundLayers}
+                bgOpacity={this.props.sceneContext.baseLayerOpacity}
                 buttonClickAction={this.props.buttonClickAction} buttonDisplayMode={this.props.buttonDisplayMode}
                 changeLayerVisibility={this.props.sceneContext.setBaseLayer}
                 nobgMsgId={LocaleUtils.trmsg("map3d.noterrain")} position={this.props.position}
+                setBackgroundOpacity={this.props.sceneContext.setBaseLayerOpacity}
                 showGroupThumbnails={this.props.showGroupThumbnails}
+                showOpacitySlider={this.props.showOpacitySlider}
             />
         );
     }

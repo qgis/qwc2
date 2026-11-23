@@ -19,11 +19,10 @@ import CoordinatesUtils from '../utils/CoordinatesUtils';
 import LayerUtils from '../utils/LayerUtils';
 import LocaleUtils from '../utils/LocaleUtils';
 import MapUtils from '../utils/MapUtils';
-import {UrlParams} from '../utils/PermaLinkUtils';
 import ServiceLayerUtils from '../utils/ServiceLayerUtils';
 import ThemeUtils from '../utils/ThemeUtils';
 import {LayerRole, addLayer, removeLayer, removeAllLayers, replacePlaceholderLayer, setSwipe,
-    setThemeLayersVisibilityPreset} from './layers';
+    setThemeLayersVisibilityPreset, setBackgroundOpacity} from './layers';
 import {configureMap} from './map';
 import {showNotification, NotificationType} from './windows';
 
@@ -49,6 +48,13 @@ export function setThemeLayersList(theme) {
 export function finishThemeSetup(dispatch, theme, themes, layerConfigs, preserve, prevLayers, prevTheme, permalinkLayers, externalLayerRestorer, visibleBgLayer, initialTask, initialVisibilityPreset) {
     let layers = [];
     const externalLayers = {};
+
+    let bgOpacity = 255;
+    let m = null;
+    if (visibleBgLayer && (m = visibleBgLayer.match(/\[(\d+)\]$/))) {
+        bgOpacity = Math.round(255 - parseFloat(m[1]) / 100 * 255);
+        visibleBgLayer = visibleBgLayer.slice(0, m.index);
+    }
 
     // Get current background layer if it needs to be preserved
     if (preserve && visibleBgLayer === null && ConfigUtils.getConfigProp("preserveBackgroundOnThemeSwitch", theme) === true) {
@@ -106,7 +112,6 @@ export function finishThemeSetup(dispatch, theme, themes, layerConfigs, preserve
         }
         ++insPos;
     }
-    UrlParams.updateParams({bl: actuallyVisibleBgLayer ?? ""});
 
     for (const layer of layers.reverse()) {
         dispatch(addLayer(layer, 0));
@@ -133,6 +138,7 @@ export function finishThemeSetup(dispatch, theme, themes, layerConfigs, preserve
             });
         }
     }
+    dispatch(setBackgroundOpacity(bgOpacity));
 
     dispatch({
         type: SET_CURRENT_THEME,
