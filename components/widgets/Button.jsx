@@ -31,7 +31,7 @@ export default class Button extends React.PureComponent {
             button: true,
             pressed: pressed,
             selected: selected,
-            [className]: true
+            [className]: !!className
         });
         return (
             <button className={classes} type={type ?? "button"} {...withTooltip(title, props)}>
