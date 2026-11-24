@@ -11,6 +11,7 @@ import isEmpty from "lodash.isempty";
 import parseCssColor from 'parse-css-color';
 import {Float32BufferAttribute, Group, Vector3} from "three";
 
+import ConfigUtils from '../../../utils/ConfigUtils';
 import MiscUtils from '../../../utils/MiscUtils';
 import {createLabelObject, TileMeshHelper} from "./MiscUtils3D";
 
@@ -57,7 +58,8 @@ function featureColor(objectId, featureProperties, context) {
 
 function featureLabel(objectId, featureProperties, context) {
     if ((context.featureStyles?.[objectId]?.label ?? null) !== null) {
-        return {text: context.featureStyles[objectId].label, offset: context.featureStyles[objectId].labelOffset ?? 80};
+        const defaultLabelOffset = ConfigUtils.getPluginConfig("View3D")?.cfg?.defaultLabelOffset ?? 80;
+        return {text: context.featureStyles[objectId].label, offset: context.featureStyles[objectId].labelOffset ?? defaultLabelOffset};
     } else if (context.labelAttr) {
         return {text: featureProperties[context.labelAttr], offset: 0};
     } else {

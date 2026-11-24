@@ -60,6 +60,8 @@ class View3D extends React.Component {
         defaultColorLayerVisibility: PropTypes.bool,
         /** The default field of view (`20`: min, `100`: max). */
         defaultFov: PropTypes.number,
+        /** The default offset (=leader line length) for labels. */
+        defaultLabelOffset: PropTypes.number,
         /** The default point size for point cloud tiles (`0`: min, `20`: max). Automatic size computation when the value is `0`. */
         defaultPointSize: PropTypes.number,
         /** The default scene quality factor (`20`: min, `100`: max). */
@@ -104,6 +106,7 @@ class View3D extends React.Component {
         controlsSpeed: {pan: 1, tilt: 1, zoom: 1},
         defaultColorLayerVisibility: false,
         defaultFov: 30,
+        defaultLabelOffset: 80,
         defaultPointSize: 0,
         defaultSceneQuality: 100,
         forceAllowInspector: false,

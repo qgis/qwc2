@@ -60,4 +60,11 @@
     --app-submenu-text-color-hover: white;
     /* Radius */
     --border-radius: 1px;
+    /* 3D labels */
+    --label-3d-text-color: white;
+    --label-3d-text-size: 10pt;
+    --label-3d-bg-color: rgba(41, 120, 180, 0.75);
+    --label-3d-frame-border: 1px solid white;
+    --label-3d-leaderline-color: rgb(57, 136, 196);
+    --label-3d-leaderline-width: 2px;
 }

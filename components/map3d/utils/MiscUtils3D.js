@@ -6,10 +6,11 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {Box3, BufferGeometry, Matrix3, Matrix4, Mesh, Vector2, Vector3} from 'three';
+import {Box3, BufferGeometry, Color, Matrix3, Matrix4, Mesh, Vector2, Vector3} from 'three';
 import {MeshLine, MeshLineMaterial} from 'three.meshline';
 import {CSS2DObject} from "three/addons/renderers/CSS2DRenderer";
 
+import ConfigUtils from '../../../utils/ConfigUtils';
 import convexHull from '../../../utils/QuickHull2D';
 
 
@@ -25,10 +26,14 @@ export function createLabelObject(text, pos, sceneContext, zoffset, yoffset = 0)
     labelObject.position.set(pos.x, pos.y + yoffset, pos.z + zoffset);
     labelObject.updateMatrixWorld();
     // Leader line
+    const style = getComputedStyle(sceneContext.scene.viewport);
+    const leaderLineColor = style.getPropertyValue('--label-3d-leaderline-color').trim();
+    const leaderLineWidth = parseFloat(style.getPropertyValue('--label-3d-leaderline-width').trim()) || 2;
+
     const linegeom = new MeshLine();
     linegeom.setGeometry(new BufferGeometry().setFromPoints([new Vector3(0, -yoffset, -zoffset), new Vector3(0, 0, 0)]));
     const resolution = new Vector2(sceneContext.scene.view.width, sceneContext.scene.view.height);
-    const linemat = new MeshLineMaterial({color: 0x3988C4, resolution: resolution, lineWidth: 2, sizeAttenuation: 0});
+    const linemat = new MeshLineMaterial({color: new Color(leaderLineColor), resolution: resolution, lineWidth: leaderLineWidth, sizeAttenuation: 0});
     const linemesh = new Mesh(linegeom, linemat);
     labelObject.add(linemesh);
     linemesh.updateMatrixWorld();
@@ -43,7 +48,8 @@ export function updateObjectLabel(sceneObject, sceneContext) {
     let labelObject = sceneObject.children.find(child => child.isCSS2DObject);
     if (sceneObject.userData.label) {
         if (!labelObject) {
-            labelObject = createLabelObject(sceneObject.userData.label, new Vector3(0, 0, 0), sceneContext, sceneObject.userData.labelOffset ?? 50);
+            const defaultLabelOffset = ConfigUtils.getPluginConfig("View3D")?.cfg?.defaultLabelOffset ?? 80;
+            labelObject = createLabelObject(sceneObject.userData.label, new Vector3(0, 0, 0), sceneContext, sceneObject.userData.labelOffset ?? defaultLabelOffset);
             sceneObject.add(labelObject);
             sceneObject.updateMatrixWorld();
             labelObject.userData.removeCallback = () => {

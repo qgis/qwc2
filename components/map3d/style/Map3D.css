@@ -40,18 +40,20 @@ div.map3d-inspector input {
 }
 
 span.map3d-object-label {
-    background-color: rgba(41, 120, 180, 0.75);
-    border: 1px solid white;
-    color: white;
+    background-color: var(--label-3d-bg-color);
+    border: var(--label-3d-frame-border);
+    color: var(--label-3d-text-color);
+    font-size: var(--label-3d-text-size);
     font-weight: bold;
     padding: 0.25em 0.5em;
     border-radius: 8px;
 }
 
 span.map3d-search-label {
-    background-color: rgba(41, 120, 180, 0.75);
-    border: 1px solid white;
-    color: white;
+    background-color: var(--label-3d-bg-color);
+    border: var(--label-3d-frame-border);
+    color: var(--label-3d-text-color);
+    font-size: var(--label-3d-text-size);
     font-weight: bold;
     padding: 0.25em 0.5em;
     border-radius: 8px;
