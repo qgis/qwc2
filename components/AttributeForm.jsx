@@ -715,7 +715,7 @@ class AttributeForm extends React.Component {
             const childEdit = {
                 action: action,
                 editConfig: editConfig,
-                editContextId: ':' + layer,
+                editContextId: uuidv4(),
                 featureId: featureId,
                 updateField: updateField,
                 finishCallback: this.finishChildEdit,
