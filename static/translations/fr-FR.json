@@ -272,7 +272,7 @@
     "featuresearch": {
       "query": "Terme",
       "title": "Recherche objet",
-      "typetofilter": ""
+      "typetofilter": "Saisir pour filtrer"
     },
     "fileselector": {
       "files": "Fichiers",
@@ -364,7 +364,7 @@
       "nofeatures": "Aucune entité ne peut être importée.",
       "noresults": "Pas de résultat ou URL non valide",
       "notgeopdf": "Le fichier sélectionné ne semble pas être un GeoPDF.",
-      "shpimportfailed": "",
+      "shpimportfailed": "Impossible d'importer le fichier Shape.",
       "shpreprojectionerror": "La géométrie du fichier Shapefile n'a pas pu être reprojetée et peut être mal placée.",
       "supportedformats": "Formats supportés: KML, GeoJSON, GeoPDF, DXF, SHP (zip)",
       "unknownproj": "Le GeoPDF sélectionné utilise une projection inconnue: {0}.",
