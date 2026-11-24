@@ -332,11 +332,11 @@ class QtDesignerForm extends React.Component {
             return (
                 <widget.component
                     addRelationRecord={this.props.addRelationRecord} constraints={constraints}
-                    editConfigs={this.props.editConfigs} feature={this.props.feature}
-                    iface={this.props.iface} mapPrefix={this.props.mapPrefix}
-                    name={elname} onChange={(val, fieldName) => updateField(fieldName ?? widget.name, val)}
+                    editConfigs={this.props.editConfigs} editRelationRecord={this.props.editRelationRecord}
+                    feature={this.props.feature} iface={this.props.iface} mapPrefix={this.props.mapPrefix}
+                    name={elname} onChange={(val, fieldName, flagChanged = true) => updateField(fieldName ?? widget.name, val, flagChanged)}
                     readOnly={this.props.readOnly} removeRelationRecord={this.props.removeRelationRecord}
-                    reorderRelationRecord={this.props.reorderRelationRecord}
+                    reorderRelationRecord={this.props.reorderRelationRecord} switchEditContext={this.props.switchEditContext}
                     updateRelationField={this.props.updateRelationField} widget={widget} {...widget.props} />
             );
         } else if (widget.class === "QLabel") {
