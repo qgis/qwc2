@@ -187,13 +187,13 @@ class AttributeForm extends React.Component {
     setFormBusy = (busy) => {
         this.setState({busy: busy});
     };
-    updateField = (key, value) => {
+    updateField = (key, value, flagChanged = true) => {
         if (value === this.props.editContext.feature?.properties?.[key]) {
             return;
         }
         const newProperties = {...this.props.editContext.feature.properties, [key]: value};
         const newFeature = {...this.props.editContext.feature, properties: newProperties};
-        this.props.setEditContext(this.props.editContext.id, {feature: newFeature, changed: true});
+        this.props.setEditContext(this.props.editContext.id, {feature: newFeature, changed: flagChanged || this.props.editContext.changed});
     };
     setRelationTables = (relationTables) => {
         this.setState({relationTables: relationTables}, () => {
