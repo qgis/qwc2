@@ -363,6 +363,7 @@
       "nofeatures": "Ominaisuustietoja ei voitu tuoda.",
       "noresults": "Tuloksia ei ole tai virheellinen URL-osoite",
       "notgeopdf": "",
+      "shpimportfailed": "",
       "shpreprojectionerror": "",
       "supportedformats": "",
       "unknownproj": "",

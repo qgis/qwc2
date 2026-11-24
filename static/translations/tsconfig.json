@@ -354,6 +354,7 @@
     "importlayer.nofeatures",
     "importlayer.noresults",
     "importlayer.notgeopdf",
+    "importlayer.shpimportfailed",
     "importlayer.shpreprojectionerror",
     "importlayer.supportedformats",
     "importlayer.unknownproj",

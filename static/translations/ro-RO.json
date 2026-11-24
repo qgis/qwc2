@@ -363,6 +363,7 @@
       "nofeatures": "Nu s-a putut importa niciun obiect spațial",
       "noresults": "Fără rezultat sau adresă URL invalidă",
       "notgeopdf": "Fișierul selectat nu pare să fie un GeoPDF.",
+      "shpimportfailed": "",
       "shpreprojectionerror": "Geometria Shapefile-ului nu a putut fi reproiectată și poate fi poziționată greșit.",
       "supportedformats": "Formate acceptate: KML, GeoJSON, GeoPDF, DXF, SHP (în zip)",
       "unknownproj": "GeoPDF-ul selectat folosește o proiecție necunoscută: {0}.",

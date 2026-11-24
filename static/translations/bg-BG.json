@@ -363,6 +363,7 @@
       "nofeatures": "Не могат да бъдат импортирани никакви функции.",
       "noresults": "Няма резултати или има невалиден URL адрес",
       "notgeopdf": "Избраният файл не изглежда да е GeoPDF.",
+      "shpimportfailed": "",
       "shpreprojectionerror": "",
       "supportedformats": "Поддържани формати: KML, GeoJSON, GeoPDF, DXF, SHP (в zip)",
       "unknownproj": "Избраният GeoPDF използва неизвестна проекция: {0}.",

@@ -246,6 +246,7 @@ const FileImportUtils = {
 
         // Import SHP layer from ZIP. Zip must contain all the required files : shp, dbf, shx, prj, cpg
         const mimeTypes = ['application/zip', 'application/zip-compressed', 'application/x-zip-compressed'];
+        let imported = false;
         if (mimeTypes.includes(file.type)) {
             const projections = ConfigUtils.getConfigProp("projections") || [];
             if (projections) {
@@ -301,6 +302,7 @@ const FileImportUtils = {
                         }
                     }
                     if (data) {
+                        imported = true;
                         data.crs = {
                             type: "name",
                             properties: {name: CoordinatesUtils.toOgcUrnCrs(mapCrs)}
@@ -310,6 +312,10 @@ const FileImportUtils = {
                     }
                 }
             }
+        }
+        if (!imported) {
+            /* eslint-disable-next-line */
+            alert(LocaleUtils.tr("importlayer.shpimportfailed"));
         }
     }
 };

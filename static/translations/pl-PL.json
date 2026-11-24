@@ -363,6 +363,7 @@
       "nofeatures": "Elementy nie mogły zostać zaimportowane",
       "noresults": "Brak wyników lub błędny adres URL",
       "notgeopdf": "Wybrany plik prawdopodobnie nie jest plikiem GeoPDF.",
+      "shpimportfailed": "",
       "shpreprojectionerror": "Geometrii pliku shapefile nie udało się przekształcić do innego układu współrzędnych, przez co może ona znajdować się w niewłaściwym miejscu.",
       "supportedformats": "Obsługiwane formaty: KML, GeoJSON, GeoPDF, DXF, SHP (jako zip)",
       "unknownproj": "Wybrany plik GeoPDF wykorzystuje nieznany układ odwzorowania: {0}.",
