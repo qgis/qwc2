@@ -15,7 +15,7 @@ import {setSnappingConfig} from '../actions/map.js';
 import {changeMeasurementState} from '../actions/measurement.js';
 import Icon from '../components/Icon';
 import TaskBar from '../components/TaskBar';
-import Button from '../components/widgets/Button.jsx';
+import Button from '../components/widgets/Button';
 import ButtonBar from '../components/widgets/ButtonBar';
 import CopyButton from '../components/widgets/CopyButton';
 import CoordinatesUtils from '../utils/CoordinatesUtils.js';
