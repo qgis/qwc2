@@ -57,7 +57,7 @@ div.menubutton-button-content > div.buttonbar-combo-entry {
     height: 100%;
 }
 
-span.menubutton-button-content span+span {
+div.menubutton-button-content span+span {
     margin-left: 0.5em;
 }
 
