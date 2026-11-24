@@ -126,6 +126,31 @@ const MiscUtils = {
             }, {once: true});
         }
     },
+    startElementHeightResize(ev) {
+        const container = ev.target.parentElement;
+        if (!container) {
+            return;
+        }
+        // Drop max-height as soon as a manual height is set
+        const startHeight = container.offsetHeight;
+        container.style.height = container.offsetHeight + 'px';
+        container.style.maxHeight = 'initial';
+        const startMouseY = ev.clientY;
+        const resizeInput = (event) => {
+            container.style.height = Math.max(MiscUtils.convertEmToPx(2.5), (startHeight + (event.clientY - startMouseY))) + 'px';
+        };
+        const eventShield = ev.view.document.createElement("div");
+        eventShield.className = '__event_shield';
+        const shieldParent = MiscUtils.appContainer(ev.target);
+        shieldParent.classList.add('nsresizing');
+        shieldParent.appendChild(eventShield);
+        ev.view.addEventListener("pointermove", resizeInput);
+        ev.view.addEventListener("pointerup", () => {
+            eventShield.remove();
+            shieldParent.classList.remove('nsresizing');
+            ev.view.removeEventListener("pointermove", resizeInput);
+        }, {once: true});
+    },
     blendColors(color1, color2, ratio) {
         color1 = [parseInt(color1[1] + color1[2], 16), parseInt(color1[3] + color1[4], 16), parseInt(color1[5] + color1[6], 16)];
         color2 = [parseInt(color2[1] + color2[2], 16), parseInt(color2[3] + color2[4], 16), parseInt(color2[5] + color2[6], 16)];

@@ -692,8 +692,8 @@ class QtDesignerForm extends React.Component {
                 {!this.props.readOnly && editPermissions.creatable !== false && editPermissions.geomreadonly !== true ? (
                     <ButtonBar buttons={addButtons} onClick={this.addRelationRecordAction} />
                 ) : null}
-                <div className="qt-designer-widget-relation-resize-border" onPointerDown={this.startRelationTableResize} />
-                <div className="qt-designer-widget-relation-resize-handle" onPointerDown={this.startRelationTableResize} />
+                <div className="qt-designer-widget-relation-resize-border" onPointerDown={MiscUtils.startElementHeightResize} />
+                <div className="qt-designer-widget-relation-resize-handle" onPointerDown={MiscUtils.startElementHeightResize} />
             </div>
         );
     };
@@ -716,31 +716,6 @@ class QtDesignerForm extends React.Component {
         } else if (key === "Cancel") {
             this.setState({relationAddPressed: null});
         }
-    };
-    startRelationTableResize = (ev) => {
-        const container = ev.target.parentElement;
-        if (!container) {
-            return;
-        }
-        // Drop max-height as soon as a manual height is set
-        const startHeight = container.offsetHeight;
-        container.style.height = container.offsetHeight + 'px';
-        container.style.maxHeight = 'initial';
-        const startMouseY = ev.clientY;
-        const resizeInput = (event) => {
-            container.style.height = Math.max(MiscUtils.convertEmToPx(2.5), (startHeight + (event.clientY - startMouseY))) + 'px';
-        };
-        const eventShield = ev.view.document.createElement("div");
-        eventShield.className = '__event_shield';
-        const shieldParent = MiscUtils.appContainer(ev.target);
-        shieldParent.classList.add('nsresizing');
-        shieldParent.appendChild(eventShield);
-        ev.view.addEventListener("pointermove", resizeInput);
-        ev.view.addEventListener("pointerup", () => {
-            eventShield.remove();
-            shieldParent.classList.remove('nsresizing');
-            ev.view.removeEventListener("pointermove", resizeInput);
-        }, {once: true});
     };
     groupOrName = (widget) => {
         return widget.attribute && widget.attribute.buttonGroup ? widget.attribute.buttonGroup._ : widget.name;
