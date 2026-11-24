@@ -64,6 +64,7 @@ class ResizeableWindow extends React.Component {
         onClose: PropTypes.func,
         onExternalWindowResized: PropTypes.func,
         onGeometryChanged: PropTypes.func,
+        overlayTitleBar: PropTypes.bool,
         raiseWindow: PropTypes.func,
         registerWindow: PropTypes.func,
         scrollable: PropTypes.bool,
@@ -229,8 +230,12 @@ class ResizeableWindow extends React.Component {
                 <Icon className={iconClasses} icon="detach" onClick={this.moveToExternalWindow} title={LocaleUtils.tr("window.detach")} />
             );
         }
+        const titlebarClasses = classnames({
+            "resizeable-window-titlebar": true,
+            "resizeable-window-titlebar-overlay": this.props.overlayTitleBar && !ConfigUtils.getConfigProp("disableOverlayTitlebars")
+        });
         return (
-            <div className="resizeable-window-titlebar" onDoubleClick={this.state.externalWindow ? null : this.toggleMaximize}>
+            <div className={titlebarClasses} onDoubleClick={this.state.externalWindow ? null : this.toggleMaximize}>
                 {icon}
                 <span className="resizeable-window-titlebar-title">
                     {this.props.title}

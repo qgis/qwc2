@@ -331,6 +331,7 @@ class View3D extends React.Component {
                     onExternalWindowResized={this.redrawScene}
                     onFocusChanged={this.windowFocusChanged}
                     onGeometryChanged={this.onGeometryChanged}
+                    overlayTitleBar
                     splitScreenWhenDocked
                     splitTopAndBottomBar
                     title={LocaleUtils.tr("map3d.title")}

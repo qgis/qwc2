@@ -116,6 +116,32 @@ div.resizeable-window-titlebar {
     border-radius: var(--border-radius) var(--border-radius) 0px 0px;
 }
 
+div.resizeable-window-titlebar-overlay {
+    position: absolute;
+    left: 0;
+    top: 0;
+    right: 0;
+    z-index: 110;
+    height: 2.5em;
+    border-bottom: 2px solid transparent;
+    animation: collapseTitlebar 0.4s ease 1s forwards;
+    transition: height 0.4s ease;
+    overflow: hidden;
+}
+
+div.resizeable-window-titlebar-overlay:hover {
+    animation: none;
+    height: 2.5em;
+    opacity: 1;
+}
+
+@keyframes collapseTitlebar {
+  to {
+    height: 0;
+    opacity: 0;
+  }
+}
+
 div.resizeable-window-titlebar > div.spinner {
     flex: 0 0 auto;
     margin-right: 0.25em;

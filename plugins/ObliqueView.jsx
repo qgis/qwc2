@@ -189,7 +189,8 @@ class ObliqueView extends React.Component {
                 initialHeight={this.props.geometry.initialHeight} initialWidth={this.props.geometry.initialWidth}
                 initialX={this.props.geometry.initialX} initialY={this.props.geometry.initialY}
                 initiallyDocked={this.props.geometry.initiallyDocked}
-                onClose={this.onClose} splitScreenWhenDocked splitTopAndBottomBar title={LocaleUtils.tr("obliqueview.title")}
+                onClose={this.onClose} overlayTitleBar
+                splitScreenWhenDocked splitTopAndBottomBar title={LocaleUtils.tr("obliqueview.title")}
             >
                 <div className="obliqueview-body">
                     <div className="obliqueview-map" ref={el => this.map.setTarget(el)} tabIndex={0} />
