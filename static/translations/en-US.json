@@ -271,7 +271,8 @@
     },
     "featuresearch": {
       "query": "Query",
-      "title": "Feature search"
+      "title": "Feature search",
+      "typetofilter": "Type to filter..."
     },
     "fileselector": {
       "files": "files",
