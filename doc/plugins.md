@@ -1026,7 +1026,10 @@ Overview map support for the map component.
 
 | Property | Type | Description | Default value |
 |----------|------|-------------|---------------|
+| fixedView | `{`<br />`  center: array,`<br />`  scale: number,`<br />`}` | A fixed center / scale (denominator) for the overview map.<br />- `center`: The center of the fixed overview map.<br />- `scale`: The scale of the fixed overview map. | `undefined` |
+| height | `number` | The height of the overview map, in pixels. | `200` |
 | options | `object` | See [OpenLayers API doc](https://openlayers.org/en/latest/apidoc/module-ol_control_OverviewMap-OverviewMap.html) for general options.<br /> Additionally, you can specify:<br /> - `layer`: Custom overview layer, in the same form as background layer definitions (`{type: "<wms|wmts>", "url": ...}`).<br /> - `viewOptions`: Options for the OverviewMap View, see [OpenLayers API doc](https://openlayers.org/en/latest/apidoc/module-ol_View.html). | `{}` |
+| width | `number` | The width of the overview map, in pixels. | `200` |
 
 ## Panoramax<a name="panoramax"></a>
 

@@ -28,6 +28,15 @@ class OverviewMap extends React.Component {
         backgroundLayer: PropTypes.object,
         center: PropTypes.array,
         defaultWMSVersion: PropTypes.object,
+        /** A fixed center / scale (denominator) for the overview map. */
+        fixedView: PropTypes.shape({
+            /** The center of the fixed overview map. */
+            center: PropTypes.array,
+            /** The scale of the fixed overview map. */
+            scale: PropTypes.number
+        }),
+        /** The height of the overview map, in pixels.  */
+        height: PropTypes.number,
         /** See [OpenLayers API doc](https://openlayers.org/en/latest/apidoc/module-ol_control_OverviewMap-OverviewMap.html) for general options.
          *  Additionally, you can specify:
          *  - `layer`: Custom overview layer, in the same form as background layer definitions (`{type: "<wms|wmts>", "url": ...}`).
@@ -37,10 +46,14 @@ class OverviewMap extends React.Component {
         projection: PropTypes.string,
         resolutions: PropTypes.array,
         viewConfigHash: PropTypes.number,
+        /** The width of the overview map, in pixels.  */
+        width: PropTypes.number,
         zoom: PropTypes.number
     };
     static defaultProps = {
-        options: {}
+        options: {},
+        width: 200,
+        height: 200
     };
     state = {
         overviewView: null,
@@ -58,12 +71,28 @@ class OverviewMap extends React.Component {
     }
     initOverviewMap = (el) => {
         if (el) {
+            let center = this.props.center;
+            let resolutions = this.props.resolutions;
+            let zoom = this.props.zoom * 0.8;
+            let extent = undefined;
+            if (this.props.fixedView) {
+                center = this.props.fixedView.center;
+                resolutions = MapUtils.getResolutionsForScales([this.props.fixedView.scale], this.props.projection);
+                extent = [
+                    center[0] - this.props.width * resolutions[0] * 0.5,
+                    center[1] - this.props.height * resolutions[0] * 0.5,
+                    center[0] + this.props.width * resolutions[0] * 0.5,
+                    center[1] + this.props.height * resolutions[0] * 0.5
+                ];
+                zoom = 0;
+            }
             const {layer, viewOptions, ...mapOptions} = this.props.options;
             const overviewView = new ol.View({
                 projection: this.props.projection,
-                resolutions: this.props.resolutions,
-                center: this.props.center,
-                zoom: this.props.zoom * 0.8,
+                resolutions: resolutions,
+                center: center,
+                extent: extent,
+                zoom: zoom,
                 ...viewOptions
             });
             this.overview = new ol.control.OverviewMap({
@@ -77,6 +106,11 @@ class OverviewMap extends React.Component {
             });
             this.overview.setTarget(el);
             MapUtils.getHook(MapUtils.GET_MAP).addControl(this.overview);
+            const mapEl = el.querySelector('div.ol-overviewmap-map');
+            if (mapEl) {
+                mapEl.style.width = `${this.props.width}px`;
+                mapEl.style.height = `${this.props.height}px`;
+            }
 
             let overviewLayer = null;
             if (layer) {
