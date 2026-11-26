@@ -48,7 +48,7 @@ export default class ConstraintInteraction extends ol.interaction.Interaction {
             evt.pixel = evt.map.getPixelFromCoordinate(this.finishVertex);
         } else if (["pointermove", "pointerdrag", "pointerup"].includes(evt.type)) {
             // Only the coordinate is rewritten: Draw detects clicks, long presses and finishes by pixel
-            evt.coordinate = this.constrain(base, pixel, evt.map) ?? evt.coordinate;
+            evt.coordinate = this.constrain(base, evt.pixel, evt.map) ?? evt.coordinate;
         }
         if (evt.type === "pointerup") {
             this.finishVertex = null;
