@@ -178,7 +178,15 @@ export default class SnapInteraction extends ol.interaction.Snap {
     }
     onVertexAdded = (data) => {
         this.perpendicularSnapReferences = [];
-        this.computePerpendicularSnapReference(data.coordinate);
+        // Get last segment of Line/Polygon geometry so that it can be used as a perpendicular snap reference
+        let lastSegment = null;
+        const geom = data.feature.getGeometry();
+        if (geom.getType() === "LineString" && geom.getCoordinates().length > 2) {
+            lastSegment = geom.getCoordinates().slice(-3, -1);
+        } else if (geom.getType() === "Polygon" && geom.getCoordinates()[0].length > 3) {
+            lastSegment = geom.getCoordinates()[0].slice(-4, -2);
+        }
+        this.computePerpendicularSnapReference(data.coordinate, lastSegment);
     };
     onModifyStart = (data) => {
         // Don't gather perpendicular snapping references on itself
@@ -190,7 +198,23 @@ export default class SnapInteraction extends ol.interaction.Snap {
         });
         data.features.forEach(f => this.addFeature(f));
     };
-    computePerpendicularSnapReference = (coo) => {
+    computePerpendicularSnapReference = (coo, lastSegment = null) => {
+        // Use last drawn segment as reference if available
+        if (lastSegment) {
+            const cooPixel = this.currentMap.getPixelFromCoordinate(coo);
+            const endPixel = this.currentMap.getPixelFromCoordinate(lastSegment[1]);
+            if (Math.hypot(cooPixel[0] - endPixel[0], cooPixel[1] - endPixel[1]) < this.pixelTolerance_) {
+                const p1 = lastSegment[0];
+                const p2 = lastSegment[1];
+                const l = Math.hypot(p2[0] - p1[0], p2[1] - p1[1]);
+                if (l > 0) {
+                    this.perpendicularSnapReferences.push({
+                        dir: [(p2[1] - p1[1]) / l, (p1[0] - p2[0]) / l],
+                        point: [...p2]
+                    });
+                }
+            }
+        }
         // If added vertex lies on a segment, store perpendicular direction for perpendicular snapping
         const pixel = this.currentMap.getPixelFromCoordinate(coo);
         const result = this.snapTo(pixel, coo, this.currentMap);
