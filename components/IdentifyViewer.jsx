@@ -412,6 +412,7 @@ class IdentifyViewer extends React.Component {
                 layerid={layerid}
                 longAttributesDisplay={this.props.longAttributesDisplay}
                 setHighlightedFeatures={this.setHighlightedFeatures}
+                showLayerTitles={this.props.showLayerTitles}
                 skipEmptyFeatureAttributes={this.props.skipEmptyFeatureAttributes}
             />
         );
