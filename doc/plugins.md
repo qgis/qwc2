@@ -1024,6 +1024,8 @@ See [Oblique View](../../topics/ObliqueView).
 
 Overview map support for the map component.
 
+Additionally to the standard OpenLayers OverviewMap behaviour, you can shift+select a target map extent in the OverviewMap.
+
 | Property | Type | Description | Default value |
 |----------|------|-------------|---------------|
 | fixedView | `{`<br />`  center: array,`<br />`  scale: number,`<br />`}` | A fixed center / scale (denominator) for the overview map.<br />- `center`: The center of the fixed overview map.<br />- `scale`: The scale of the fixed overview map. | `undefined` |

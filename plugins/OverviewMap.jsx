@@ -15,13 +15,17 @@ import PropTypes from 'prop-types';
 import {v4 as uuidv4} from 'uuid';
 
 import {LayerRole} from '../actions/layers';
+import {zoomToExtent} from '../actions/map';
 import OlLayer from '../components/map/OlLayer';
 import MapUtils from '../utils/MapUtils';
+import MiscUtils from '../utils/MiscUtils';
 
 import './style/OverviewMap.css';
 
 /**
  * Overview map support for the map component.
+ *
+ * Additionally to the standard OpenLayers OverviewMap behaviour, you can shift+select a target map extent in the OverviewMap.
  */
 class OverviewMap extends React.Component {
     static propTypes = {
@@ -48,7 +52,8 @@ class OverviewMap extends React.Component {
         viewConfigHash: PropTypes.number,
         /** The width of the overview map, in pixels.  */
         width: PropTypes.number,
-        zoom: PropTypes.number
+        zoom: PropTypes.number,
+        zoomToExtent: PropTypes.func
     };
     static defaultProps = {
         options: {},
@@ -110,6 +115,7 @@ class OverviewMap extends React.Component {
             if (mapEl) {
                 mapEl.style.width = `${this.props.width}px`;
                 mapEl.style.height = `${this.props.height}px`;
+                mapEl.addEventListener('pointerdown', this.startOverviewDragbox);
             }
 
             let overviewLayer = null;
@@ -141,6 +147,58 @@ class OverviewMap extends React.Component {
             </div>
         );
     }
+    startOverviewDragbox = (ev) => {
+        if (!ev.shiftKey) {
+            return;
+        }
+        const target = ev.currentTarget;
+        const bbox = target.getBoundingClientRect();
+        const dragbox = {
+            x1: ev.clientX - bbox.x, y1: ev.clientY - bbox.y,
+            x2: ev.clientX - bbox.x, y2: ev.clientY - bbox.y
+        };
+        const selbox = ev.view.document.createElement('div');
+        selbox.className = 'overviewmap-selbox';
+        selbox.style.left = `${dragbox.x1}px`;
+        selbox.style.top = `${dragbox.y1}px`;
+        selbox.style.width = "0px";
+        selbox.style.height = "0px";
+        const extentbox = target.querySelector('div.ol-overviewmap-box');
+        let moved = false;
+        const resizeDragbox = (ev2) => {
+            if (!moved) {
+                moved = true;
+                target.appendChild(selbox);
+                extentbox.style.display = 'none';
+            }
+            dragbox.x2 = Math.max(0, Math.min(ev2.clientX - bbox.x, bbox.width));
+            dragbox.y2 = Math.max(0, Math.min(ev2.clientY - bbox.y, bbox.height));
+            selbox.style.left = `${Math.min(dragbox.x1, dragbox.x2)}px`;
+            selbox.style.top = `${Math.min(dragbox.y1, dragbox.y2)}px`;
+            selbox.style.width = `${Math.abs(dragbox.x1 - dragbox.x2)}px`;
+            selbox.style.height = `${Math.abs(dragbox.y1 - dragbox.y2)}px`;
+            MiscUtils.killEvent(ev2);
+        };
+        ev.view.addEventListener("pointermove", resizeDragbox);
+        ev.view.addEventListener("pointerup", () => {
+            if (!moved) {
+                return;
+            }
+            ev.view.removeEventListener("pointermove", resizeDragbox);
+            selbox.remove();
+            extentbox.style.display = '';
+
+            const p1 = this.overview.getOverviewMap().getCoordinateFromPixel([dragbox.x1, dragbox.y1]);
+            const p2 = this.overview.getOverviewMap().getCoordinateFromPixel([dragbox.x2, dragbox.y2]);
+            const extent = [
+                Math.min(p1[0], p2[0]),
+                Math.min(p1[1], p2[1]),
+                Math.max(p1[0], p2[0]),
+                Math.max(p1[1], p2[1])
+            ];
+            this.props.zoomToExtent(extent, this.props.projection);
+        }, {once: true});
+    };
 }
 
 export default connect((state) => {
@@ -161,4 +219,6 @@ export default connect((state) => {
         zoom: state.map.zoom,
         viewConfigHash
     };
-}, {})(OverviewMap);
+}, {
+    zoomToExtent: zoomToExtent
+})(OverviewMap);

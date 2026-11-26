@@ -44,3 +44,9 @@ div.ol-overviewmap-box {
     border: 2px dotted rgb(81, 0, 255);
     background-color: rgba(81, 0, 255, 0.33);
 }
+
+div.overviewmap-selbox {
+    position: absolute;
+    border: 1px solid white;
+    background-color: rgba(255, 255, 255, 0.75);
+}
