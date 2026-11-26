@@ -15,6 +15,7 @@
     "fr-FR": "Français",
     "it-IT": "Italiano"
   },
+  "dynamicallyQueryLayerDimensions": true,
   "urlPositionFormat": "centerAndZoom",
   "urlPositionCrs": "",
   "loadTranslationOverrides": false,

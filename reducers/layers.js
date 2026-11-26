@@ -207,6 +207,9 @@ export default function layers(state = defaultState, action) {
                 newLayer.translations = deepmerge(newLayer.translations || {}, action.metadata.translations);
                 newLayer = LayerUtils.applyTranslations(newLayer, newLayer.translations);
             }
+            if (action.metadata.dimensions) {
+                LayerUtils.updateDimensions(newLayer, action.metadata.dimensions);
+            }
             const newLayers = [...state.flat];
             newLayers[layerIdx] = newLayer;
             return {...state, flat: newLayers, editConfigs: newEditConfigs};

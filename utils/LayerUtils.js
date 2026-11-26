@@ -17,8 +17,11 @@ import ConfigUtils from './ConfigUtils';
 import CoordinatesUtils from './CoordinatesUtils';
 import DataServiceExprUtils from './DataServiceExprUtils';
 import LocaleUtils from './LocaleUtils';
+import MiscUtils from './MiscUtils';
 import Request from './Request';
+import ServiceLayerUtils from './ServiceLayerUtils';
 import VectorLayerUtils from './VectorLayerUtils';
+
 
 const LayerUtils = {
     restoreLayerParams(themeLayer, layerConfigs, permalinkLayers, externalLayers) {
@@ -1058,6 +1061,16 @@ const LayerUtils = {
         params.STYLES = params.STYLES.reverse().join(",");
         return params;
     },
+    updateDimensions(layer, dimensions) {
+        const newLayer = {...layer};
+        if (layer.name in dimensions) {
+            newLayer.dimensions = dimensions[layer.name];
+        }
+        if (!isEmpty(newLayer.sublayers)) {
+            newLayer.sublayers = newLayer.sublayers.map(sublayer => LayerUtils.updateDimensions(sublayer, dimensions));
+        }
+        return newLayer;
+    },
     getTimeDimensionValues(layer) {
         const result = {
             names: new Set(),
@@ -1303,6 +1316,33 @@ const LayerUtils = {
             metadataRequests.push(new Promise((resolve) => {
                 metadata.translations = deepmerge(LocaleUtils.commonTranslations(), layer.translations || {});
                 resolve();
+            }));
+        }
+        if (layer.type === 'wms' && layer.url && layer.role !== LayerRole.BACKGROUND && ConfigUtils.getConfigProp("dynamicallyQueryLayerDimensions")) {
+            // Re-query capabilities for up-to-date time dimension values
+            const params = {SERVICE: 'WMS', REQUEST: 'GetProjectSettings'};
+            metadataRequests.push(new Promise(resolve => {
+                ServiceLayerUtils.getCapabilities(layer.url, params).then(response => {
+                    const dimensions = {};
+                    const extractDimensionValues = (lyr => {
+                        if (lyr?.Dimension) {
+                            dimensions[lyr.Name] = MiscUtils.ensureArray(lyr.Dimension).map(dim => ({
+                                endFieldName: dim.endFieldName,
+                                fieldName: dim.fieldName,
+                                multiple: dim.multipleValues === 1,
+                                name: dim.name,
+                                units: dim.units,
+                                value: dim['#text']
+                            }));
+                        }
+                        if (lyr?.Layer) {
+                            MiscUtils.ensureArray(lyr.Layer).forEach(extractDimensionValues);
+                        }
+                    });
+                    extractDimensionValues(response?.capabilities?.WMS_Capabilities?.Capability?.Layer);
+                    metadata.dimensions = dimensions;
+                    resolve();
+                });
             }));
         }
         Promise.all(metadataRequests).then(() => {
